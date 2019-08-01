@@ -1,9 +1,10 @@
-import React from 'react';
+import React from "react"
 
-const AppPresenter: React.SFC = () => (
-    <>
-        Hello,World!
-    </>
+interface IProps {
+  isLoggedIn: boolean
+}
+const AppPresenter: React.SFC<IProps> = ({ isLoggedIn }) => (
+  <>{isLoggedIn ? "로그인" : "로그아웃"}</>
 )
 
 export default AppPresenter
