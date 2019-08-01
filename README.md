@@ -14,7 +14,7 @@ Time Management System for part-time job
 - [ ] Remove User
 - [ ] Make Timetable
 - [ ] Edit Timetable
-- [ ] export Timetable
+- [ ] Export Timetable
 
 ### Logged Out
 
