@@ -10,20 +10,17 @@ Time Management System for part-time job
 - [ ] My Profile
 - [ ] Edit Account
 - [ ] Settings
-- [ ] Add User
-- [ ] Remove User
-- [ ] Make Timetable
+- [ ] Manage Users
+- [ ] Add Timetable
 - [ ] Edit Timetable
-- [ ] Export Timetable
+- [ ] View Timetable
 
 ### Logged Out
 
-- [ ] Home
-- [ ] Login
-- [ ] Sign Up
-- [ ] Forgot Password
+- [x] Login
+- [x] Sign Up
+- [ ] Forgot ID/PW
 
 ### Link
 
 - [ ] Make Slot
-- [ ] View Current Timetable

@@ -2,6 +2,7 @@ import { ShiftTheme } from "styled-components"
 
 export const theme: ShiftTheme = {
   colors: {
-    white: "#000000"
+    grey: "#F0F0F0",
+    white: "#FFFFFF"
   }
 }
