@@ -2,8 +2,8 @@ import { Button, Form, Icon, Input, Typography } from "antd"
 import React from "react"
 import Helmet from "react-helmet"
 import styled from "styled-components"
-import logo from "../../images/logo.png"
-import { CenterContainer } from "../../styledComponents"
+import logo from "../../images/logo_colored.png"
+import { CenterContainerWithBackground } from "../../styledComponents"
 import { theme } from "../../theme"
 
 interface IProps {
@@ -29,13 +29,13 @@ const SignUpPresenter: React.SFC<IProps> = ({
   onInputChange,
   onSubmit
 }) => (
-  <CenterContainer style={{ backgroundColor: theme.colors.grey }}>
+  <CenterContainerWithBackground style={{ backgroundColor: theme.colors.grey }}>
     <Helmet>
       <title>Shift | 회원가입</title>
     </Helmet>
     <Content>
       <Header>
-        <img alt="logo" src={logo} height={"100%"} />
+        <img alt="logo" src={logo} height={"100px"} />
       </Header>
       <Title>
         <Typography.Title level={3}>회원가입</Typography.Title>
@@ -114,12 +114,13 @@ const SignUpPresenter: React.SFC<IProps> = ({
         </Information>
       </Body>
     </Content>
-  </CenterContainer>
+  </CenterContainerWithBackground>
 )
 
 const Content = styled.div`
   height: 70%;
   width: 30%;
+  min-height: 560px;
   background-color: ${theme.colors.white};
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 `
@@ -129,6 +130,7 @@ const Header = styled.div`
   justify-content: center;
   width: 100%;
   height: 20%;
+  padding-top: 5%;
 `
 
 const Title = styled.div`

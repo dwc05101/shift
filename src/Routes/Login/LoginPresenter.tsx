@@ -3,7 +3,8 @@ import React from "react"
 import Helmet from "react-helmet"
 import { Link } from "react-router-dom"
 import styled from "styled-components"
-import { CenterContainer } from "../../styledComponents"
+import logo from "../../images/logo_colored.png"
+import { CenterContainerWithBackground } from "../../styledComponents"
 import { theme } from "../../theme"
 
 interface IProps {
@@ -25,16 +26,15 @@ const LoginPresenter: React.SFC<IProps> = ({
   onSubmit,
   onClickSignUp
 }) => (
-  <CenterContainer>
+  <CenterContainerWithBackground>
     <Helmet>
       <title>Shift | 로그인</title>
     </Helmet>
-    <Image />
+    <ImageContainer>
+      <Image alt="logo" src={logo} />
+    </ImageContainer>
     <Content>
       <Login>
-        <Header>
-          <h1>Shift</h1>
-        </Header>
         <Card>
           <Form onSubmit={onSubmit}>
             <Form.Item>
@@ -84,42 +84,41 @@ const LoginPresenter: React.SFC<IProps> = ({
         </Card>
       </Login>
     </Content>
-  </CenterContainer>
+  </CenterContainerWithBackground>
 )
 
-const Image = styled.div`
-  width: 50%;
-  height: inherit;
-  background-image: url(https://images3.alphacoders.com/658/658828.jpg);
+const ImageContainer = styled.div`
+  width: inherit;
+  height: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+const Image = styled.img`
+  height: 40%;
 `
 
 const Content = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 50%;
-  height: inherit;
-  background-color: ${theme.colors.grey};
+  width: inherit;
+  height: 50%;
 `
 
 const Login = styled.div`
   width: 40%;
-  height: 50vh;
-`
-
-const Header = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 30%;
-  width: 100%;
+  height: 100%;
+  padding: 10%;
+  padding-top: 0;
 `
 
 const Card = styled.div`
   border-radius: 10px;
   background-color: ${theme.colors.white};
-  height: 65%;
-  min-height: 240px;
+  height: 100%;
+  min-height: 250px;
   width: 100%;
   padding: 5%;
 `

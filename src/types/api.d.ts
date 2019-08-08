@@ -2,6 +2,189 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreateUserToOrganization
+// ====================================================
+
+export interface CreateUserToOrganization_CreateUserToOrganization {
+  __typename: "CreateUserToOrganizationResponse";
+  ok: boolean;
+  error: string | null;
+}
+
+export interface CreateUserToOrganization {
+  CreateUserToOrganization: CreateUserToOrganization_CreateUserToOrganization;
+}
+
+export interface CreateUserToOrganizationVariables {
+  personalCode: string;
+  name: string;
+  phoneNumber: string;
+}
+
+/* tslint:disable */
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GetCurrentTimeTable
+// ====================================================
+
+export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable_links {
+  __typename: "Link";
+  url: string;
+}
+
+export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots_user {
+  __typename: "User";
+  name: string;
+  personalCode: string;
+}
+
+export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots {
+  __typename: "Slot";
+  id: number;
+  startTime: string;
+  endTime: string;
+  user: GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots_user;
+}
+
+export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable_days {
+  __typename: "Day";
+  startTime: string;
+  endTime: string;
+  dayNumber: number;
+  slots: (GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots | null)[] | null;
+}
+
+export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable {
+  __typename: "TimeTable";
+  id: number;
+  isConfirmed: boolean;
+  links: (GetCurrentTimeTable_GetCurrentTimeTable_timetable_links | null)[] | null;
+  days: (GetCurrentTimeTable_GetCurrentTimeTable_timetable_days | null)[] | null;
+}
+
+export interface GetCurrentTimeTable_GetCurrentTimeTable {
+  __typename: "GetCurrentTimeTableResponse";
+  ok: boolean;
+  error: string | null;
+  timetable: GetCurrentTimeTable_GetCurrentTimeTable_timetable | null;
+}
+
+export interface GetCurrentTimeTable {
+  GetCurrentTimeTable: GetCurrentTimeTable_GetCurrentTimeTable;
+}
+
+export interface GetCurrentTimeTableVariables {
+  yearMonthWeek: string;
+  organizationId?: number | null;
+}
+
+/* tslint:disable */
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: CreateLink
+// ====================================================
+
+export interface CreateLink_CreateLink_link {
+  __typename: "Link";
+  url: string;
+}
+
+export interface CreateLink_CreateLink {
+  __typename: "CreateLinkResponse";
+  ok: boolean;
+  error: string | null;
+  link: CreateLink_CreateLink_link | null;
+}
+
+export interface CreateLink {
+  CreateLink: CreateLink_CreateLink;
+}
+
+export interface CreateLinkVariables {
+  timetableId: number;
+}
+
+/* tslint:disable */
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GetUsers
+// ====================================================
+
+export interface GetUsers_GetUsers_users_slots_day_timetable {
+  __typename: "TimeTable";
+  id: number;
+  yearMonthWeek: string;
+}
+
+export interface GetUsers_GetUsers_users_slots_day {
+  __typename: "Day";
+  timetable: GetUsers_GetUsers_users_slots_day_timetable;
+}
+
+export interface GetUsers_GetUsers_users_slots {
+  __typename: "Slot";
+  id: number;
+  day: GetUsers_GetUsers_users_slots_day;
+}
+
+export interface GetUsers_GetUsers_users {
+  __typename: "User";
+  id: number;
+  personalCode: string;
+  name: string;
+  phoneNumber: string;
+  organizationId: number | null;
+  slots: (GetUsers_GetUsers_users_slots | null)[] | null;
+}
+
+export interface GetUsers_GetUsers {
+  __typename: "GetUsersResponse";
+  ok: boolean;
+  error: string | null;
+  users: (GetUsers_GetUsers_users | null)[] | null;
+}
+
+export interface GetUsers {
+  GetUsers: GetUsers_GetUsers;
+}
+
+/* tslint:disable */
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: GetOrganizationProfile
+// ====================================================
+
+export interface GetOrganizationProfile_GetOrganizationProfile_organization_users {
+  __typename: "User";
+  id: number;
+}
+
+export interface GetOrganizationProfile_GetOrganizationProfile_organization {
+  __typename: "Organization";
+  name: string;
+  email: string;
+  users: (GetOrganizationProfile_GetOrganizationProfile_organization_users | null)[] | null;
+}
+
+export interface GetOrganizationProfile_GetOrganizationProfile {
+  __typename: "GetOrganizationProfileResponse";
+  ok: boolean;
+  error: string | null;
+  organization: GetOrganizationProfile_GetOrganizationProfile_organization | null;
+}
+
+export interface GetOrganizationProfile {
+  GetOrganizationProfile: GetOrganizationProfile_GetOrganizationProfile;
+}
+
+/* tslint:disable */
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: OrganizationSignIn
 // ====================================================
 
@@ -19,6 +202,52 @@ export interface OrganizationSignIn {
 export interface OrganizationSignInVariables {
   loginId: string;
   password: string;
+}
+
+/* tslint:disable */
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: CreateTimeTable
+// ====================================================
+
+export interface CreateTimeTable_CreateTimeTable {
+  __typename: "CreateTimeTableResponse";
+  ok: boolean;
+  error: string | null;
+  timetableId: number | null;
+}
+
+export interface CreateTimeTable {
+  CreateTimeTable: CreateTimeTable_CreateTimeTable;
+}
+
+export interface CreateTimeTableVariables {
+  yearMonthWeek: string;
+  days: (TimeTableDay | null)[];
+}
+
+/* tslint:disable */
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: UpdateOrganization
+// ====================================================
+
+export interface UpdateOrganization_UpdateOrganization {
+  __typename: "UpdateOrganizationResponse";
+  ok: boolean;
+  error: string | null;
+}
+
+export interface UpdateOrganization {
+  UpdateOrganization: UpdateOrganization_UpdateOrganization;
+}
+
+export interface UpdateOrganizationVariables {
+  name: string;
+  password: string;
+  email: string;
 }
 
 /* tslint:disable */
@@ -49,9 +278,65 @@ export interface CreateOrganizationVariables {
 /* tslint:disable */
 // This file was automatically generated and should not be edited.
 
+// ====================================================
+// GraphQL query operation: GetTimeTables
+// ====================================================
+
+export interface GetTimeTables_GetTimeTables_timetables_days_slots_user {
+  __typename: "User";
+  name: string;
+  personalCode: string;
+}
+
+export interface GetTimeTables_GetTimeTables_timetables_days_slots {
+  __typename: "Slot";
+  startTime: string;
+  endTime: string;
+  user: GetTimeTables_GetTimeTables_timetables_days_slots_user;
+}
+
+export interface GetTimeTables_GetTimeTables_timetables_days {
+  __typename: "Day";
+  dayNumber: number;
+  startTime: string;
+  endTime: string;
+  slots: (GetTimeTables_GetTimeTables_timetables_days_slots | null)[] | null;
+}
+
+export interface GetTimeTables_GetTimeTables_timetables {
+  __typename: "TimeTable";
+  id: number;
+  isConfirmed: boolean;
+  yearMonthWeek: string;
+  createdAt: string;
+  updatedAt: string | null;
+  days: (GetTimeTables_GetTimeTables_timetables_days | null)[] | null;
+}
+
+export interface GetTimeTables_GetTimeTables {
+  __typename: "GetTimeTablesResponse";
+  ok: boolean;
+  error: string | null;
+  timetables: (GetTimeTables_GetTimeTables_timetables | null)[] | null;
+}
+
+export interface GetTimeTables {
+  GetTimeTables: GetTimeTables_GetTimeTables;
+}
+
+/* tslint:disable */
+// This file was automatically generated and should not be edited.
+
 //==============================================================
 // START Enums and Input Objects
 //==============================================================
+
+export interface TimeTableDay {
+  dayNumber: number;
+  startTime: string;
+  endTime: string;
+  isEndTimeNextDay: boolean;
+}
 
 //==============================================================
 // END Enums and Input Objects

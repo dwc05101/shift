@@ -1,5 +1,2 @@
-import React from "react"
-
-const R = () => <span>R</span>
-
-export default R
+import MakeSlotContainer from "./MakeSlotContainer"
+export default MakeSlotContainer

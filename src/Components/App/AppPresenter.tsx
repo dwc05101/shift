@@ -6,17 +6,16 @@ import {
   Switch
 } from "react-router-dom"
 
-import AddTimeTable from "../../Routes/AddTimeTable"
-import EditAccount from "../../Routes/EditAccount"
 import EditTimeTable from "../../Routes/EditTimeTable"
 import Forgot from "../../Routes/Forgot"
 import Home from "../../Routes/Home"
 import Login from "../../Routes/Login"
 import MakeSlot from "../../Routes/MakeSlot"
-import ManageUser from "../../Routes/ManageUser"
+import MakeTimeTable from "../../Routes/MakeTimeTable"
 import Profile from "../../Routes/Profile"
 import Settings from "../../Routes/Settings"
 import SignUp from "../../Routes/SignUp"
+import UserTable from "../../Routes/UserTable"
 import ViewTimeTable from "../../Routes/ViewTimeTable"
 
 interface IProps {
@@ -41,15 +40,14 @@ const LoggedOutRoutes: React.SFC = () => (
 
 const LoggedInRoutes: React.SFC = () => (
   <Switch>
-    <Route path={"/"} exact={true} component={Home} />
+    <Route path={"/dashboard"} component={Home} />
     <Route path={"/profile"} exact={true} component={Profile} />
-    <Route path={"/profile/edit"} component={EditAccount} />
-    <Route path={"/profile/user"} component={ManageUser} />
+    <Route path={"/users"} component={UserTable} />
     <Route path={"/settings"} component={Settings} />
-    <Route path={"/timetable/make"} exact={true} component={AddTimeTable} />
+    <Route path={"/timetable/make"} exact={true} component={MakeTimeTable} />
     <Route path={"/timetable/:timetableId"} component={EditTimeTable} />
     <Route path={"/timetable"} exact={true} component={ViewTimeTable} />
-    <Redirect path={"*"} to={"/"} />
+    <Redirect path={"*"} to={"/dashboard"} />
   </Switch>
 )
 
