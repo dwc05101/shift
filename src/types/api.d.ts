@@ -319,6 +319,27 @@ export interface CreateOrganizationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: RemoveUserFromOrganization
+// ====================================================
+
+export interface RemoveUserFromOrganization_RemoveUserFromOrganization {
+  __typename: "RemoveUserFromOrganizationResponse";
+  ok: boolean;
+  error: string | null;
+}
+
+export interface RemoveUserFromOrganization {
+  RemoveUserFromOrganization: RemoveUserFromOrganization_RemoveUserFromOrganization;
+}
+
+export interface RemoveUserFromOrganizationVariables {
+  userId: number;
+}
+
+/* tslint:disable */
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GetTimeTables
 // ====================================================
 

@@ -4,6 +4,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard"
 import styled from "styled-components"
 import history from "../../history"
 import { FlexContainer } from "../../styledComponents"
+import { theme } from "../../theme"
 import { GetCurrentTimeTable } from "../../types/api"
 import Loading from "../Loading"
 
@@ -122,23 +123,18 @@ const makeTableCell = (data: GetCurrentTimeTable | null, time: string) => {
               )
               return (
                 <TableCell key={day!.dayNumber}>
-                  {amSlots.map(slot => (
-                    <Slot key={slot!.id}>
-                      <SlotHeader>
-                        <SlotUserInfo>{slot!.user!.name}</SlotUserInfo>
-                        <SlotUserInfo>{slot!.user!.personalCode}</SlotUserInfo>
-                      </SlotHeader>
-                      <SlotBody>
-                        {slot!.isFulltime
-                          ? "풀타임"
-                          : `${slot!.startTime} ~ ${slot!.endTime}`}
-                      </SlotBody>
-                    </Slot>
-                  ))}
+                  <Typography.Title level={4}>
+                    {`${amSlots.length}명`}
+                  </Typography.Title>
                 </TableCell>
               )
             } else {
-              return <TableCell key={day!.dayNumber} />
+              return (
+                <TableCell
+                  style={{ background: theme.colors.red }}
+                  key={day!.dayNumber}
+                />
+              )
             }
           })
         case "PM":
@@ -146,22 +142,16 @@ const makeTableCell = (data: GetCurrentTimeTable | null, time: string) => {
             if (day!.slots) {
               const pmSlots = day!.slots.filter(
                 slot =>
-                  parseInt(slot!.startTime, 10) >= 1200 &&
-                  parseInt(slot!.startTime, 10) < 2200
+                  (parseInt(slot!.startTime, 10) >= 1200 &&
+                    parseInt(slot!.startTime, 10) < 2200) ||
+                  parseInt(slot!.endTime, 10) >= 1200 ||
+                  slot!.isFulltime
               )
               return (
                 <TableCell key={day!.dayNumber}>
-                  {pmSlots.map(slot => (
-                    <Slot key={slot!.id}>
-                      <SlotHeader>
-                        <SlotUserInfo>{slot!.user!.name}</SlotUserInfo>
-                        <SlotUserInfo>{slot!.user!.personalCode}</SlotUserInfo>
-                      </SlotHeader>
-                      <SlotBody>
-                        {`${slot!.startTime} ~ ${slot!.endTime}`}
-                      </SlotBody>
-                    </Slot>
-                  ))}
+                  <Typography.Title level={4}>
+                    {`${pmSlots.length}명`}
+                  </Typography.Title>
                 </TableCell>
               )
             } else {
@@ -172,21 +162,16 @@ const makeTableCell = (data: GetCurrentTimeTable | null, time: string) => {
           return sortedTimeTable.map(day => {
             if (day!.slots) {
               const mdSlots = day!.slots.filter(
-                slot => parseInt(slot!.startTime, 10) >= 2200
+                slot =>
+                  parseInt(slot!.startTime, 10) >= 2200 ||
+                  parseInt(slot!.endTime, 10) >= 2200 ||
+                  slot!.isFulltime
               )
               return (
                 <TableCell key={day!.dayNumber}>
-                  {mdSlots.map(slot => (
-                    <Slot key={slot!.id}>
-                      <SlotHeader>
-                        <SlotUserInfo>{slot!.user!.name}</SlotUserInfo>
-                        <SlotUserInfo>{slot!.user!.personalCode}</SlotUserInfo>
-                      </SlotHeader>
-                      <SlotBody>
-                        {`${slot!.startTime} ~ ${slot!.endTime}`}
-                      </SlotBody>
-                    </Slot>
-                  ))}
+                  <Typography.Title level={4}>
+                    {`${mdSlots.length}명`}
+                  </Typography.Title>
                 </TableCell>
               )
             } else {
@@ -253,6 +238,8 @@ const TableHeaderCell = styled.div`
 const TableCell = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   flex: 1 1 0;
   height: 100%;
   border: 1px solid black;

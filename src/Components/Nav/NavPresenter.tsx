@@ -14,7 +14,6 @@ interface IProps {
   goToProfile: (e: any) => any
   doLogout: (e: any) => any
   goToHome: (e: any) => any
-  isSettings: boolean
   isProfile: boolean
 }
 
@@ -26,7 +25,6 @@ const NavPresenter: React.SFC<IProps> = ({
   goToProfile,
   doLogout,
   goToHome,
-  isSettings,
   isProfile
 }) => {
   return (
@@ -53,38 +51,40 @@ const NavPresenter: React.SFC<IProps> = ({
           <Icon type="user" />
           구성원
         </Menu.Item>
+        <Menu.Item key="calendar">
+          <Icon type="calendar" />
+          일정
+        </Menu.Item>
       </Menu>
-      {isSettings ? null : (
-        <Toolbar>
-          <Profile onClick={isProfile ? undefined : goToProfile}>
-            <b>
-              {loading ? (
-                <Loading />
-              ) : (
-                <>
-                  <Avatar
-                    name={
-                      profile === undefined
-                        ? ""
-                        : profile.GetOrganizationProfile.organization!.name
-                    }
-                    round={true}
-                    size={"30px"}
-                    style={{ marginRight: "10px" }}
-                  />
-                  {profile === undefined
-                    ? "서버 연결 오류"
-                    : profile.GetOrganizationProfile.organization!.name}
-                </>
-              )}
-            </b>
-          </Profile>
-          <Button type="link" onClick={doLogout}>
-            <Icon type="logout" />
-            로그아웃
-          </Button>
-        </Toolbar>
-      )}
+      <Toolbar>
+        <Profile onClick={isProfile ? undefined : goToProfile}>
+          <b>
+            {loading ? (
+              <Loading />
+            ) : (
+              <>
+                <Avatar
+                  name={
+                    profile === undefined
+                      ? ""
+                      : profile.GetOrganizationProfile.organization!.name
+                  }
+                  round={true}
+                  size={"30px"}
+                  style={{ marginRight: "10px" }}
+                />
+                {profile === undefined
+                  ? "서버 연결 오류"
+                  : profile.GetOrganizationProfile.organization!.name}
+              </>
+            )}
+          </b>
+        </Profile>
+        <Button type="link" onClick={doLogout}>
+          <Icon type="logout" />
+          로그아웃
+        </Button>
+      </Toolbar>
     </NavContainer>
   )
 }

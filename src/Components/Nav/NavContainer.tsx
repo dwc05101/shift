@@ -6,7 +6,6 @@ import { GetOrganizationProfile } from "../../types/api"
 import NavPresenter from "./NavPresenter"
 
 interface IState {
-  isSettings: boolean
   isProfile: boolean
   current: string
 }
@@ -20,9 +19,11 @@ class GetProfileQuery extends Query<GetOrganizationProfile> {}
 
 class Nav extends React.Component<{}, IState> {
   public state = {
-    current: parseLocation(history.location.pathname),
-    isProfile: false,
-    isSettings: false
+    current:
+      parseLocation(history.location.pathname) === ""
+        ? "dashboard"
+        : parseLocation(history.location.pathname),
+    isProfile: false
   }
 
   public render() {
@@ -31,7 +32,6 @@ class Nav extends React.Component<{}, IState> {
         {({ data, loading }) => {
           return (
             <NavPresenter
-              isSettings={this.state.isSettings}
               isProfile={this.state.isProfile}
               loading={loading}
               profile={data}
@@ -55,7 +55,7 @@ class Nav extends React.Component<{}, IState> {
   }
 
   public goToProfile = e => {
-    history.push("/profile")
+    window.location.pathname = "/profile"
     this.setState({
       current: "profile",
       isProfile: true

@@ -9,7 +9,6 @@ import Login from "../../Routes/Login"
 import MakeSlot from "../../Routes/MakeSlot"
 import MakeTimeTable from "../../Routes/MakeTimeTable"
 import Profile from "../../Routes/Profile"
-import Settings from "../../Routes/Settings"
 import SignUp from "../../Routes/SignUp"
 import UserTable from "../../Routes/UserTable"
 import ViewTimeTable from "../../Routes/ViewTimeTable"
@@ -47,7 +46,6 @@ class LoggedInRoutes extends React.Component {
           <Route path={"/dashboard"} component={Home} />
           <Route path={"/profile"} exact={true} component={Profile} />
           <Route path={"/users"} component={UserTable} />
-          <Route path={"/settings"} component={Settings} />
           <Route
             path={"/timetable/make"}
             exact={true}
