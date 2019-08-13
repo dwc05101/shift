@@ -1,12 +1,11 @@
 import { Button, Table, Tag, Typography } from "antd"
-import moment from "moment"
 import React from "react"
 import { Link } from "react-router-dom"
 import styled from "styled-components"
 import Loading from "../../Components/Loading"
-import Nav from "../../Components/Nav/NavContainer"
 import { Container, Content, InnerShadowedBox } from "../../styledComponents"
 import { GetTimeTables } from "../../types/api"
+import isoToRelative from "../../utils/isoToRelative"
 
 interface IProps {
   loading: boolean
@@ -29,7 +28,6 @@ const ViewTimeTablePresenter: React.SFC<IProps> = ({
   }
   return (
     <Container>
-      <Nav isProfile={false} isSettings={false} defaultKey={"timetable"} />
       <Content>
         <InnerShadowedBox>
           {loading ? (
@@ -93,26 +91,6 @@ const columns = [
     title: ""
   }
 ]
-
-const isoToRelative = (isoWeek: string) => {
-  const year = isoWeek.substring(0, 4)
-  const week = isoWeek.substring(4)
-
-  const isoMoment = moment()
-    .isoWeekYear(parseInt(year, 10))
-    .isoWeek(parseInt(week, 10))
-
-  const dayCurrent = isoMoment.startOf("isoWeek").date()
-
-  const weekOfMonth =
-    moment().isoWeek() -
-    moment()
-      .subtract(dayCurrent - 1, "day")
-      .isoWeek() +
-    1
-
-  return `${year}년 ${isoMoment.month() + 1}월 ${weekOfMonth}주차`
-}
 
 const parseData = (data: GetTimeTables | undefined): any[] => {
   const parsed: any[] = []

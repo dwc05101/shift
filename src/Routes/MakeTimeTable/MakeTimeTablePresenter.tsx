@@ -13,9 +13,9 @@ import moment from "moment"
 import React from "react"
 import { Link } from "react-router-dom"
 import styled from "styled-components"
-import Nav from "../../Components/Nav/NavContainer"
 import { Container, Content, InnerShadowedBox } from "../../styledComponents"
 import { TimeTableDay } from "../../types/api"
+import KoreanDays from "../../utils/KoreanDays"
 
 interface IProps {
   thisWeekTimeTableDays: TimeTableDay[]
@@ -63,7 +63,6 @@ const MakeTimeTablePresenter: React.SFC<IProps> = ({
   changeThisWeekTableDaysNextDay
 }) => (
   <Container>
-    <Nav isProfile={false} isSettings={false} defaultKey={"timetable"} />
     <Content>
       <InnerShadowedBox style={{ flexDirection: "column" }}>
         <Breadcrumb style={{ height: "5%" }}>
@@ -206,8 +205,6 @@ const makeSeparateDay = (
     )
   })
 }
-
-const KoreanDays = ["월", "화", "수", "목", "금", "토", "일"]
 
 const DateContainer = styled.div`
   display: flex;

@@ -144,13 +144,19 @@
                 "name": "yearMonthWeek",
                 "description": "",
                 "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "timetableId",
+                "description": "",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
                 },
                 "defaultValue": null
               },
@@ -911,6 +917,22 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "isFulltime",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
                 "ofType": null
               }
             },
@@ -1810,7 +1832,25 @@
             "description": "",
             "args": [
               {
-                "name": "startTime",
+                "name": "slots",
+                "description": "",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "SlotInfo",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "personalCode",
                 "description": "",
                 "type": {
                   "kind": "NON_NULL",
@@ -1818,34 +1858,6 @@
                   "ofType": {
                     "kind": "SCALAR",
                     "name": "String",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "endTime",
-                "description": "",
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "dayNumber",
-                "description": "",
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Int",
                     "ofType": null
                   }
                 },
@@ -1860,20 +1872,6 @@
                   "ofType": {
                     "kind": "SCALAR",
                     "name": "Int",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "personalCode",
-                "description": "",
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "String",
                     "ofType": null
                   }
                 },
@@ -1952,6 +1950,16 @@
                     "name": "Int",
                     "ofType": null
                   }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "isFulltime",
+                "description": "",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
                 },
                 "defaultValue": null
               },
@@ -2551,6 +2559,73 @@
         ],
         "inputFields": null,
         "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "SlotInfo",
+        "description": "",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "isFulltime",
+            "description": "",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "dayNumber",
+            "description": "",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "startTime",
+            "description": "",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "endTime",
+            "description": "",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
       },

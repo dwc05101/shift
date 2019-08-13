@@ -2,7 +2,6 @@ import { Button, Table, Typography } from "antd"
 import React from "react"
 import styled from "styled-components"
 import CreateUserModal from "../../Components/CreateUserModal"
-import Nav from "../../Components/Nav/NavContainer"
 import { Container, Content, InnerShadowedBox } from "../../styledComponents"
 import { GetUsers, GetUsers_GetUsers_users } from "../../types/api"
 
@@ -31,7 +30,6 @@ const UserTablePresenter: React.SFC<IProps> = ({
   }
   return (
     <Container>
-      <Nav isProfile={false} isSettings={false} defaultKey={"users"} />
       <Content>
         <InnerShadowedBox>
           <Wrapper>

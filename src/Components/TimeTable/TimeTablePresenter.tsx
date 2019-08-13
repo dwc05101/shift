@@ -2,6 +2,7 @@ import { Button, message, Result, Typography } from "antd"
 import React from "react"
 import { CopyToClipboard } from "react-copy-to-clipboard"
 import styled from "styled-components"
+import history from "../../history"
 import { FlexContainer } from "../../styledComponents"
 import { GetCurrentTimeTable } from "../../types/api"
 import Loading from "../Loading"
@@ -24,7 +25,7 @@ const TimeTablePresenter: React.SFC<IProps> = ({ data, loading }) =>
         <Button
           type="primary"
           onClick={() => {
-            window.location.pathname = "/timetable/make"
+            history.push("/timetable/make")
           }}
         >
           시간표 만들기
@@ -117,7 +118,7 @@ const makeTableCell = (data: GetCurrentTimeTable | null, time: string) => {
           return sortedTimeTable.map(day => {
             if (day!.slots) {
               const amSlots = day!.slots.filter(
-                slot => parseInt(slot!.startTime, 10) < 1200
+                slot => parseInt(slot!.startTime, 10) < 1200 || slot!.isFulltime
               )
               return (
                 <TableCell key={day!.dayNumber}>
@@ -128,7 +129,9 @@ const makeTableCell = (data: GetCurrentTimeTable | null, time: string) => {
                         <SlotUserInfo>{slot!.user!.personalCode}</SlotUserInfo>
                       </SlotHeader>
                       <SlotBody>
-                        {`${slot!.startTime} ~ ${slot!.endTime}`}
+                        {slot!.isFulltime
+                          ? "풀타임"
+                          : `${slot!.startTime} ~ ${slot!.endTime}`}
                       </SlotBody>
                     </Slot>
                   ))}

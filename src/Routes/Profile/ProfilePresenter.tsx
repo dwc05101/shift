@@ -2,7 +2,6 @@ import { Button, Form, Icon, Input, Typography } from "antd"
 import React from "react"
 import Avatar from "react-avatar"
 import styled from "styled-components"
-import Nav from "../../Components/Nav/NavContainer"
 import { Container, Content, InnerShadowedBox } from "../../styledComponents"
 
 interface IProps {
@@ -27,7 +26,6 @@ const ProfilePresenter: React.SFC<IProps> = ({
   onSubmit
 }) => (
   <Container>
-    <Nav isProfile={true} isSettings={false} defaultKey={""} />
     <Content>
       <InnerShadowedBox
         style={{

@@ -3,6 +3,7 @@ import moment from "moment"
 import React, { ComponentProps } from "react"
 import { Mutation } from "react-apollo"
 import { CREATE_LINK } from "../../Components/TimeTable/TimeTableQueries"
+import history from "../../history"
 import {
   CreateLink,
   CreateLinkVariables,
@@ -20,6 +21,7 @@ interface IState {
   week: string
   checked: boolean
   timetableId: number
+  loading: boolean
 }
 
 class CreateLinkMutation extends Mutation<CreateLink, CreateLinkVariables> {}
@@ -79,6 +81,7 @@ class MakeTimeTableContainer extends React.Component<
 
     this.state = {
       checked: true,
+      loading: false,
       nextWeekTimeTableDays,
       sameTableDay: {
         dayNumber: -1,
@@ -98,7 +101,8 @@ class MakeTimeTableContainer extends React.Component<
       nextWeekTimeTableDays,
       sameTableDay,
       week,
-      checked
+      checked,
+      loading
     } = this.state
     return (
       <MakeTimeTableMutation
@@ -122,7 +126,7 @@ class MakeTimeTableContainer extends React.Component<
           }
         }}
       >
-        {(mutation, { loading }) => {
+        {mutation => {
           this.mutationFn = mutation
           return (
             <CreateLinkMutation
@@ -134,7 +138,7 @@ class MakeTimeTableContainer extends React.Component<
                     "시간표가 생성되었습니다! 잠시후 대시보드로 이동합니다..."
                   )
                   setTimeout(() => {
-                    window.location.pathname = "/dashboard"
+                    history.push("/dashboard")
                   }, 2000)
                 } else {
                   message.error("서버 내부 오류: 링크 발급 실패")
@@ -213,8 +217,14 @@ class MakeTimeTableContainer extends React.Component<
       message.error("시간대를 모두 입력해주세요.")
       return
     }
+    await this.setState({
+      loading: true
+    })
     await this.mutationFn()
     await this.linkMutationFn()
+    this.setState({
+      loading: false
+    })
   }
 
   public setTableFromSameTableDay = (): void => {

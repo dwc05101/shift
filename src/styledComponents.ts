@@ -8,12 +8,14 @@ export const CenterContainerWithBackground = styled.div`
   flex-direction: column;
   width: 100vw;
   height: 100vh;
+  background: url(https://www.xmple.com/wallpaper/linear-red-blue-gradient-1920x1080-c2-cd5c5c-4169e1-a-105-f-14.svg);
   background-size: 100% 100%;
 `
 
 export const Container = styled.div`
-  height: 100vh;
+  height: calc(100vh - 50px);
   width: 100vw;
+  display: flex;
 `
 
 export const FlexContainer = styled.div`
@@ -27,15 +29,13 @@ export const FlexContainer = styled.div`
 export const Content = styled.div`
   background: ${theme.colors.grey};
   width: 100%;
-  height: calc(100vh - 50px);
+  height: 100%;
   padding: 2%;
 `
 
 export const InnerShadowedBox = styled.div`
   height: 100%;
   width: 100%;
-  min-width: 1380px;
-  min-height: 690px;
   background: white;
   padding: 2%;
   display: flex;

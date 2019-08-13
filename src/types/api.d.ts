@@ -28,6 +28,18 @@ export interface CreateUserToOrganizationVariables {
 // GraphQL query operation: GetCurrentTimeTable
 // ====================================================
 
+export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable_organization_users {
+  __typename: "User";
+  name: string;
+  personalCode: string;
+}
+
+export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable_organization {
+  __typename: "Organization";
+  name: string;
+  users: (GetCurrentTimeTable_GetCurrentTimeTable_timetable_organization_users | null)[] | null;
+}
+
 export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable_links {
   __typename: "Link";
   url: string;
@@ -42,6 +54,7 @@ export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots_us
 export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots {
   __typename: "Slot";
   id: number;
+  isFulltime: boolean;
   startTime: string;
   endTime: string;
   user: GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots_user;
@@ -57,8 +70,10 @@ export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable_days {
 
 export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable {
   __typename: "TimeTable";
+  yearMonthWeek: string;
   id: number;
   isConfirmed: boolean;
+  organization: GetCurrentTimeTable_GetCurrentTimeTable_timetable_organization;
   links: (GetCurrentTimeTable_GetCurrentTimeTable_timetable_links | null)[] | null;
   days: (GetCurrentTimeTable_GetCurrentTimeTable_timetable_days | null)[] | null;
 }
@@ -75,8 +90,9 @@ export interface GetCurrentTimeTable {
 }
 
 export interface GetCurrentTimeTableVariables {
-  yearMonthWeek: string;
+  yearMonthWeek?: string | null;
   organizationId?: number | null;
+  timetableId?: number | null;
 }
 
 /* tslint:disable */
@@ -208,6 +224,30 @@ export interface OrganizationSignInVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreateSlot
+// ====================================================
+
+export interface CreateSlot_CreateSlot {
+  __typename: "CreateSlotResponse";
+  ok: boolean;
+  error: string | null;
+}
+
+export interface CreateSlot {
+  CreateSlot: CreateSlot_CreateSlot;
+}
+
+export interface CreateSlotVariables {
+  slots: (SlotInfo | null)[];
+  timetableId: number;
+  personalCode: string;
+  organizationId: number;
+}
+
+/* tslint:disable */
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: CreateTimeTable
 // ====================================================
 
@@ -330,6 +370,13 @@ export interface GetTimeTables {
 //==============================================================
 // START Enums and Input Objects
 //==============================================================
+
+export interface SlotInfo {
+  isFulltime: boolean;
+  dayNumber: number;
+  startTime: string;
+  endTime: string;
+}
 
 export interface TimeTableDay {
   dayNumber: number;

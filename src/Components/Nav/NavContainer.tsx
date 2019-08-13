@@ -1,20 +1,28 @@
 import React from "react"
 import { Query } from "react-apollo"
 import { GET_PROFILE } from "../../GlobalQuries"
+import history from "../../history"
 import { GetOrganizationProfile } from "../../types/api"
 import NavPresenter from "./NavPresenter"
 
-interface IProps {
+interface IState {
   isSettings: boolean
   isProfile: boolean
-  defaultKey: string
+  current: string
+}
+
+const parseLocation = (pathname: string) => {
+  const parsedPathname = pathname.split("/")
+  return parsedPathname[1]
 }
 
 class GetProfileQuery extends Query<GetOrganizationProfile> {}
 
-class Nav extends React.Component<IProps> {
+class Nav extends React.Component<{}, IState> {
   public state = {
-    current: this.props.defaultKey
+    current: parseLocation(history.location.pathname),
+    isProfile: false,
+    isSettings: false
   }
 
   public render() {
@@ -23,8 +31,8 @@ class Nav extends React.Component<IProps> {
         {({ data, loading }) => {
           return (
             <NavPresenter
-              isSettings={this.props.isSettings}
-              isProfile={this.props.isProfile}
+              isSettings={this.state.isSettings}
+              isProfile={this.state.isProfile}
               loading={loading}
               profile={data}
               current={this.state.current}
@@ -40,14 +48,18 @@ class Nav extends React.Component<IProps> {
   }
 
   public handleClick = e => {
-    window.location.pathname = e.key
+    history.push(`/${e.key}`)
     this.setState({
       current: e.key
     })
   }
 
   public goToProfile = e => {
-    window.location.pathname = "/profile"
+    history.push("/profile")
+    this.setState({
+      current: "profile",
+      isProfile: true
+    })
   }
 
   public doLogout = e => {
@@ -56,7 +68,11 @@ class Nav extends React.Component<IProps> {
   }
 
   public goToHome = e => {
-    window.location.pathname = "/"
+    history.push("/")
+    this.setState({
+      current: "dashboard",
+      isProfile: false
+    })
   }
 }
 

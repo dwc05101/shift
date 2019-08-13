@@ -3,7 +3,6 @@ import moment from "moment"
 import React from "react"
 import styled from "styled-components"
 import Loading from "../../Components/Loading"
-import Nav from "../../Components/Nav/NavContainer"
 import TimeTable from "../../Components/TimeTable"
 import { Container, Content, InnerShadowedBox } from "../../styledComponents"
 import { theme } from "../../theme"
@@ -22,7 +21,6 @@ interface IProps {
 
 const HomePresenter: React.SFC<IProps> = ({ data, loading, lastWeekTable }) => (
   <Container>
-    <Nav isProfile={false} isSettings={false} defaultKey={"dashboard"} />
     <Content>
       <InnerShadowedBox>
         <InfoContainer>

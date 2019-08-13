@@ -1,6 +1,7 @@
 import { message } from "antd"
 import React from "react"
 import { Mutation } from "react-apollo"
+import { GET_USERS } from "../../GlobalQuries"
 import {
   CreateUserToOrganization,
   CreateUserToOrganizationVariables
@@ -39,11 +40,11 @@ class CreateUserModalContainer extends React.Component<IProps> {
             this.setState({
               visible: false
             })
-            window.location.reload()
           } else {
             message.error("개인번호가 중복되었습니다.")
           }
         }}
+        refetchQueries={[{ query: GET_USERS }]}
       >
         {(mutation, { loading }) => {
           this.createMutation = mutation

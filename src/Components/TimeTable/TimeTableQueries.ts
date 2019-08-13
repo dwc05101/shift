@@ -1,16 +1,29 @@
 import gql from "graphql-tag"
 
 export const GET_TIMETABLE = gql`
-  query GetCurrentTimeTable($yearMonthWeek: String!, $organizationId: Int) {
+  query GetCurrentTimeTable(
+    $yearMonthWeek: String
+    $organizationId: Int
+    $timetableId: Int
+  ) {
     GetCurrentTimeTable(
       yearMonthWeek: $yearMonthWeek
       organizationId: $organizationId
+      timetableId: $timetableId
     ) {
       ok
       error
       timetable {
+        yearMonthWeek
         id
         isConfirmed
+        organization {
+          name
+          users {
+            name
+            personalCode
+          }
+        }
         links {
           url
         }
@@ -20,6 +33,7 @@ export const GET_TIMETABLE = gql`
           dayNumber
           slots {
             id
+            isFulltime
             startTime
             endTime
             user {

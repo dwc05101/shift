@@ -1,11 +1,7 @@
 import React from "react"
-import {
-  BrowserRouter as Router,
-  Redirect,
-  Route,
-  Switch
-} from "react-router-dom"
+import { Redirect, Route, Router, Switch } from "react-router-dom"
 
+import history from "../../history"
 import EditTimeTable from "../../Routes/EditTimeTable"
 import Forgot from "../../Routes/Forgot"
 import Home from "../../Routes/Home"
@@ -17,12 +13,16 @@ import Settings from "../../Routes/Settings"
 import SignUp from "../../Routes/SignUp"
 import UserTable from "../../Routes/UserTable"
 import ViewTimeTable from "../../Routes/ViewTimeTable"
+import Nav from "../Nav/NavContainer"
 
 interface IProps {
   isLoggedIn: boolean
 }
+
 const AppPresenter: React.SFC<IProps> = ({ isLoggedIn }) => (
-  <Router>{isLoggedIn ? <LoggedInRoutes /> : <LoggedOutRoutes />}</Router>
+  <Router history={history}>
+    {isLoggedIn ? <LoggedInRoutes /> : <LoggedOutRoutes />}
+  </Router>
 )
 
 const LoggedOutRoutes: React.SFC = () => (
@@ -38,17 +38,46 @@ const LoggedOutRoutes: React.SFC = () => (
   </Switch>
 )
 
-const LoggedInRoutes: React.SFC = () => (
-  <Switch>
-    <Route path={"/dashboard"} component={Home} />
-    <Route path={"/profile"} exact={true} component={Profile} />
-    <Route path={"/users"} component={UserTable} />
-    <Route path={"/settings"} component={Settings} />
-    <Route path={"/timetable/make"} exact={true} component={MakeTimeTable} />
-    <Route path={"/timetable/:timetableId"} component={EditTimeTable} />
-    <Route path={"/timetable"} exact={true} component={ViewTimeTable} />
-    <Redirect path={"*"} to={"/dashboard"} />
-  </Switch>
-)
+class LoggedInRoutes extends React.Component {
+  public render() {
+    return (
+      <>
+        <Nav />
+        <Switch>
+          <Route path={"/dashboard"} component={Home} />
+          <Route path={"/profile"} exact={true} component={Profile} />
+          <Route path={"/users"} component={UserTable} />
+          <Route path={"/settings"} component={Settings} />
+          <Route
+            path={"/timetable/make"}
+            exact={true}
+            component={MakeTimeTable}
+          />
+          <Route path={"/timetable/:timetableId"} component={EditTimeTable} />
+          <Route path={"/timetable"} exact={true} component={ViewTimeTable} />
+          <Redirect path={"*"} to={"/dashboard"} />
+        </Switch>
+      </>
+    )
+  }
+
+  public changeIsProfile = (value: boolean) => {
+    this.setState({
+      isProfile: value
+    })
+  }
+
+  public changeIsSettings = (value: boolean) => {
+    this.setState({
+      isSettings: value
+    })
+  }
+
+  public changeDefaultKey = (value: string) => {
+    this.setState({
+      defaultKey: value
+    })
+  }
+}
 
 export default AppPresenter
