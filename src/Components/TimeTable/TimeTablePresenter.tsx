@@ -6,14 +6,13 @@ import history from "../../history"
 import { FlexContainer } from "../../styledComponents"
 import { theme } from "../../theme"
 import { GetCurrentTimeTable } from "../../types/api"
+import KoreanDays from "../../utils/KoreanDays"
 import Loading from "../Loading"
 
 interface IProps {
   data: GetCurrentTimeTable | undefined
   loading: boolean
 }
-
-const koreanDay = ["월", "화", "수", "목", "금", "토", "일"]
 
 const TimeTablePresenter: React.SFC<IProps> = ({ data, loading }) =>
   loading ? (
@@ -97,7 +96,7 @@ const makeHeaderRow = (data: GetCurrentTimeTable | null) => {
             {day!.dayNumber}
           </Typography.Title>
           <Typography.Text>
-            {koreanDay[sortedTimeTable.indexOf(day)]}
+            {KoreanDays[sortedTimeTable.indexOf(day)]}
           </Typography.Text>
         </TableHeaderCell>
       ))
@@ -243,38 +242,6 @@ const TableCell = styled.div`
   flex: 1 1 0;
   height: 100%;
   border: 1px solid black;
-`
-
-const Slot = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 1px;
-  height: 25%;
-  width: 100%;
-  border: 1px solid black;
-`
-
-const SlotHeader = styled.div`
-  display: flex;
-  width: 100%;
-  height: 50%;
-  border-bottom: 1px solid black;
-`
-
-const SlotUserInfo = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 50%;
-  height: 100%;
-`
-
-const SlotBody = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 50%;
 `
 
 export default TimeTablePresenter
