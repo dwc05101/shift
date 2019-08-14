@@ -2,7 +2,10 @@ import { message } from "antd"
 import moment from "moment"
 import React, { ComponentProps } from "react"
 import { Mutation } from "react-apollo"
-import { CREATE_LINK } from "../../Components/TimeTable/TimeTableQueries"
+import {
+  CREATE_LINK,
+  GET_TIMETABLE
+} from "../../Components/TimeTable/TimeTableQueries"
 import history from "../../history"
 import {
   CreateLink,
@@ -144,6 +147,7 @@ class MakeTimeTableContainer extends React.Component<
                   message.error("서버 내부 오류: 링크 발급 실패")
                 }
               }}
+              refetchQueries={[{ query: GET_TIMETABLE }]}
             >
               {linkMutation => {
                 this.linkMutationFn = linkMutation
