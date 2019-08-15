@@ -19,11 +19,11 @@ interface IMatchParams {
 }
 
 interface IState {
+  dayNumbers: number[]
   organizationId: number
   timetableId: number
   slots: SlotInfo[]
-  selectedDays: boolean[]
-  fullTimeDays: boolean[]
+  slotTabArray: SlotInfo[][]
   personalCode: string
 }
 
@@ -44,10 +44,10 @@ class MakeSlotContainer extends React.Component<
     super(props)
 
     this.state = {
-      fullTimeDays: [false, false, false, false, false, false, false],
+      dayNumbers: [],
       organizationId: parseInt(this.props.match.params.organizationId, 10),
       personalCode: "",
-      selectedDays: [false, false, false, false, false, false, false],
+      slotTabArray: [[], [], [], [], [], [], []],
       slots: [],
       timetableId: parseInt(this.props.match.params.timetableId, 10)
     }
@@ -57,10 +57,10 @@ class MakeSlotContainer extends React.Component<
     const {
       organizationId,
       timetableId,
-      slots,
+      slotTabArray,
       personalCode,
-      selectedDays,
-      fullTimeDays
+      dayNumbers,
+      slots
     } = this.state
     return (
       <GetTimeTableQuery
@@ -70,7 +70,7 @@ class MakeSlotContainer extends React.Component<
           timetableId
         }}
         onCompleted={data => {
-          this.setSlots(data)
+          this.setDayNumbers(data)
         }}
       >
         {({ data, loading }) => {
@@ -95,12 +95,13 @@ class MakeSlotContainer extends React.Component<
                 return (
                   <MakeSlotPresenter
                     data={data}
-                    selectedDays={selectedDays}
-                    fullTimeDays={fullTimeDays}
                     loading={loading}
+                    slotTabArray={slotTabArray}
+                    onClickAddButton={this.onClickAddButton}
+                    onClickDeleteButton={this.onClickDeleteButton}
+                    dayNumbers={dayNumbers}
                     onSubmit={this.onSubmit}
                     handleSelect={this.handleSelect}
-                    handleCheckboxChange={this.handleCheckboxChange}
                     handleFulltime={this.handleFulltime}
                     setSlotStartTime={this.setSlotStartTime}
                     setSlotEndTime={this.setSlotEndTime}
@@ -114,67 +115,92 @@ class MakeSlotContainer extends React.Component<
     )
   }
 
-  public setSlots = (data: GetCurrentTimeTable) => {
-    const slots: SlotInfo[] = []
+  public setDayNumbers = (data: GetCurrentTimeTable) => {
+    const { dayNumbers } = this.state
     if (data.GetCurrentTimeTable.ok) {
       data.GetCurrentTimeTable.timetable!.days!.map(day => {
-        const newSlot: SlotInfo = {
-          dayNumber: day!.dayNumber,
-          endTime: "",
-          isFulltime: false,
-          startTime: ""
-        }
-        slots.push(newSlot)
+        dayNumbers.push(day!.dayNumber)
         return null
       })
     } else {
       message.error("시간표가 존재하지 않습니다.")
     }
-    slots.sort((a, b) => a.dayNumber - b.dayNumber)
-    this.setState({ slots })
+    dayNumbers.sort((a, b) => a - b)
+    console.log(dayNumbers)
+    this.setState({ dayNumbers })
   }
 
   public handleSelect = value => {
     this.setState({
       personalCode: value
     })
-    console.log(this.state.personalCode)
   }
 
-  public handleCheckboxChange = e => {
-    const { selectedDays } = this.state
-    const index = parseInt(e.target.id, 10)
+  public onClickAddButton = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    console.log(e.currentTarget.id)
+    const index = parseInt(e.currentTarget.id, 10)
+    const { slotTabArray, dayNumbers } = this.state
+    const newSlot: SlotInfo = {
+      dayNumber: dayNumbers[index],
+      endTime: "",
+      isFulltime: false,
+      startTime: ""
+    }
 
-    selectedDays[index] = e.target.checked
+    slotTabArray[index].push(newSlot)
 
-    this.setState({ selectedDays })
+    this.setState({
+      slotTabArray
+    })
+  }
+
+  public onClickDeleteButton = (
+    e: React.MouseEvent<HTMLElement, MouseEvent>
+  ) => {
+    const { slotTabArray } = this.state
+    const indexArray = e.currentTarget.id.split("/")
+
+    slotTabArray[indexArray[0]].splice(indexArray[1], 1)
+
+    this.setState({
+      slotTabArray
+    })
   }
 
   public handleFulltime = e => {
-    const { fullTimeDays } = this.state
-    const index = parseInt(e.target.id, 10)
-    fullTimeDays[index] = e.target.checked
-    this.setState({ fullTimeDays })
+    const { slotTabArray } = this.state
+    const indexArray = e.target.id.split("/")
+
+    slotTabArray[indexArray[0]][indexArray[1]].isFulltime = e.target.checked
+
+    this.setState({ slotTabArray })
   }
 
-  public setSlotStartTime = (startTime: string, index: number) => {
-    const slots: SlotInfo[] = this.state.slots
-    slots[index].startTime = startTime
+  public setSlotStartTime = (
+    startTime: string,
+    dayIndex: number,
+    slotIndex: number
+  ) => {
+    const { slotTabArray } = this.state
+    slotTabArray[dayIndex][slotIndex].startTime = startTime
 
-    console.log(slots)
-    this.setState({ slots })
+    this.setState({ slotTabArray })
   }
 
-  public setSlotEndTime = (endTime: string, index: number) => {
-    const slots: SlotInfo[] = this.state.slots
-    slots[index].endTime = endTime
+  public setSlotEndTime = (
+    endTime: string,
+    dayIndex: number,
+    slotIndex: number
+  ) => {
+    const { slotTabArray } = this.state
+    slotTabArray[dayIndex][slotIndex].endTime = endTime
 
-    this.setState({ slots })
+    this.setState({ slotTabArray })
   }
 
   public onSubmit = async e => {
     e.preventDefault()
-    const { slots, fullTimeDays, personalCode } = this.state
+    const { personalCode, slotTabArray } = this.state
 
     if (personalCode === "") {
       message.error("개인번호를 선택해주세요.")
@@ -183,14 +209,8 @@ class MakeSlotContainer extends React.Component<
 
     const submitSlots: SlotInfo[] = []
 
-    for (const checked of fullTimeDays) {
-      if (checked) {
-        slots[fullTimeDays.indexOf(checked)].isFulltime = true
-      }
-    }
-
-    for (const slot of slots) {
-      if (slot.startTime !== "" || slot.isFulltime) {
+    for (const slots of slotTabArray) {
+      for (const slot of slots) {
         submitSlots.push(slot)
       }
     }
@@ -198,6 +218,7 @@ class MakeSlotContainer extends React.Component<
     await this.setState({
       slots: submitSlots
     })
+
     this.mutationFn()
   }
 }
