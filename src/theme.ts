@@ -6,7 +6,10 @@ export const theme: ShiftTheme = {
     dark_grey: "#A9A9A9",
     grey: "#E8E8E8",
     purple: "#BE74D8",
+    white: "#FFFFFF",
     red: "#DD3103",
-    white: "#FFFFFF"
+    b_red: "#ff4d4f",
+    bb_red: "#ffa39e",
+    bbb_red: "#fff1f0"
   }
 }

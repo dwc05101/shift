@@ -4,6 +4,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard"
 import styled from "styled-components"
 import history from "../../history"
 import { FlexContainer } from "../../styledComponents"
+import { theme } from "../../theme"
 import { GetCurrentTimeTable } from "../../types/api"
 import KoreanDays from "../../utils/KoreanDays"
 import Loading from "../Loading"
@@ -109,7 +110,6 @@ const makeTableCell = (data: GetCurrentTimeTable | null, dayNumber: number) => {
         }
       )
       const [startTime, endTime] = getTime(data)
-      console.log(startTime, endTime)
       const indexArray = Array.from(Array(endTime - startTime + 1).keys())
       const possibleTime = indexArray.map(index => startTime + index)
       const dayElement = sortedTimeTable.filter(
@@ -119,23 +119,27 @@ const makeTableCell = (data: GetCurrentTimeTable | null, dayNumber: number) => {
         const rowElement = possibleTime.map(hourTime => {
           return dayElement[0]!.slots!.map(slot => {
             if (
-              parseInt(slot!.startTime, 10) / 100 < hourTime + 1 ||
+              (parseInt(slot!.startTime, 10) / 100 <= hourTime &&
+                hourTime <= parseInt(slot!.endTime, 10) / 100) ||
               slot!.isFulltime
             ) {
               return slot
-            } else {
-              return []
             }
           })
         })
         let cellColor: string = ""
         return rowElement.map(element => {
-          if (element.length >= 3) {
-            cellColor = "white"
-          } else if (element.length > 1) {
-            cellColor = "#ffec3d"
+          const fakeLength: number = element.filter(
+            x => typeof x === "undefined"
+          ).length
+          if (element.length - fakeLength >= 3) {
+            cellColor = theme.colors.white
+          } else if (element.length - fakeLength === 2) {
+            cellColor = theme.colors.bbb_red
+          } else if (element.length - fakeLength === 1) {
+            cellColor = theme.colors.bb_red
           } else {
-            cellColor = "#ff4d4f"
+            cellColor = theme.colors.b_red
           }
           return (
             <TableCell
@@ -143,7 +147,7 @@ const makeTableCell = (data: GetCurrentTimeTable | null, dayNumber: number) => {
               style={{ backgroundColor: cellColor }}
             >
               <Typography.Title level={4} style={{ margin: "auto" }}>
-                {element.length}
+                {element.length - fakeLength}
               </Typography.Title>
             </TableCell>
           )
@@ -159,7 +163,7 @@ const makeHeaderRow = (data: GetCurrentTimeTable | null) => {
       const [startTime, endTime] = getTime(data)
       const indexArray = Array.from(Array(endTime - startTime + 1).keys())
       const possibleTime = indexArray.map(
-        index => String((startTime + index * 100) / 100) + ":00"
+        index => String(startTime + index) + ":00"
       )
 
       return possibleTime.map(time => (
