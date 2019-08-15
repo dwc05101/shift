@@ -1,4 +1,4 @@
-import { Button, Table, Typography } from "antd"
+import { Button, Popconfirm, Table, Typography } from "antd"
 import React from "react"
 import styled from "styled-components"
 import CreateUserModal from "../../Components/CreateUserModal"
@@ -10,10 +10,13 @@ interface IProps {
   createUserModalVisible: boolean
   data: GetUsers | undefined
   selectedRowKeys: string[]
+  showDeleteConfirm: boolean
   onChange: (selectedRowKeys: any) => void
   openCreateUserModal: (
     event: React.MouseEvent<HTMLElement, MouseEvent>
   ) => void
+  onConfirm: (e: any) => void
+  onDelete: (e: any) => void
 }
 
 const UserTablePresenter: React.SFC<IProps> = ({
@@ -22,7 +25,10 @@ const UserTablePresenter: React.SFC<IProps> = ({
   onChange,
   loading,
   openCreateUserModal,
-  createUserModalVisible
+  createUserModalVisible,
+  onConfirm,
+  showDeleteConfirm,
+  onDelete
 }) => {
   const rowSelection = {
     onChange,
@@ -39,13 +45,22 @@ const UserTablePresenter: React.SFC<IProps> = ({
               ) : null}
               <Typography.Title level={1}>구성원 관리</Typography.Title>
               <Operations>
-                <Button
-                  type="danger"
-                  disabled={selectedRowKeys.length === 0}
-                  style={{ marginRight: "20px" }}
+                <Popconfirm
+                  title="정말로 삭제 하시겠습니까?"
+                  onConfirm={onConfirm}
+                  disabled={showDeleteConfirm}
+                  okText="네"
+                  cancelText="아니오"
                 >
-                  삭제
-                </Button>
+                  <Button
+                    type="danger"
+                    disabled={selectedRowKeys.length === 0}
+                    style={{ marginRight: "20px" }}
+                    onClick={onDelete}
+                  >
+                    삭제
+                  </Button>
+                </Popconfirm>
                 <Button type="primary" onClick={openCreateUserModal}>
                   추가
                 </Button>

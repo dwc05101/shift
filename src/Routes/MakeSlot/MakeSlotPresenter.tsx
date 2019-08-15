@@ -4,6 +4,7 @@ import {
   Checkbox,
   Result,
   Select,
+  Tabs,
   TimePicker,
   Typography
 } from "antd"
@@ -14,41 +15,47 @@ import Loading from "../../Components/Loading"
 import logo from "../../images/logo_colored.png"
 import { Container, InnerShadowedBox } from "../../styledComponents"
 import { theme } from "../../theme"
-import { GetCurrentTimeTable } from "../../types/api"
+import { GetCurrentTimeTable, SlotInfo } from "../../types/api"
 import isoToRelative from "../../utils/isoToRelative"
 import KoreanDays from "../../utils/KoreanDays"
 
 interface IProps {
   data: GetCurrentTimeTable | undefined
-  selectedDays: boolean[]
-  fullTimeDays: boolean[]
   loading: boolean
+  slotTabArray: SlotInfo[][]
+  dayNumbers: number[]
   onSubmit: (e: any) => void
   handleSelect: (value: any) => void
-  handleCheckboxChange: (e: any) => void
   handleFulltime: (e: any) => void
-  setSlotStartTime: (endTime: string, index: number) => void
-  setSlotEndTime: (endTime: string, index: number) => void
+  setSlotStartTime: (
+    endTime: string,
+    dayIndex: number,
+    slotIndex: number
+  ) => void
+  setSlotEndTime: (endTime: string, dayIndex: number, slotIndex: number) => void
+  onClickAddButton: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void
+  onClickDeleteButton: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void
 }
 
 const MakeSlotPresenter: React.SFC<IProps> = ({
   data,
-  selectedDays,
-  fullTimeDays,
+  dayNumbers,
   loading,
   onSubmit,
+  slotTabArray,
   handleSelect,
-  handleCheckboxChange,
   handleFulltime,
   setSlotStartTime,
-  setSlotEndTime
+  setSlotEndTime,
+  onClickAddButton,
+  onClickDeleteButton
 }) => {
   if (loading) {
     return <Loading />
   } else {
     try {
       return (
-        <Container>
+        <Container style={{ height: "100vh" }}>
           <Content>
             <InnerShadowedBox style={{ flexDirection: "column" }}>
               <LogoContainer>
@@ -73,19 +80,26 @@ const MakeSlotPresenter: React.SFC<IProps> = ({
                   {makeSelectOptions(data!)}
                 </Select>
               </SelectContainer>
-              <CheckboxContainer>
-                {makeCheckbox(data!, selectedDays, handleCheckboxChange)}
-              </CheckboxContainer>
-              <TimePickerContainer>
-                {makeTimePicker(
-                  data!,
-                  selectedDays,
-                  fullTimeDays,
-                  handleFulltime,
-                  setSlotStartTime,
-                  setSlotEndTime
-                )}
-              </TimePickerContainer>
+              <TabsContainer>
+                <Tabs
+                  defaultActiveKey={`${dayNumbers[0]}`}
+                  style={{
+                    height: "100%",
+                    overflow: "auto"
+                  }}
+                >
+                  {makeTabPanes(
+                    data!,
+                    dayNumbers,
+                    slotTabArray,
+                    handleFulltime,
+                    setSlotStartTime,
+                    setSlotEndTime,
+                    onClickAddButton,
+                    onClickDeleteButton
+                  )}
+                </Tabs>
+              </TabsContainer>
               <SubmitButtonContainer>
                 <Button type="primary" onClick={onSubmit} loading={loading}>
                   제출
@@ -112,33 +126,6 @@ const MakeSlotPresenter: React.SFC<IProps> = ({
   }
 }
 
-const makeCheckbox = (
-  data: GetCurrentTimeTable,
-  selectedDays: boolean[],
-  handleCheckboxChange: (e: any) => void
-) => {
-  const sortedDays = data.GetCurrentTimeTable.timetable!.days!.sort(
-    (a, b) => a!.dayNumber - b!.dayNumber
-  )
-  return sortedDays.map(day => {
-    const index = data!.GetCurrentTimeTable.timetable!.days!.indexOf(day)
-    return (
-      <Checkbox
-        id={`${index}`}
-        key={day!.dayNumber}
-        checked={selectedDays[index]}
-        onChange={handleCheckboxChange}
-        style={{
-          alignItems: "center",
-          display: "flex",
-          flex: "1 1 0",
-          flexDirection: "column"
-        }}
-      >{`${KoreanDays[index]}`}</Checkbox>
-    )
-  })
-}
-
 const makeSelectOptions = (data: GetCurrentTimeTable) => {
   const users = data.GetCurrentTimeTable.timetable!.organization!.users!
   return users.map(user => (
@@ -148,79 +135,129 @@ const makeSelectOptions = (data: GetCurrentTimeTable) => {
   ))
 }
 
-const makeTimePicker = (
+const makeTabPanes = (
   data: GetCurrentTimeTable,
-  selectedDays: boolean[],
-  fullTimeDays: boolean[],
+  dayNumbers: number[],
+  slotTabArray: SlotInfo[][],
   handleFulltime: (e: any) => void,
-  setSlotStartTime: (endTime: string, index: number) => void,
-  setSlotEndTime: (endTime: string, index: number) => void
+  setSlotStartTime: (
+    endTime: string,
+    dayIndex: number,
+    slotIndex: number
+  ) => void,
+  setSlotEndTime: (
+    endTime: string,
+    dayIndex: number,
+    slotIndex: number
+  ) => void,
+  onClickAddButton: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void,
+  onClickDeleteButton: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void
 ) => {
   const sortedDays = data.GetCurrentTimeTable.timetable!.days!.sort(
     (a, b) => a!.dayNumber - b!.dayNumber
   )
-  return selectedDays.map((isChecked, index) => {
-    if (isChecked) {
-      return (
-        <Card
-          key={sortedDays[index]!.dayNumber}
-          title={`${sortedDays[index]!.dayNumber}일 ${KoreanDays[index]}요일`}
-          style={{ width: "100%" }}
+  return dayNumbers.map((dayNumber, index) => (
+    <Tabs.TabPane
+      tab={KoreanDays[index]}
+      key={`${dayNumber}`}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        overflow: "auto",
+        padding: "0 10px"
+      }}
+    >
+      <TabPaneHeader>
+        <Typography.Title level={4}>
+          {`${dayNumber}일 ${KoreanDays[index]}요일`}
+        </Typography.Title>
+        <Button
+          id={`${index}`}
+          type="primary"
+          onClick={onClickAddButton}
+          style={{ marginLeft: "auto", marginBottom: "auto" }}
         >
-          <Wrapper>
-            <Typography.Text strong={true}>시간대 선택</Typography.Text>
-            <Checkbox
-              id={`${index}`}
-              checked={fullTimeDays[index]}
-              onChange={handleFulltime}
+          추가
+        </Button>
+      </TabPaneHeader>
+      <TabPaneBody>
+        {slotTabArray[index].map((slot, idx) => {
+          return (
+            <Card
+              key={`${slot.dayNumber}/${idx}`}
+              title={`${slot.dayNumber}일 ${KoreanDays[index]}요일`}
+              style={{ width: "100%" }}
+              extra={
+                <Button
+                  id={`${index}/${idx}`}
+                  type="danger"
+                  onClick={onClickDeleteButton}
+                >
+                  삭제
+                </Button>
+              }
             >
-              풀타임
-            </Checkbox>
-            <TimePickerCell>
-              <TimePicker
-                disabled={fullTimeDays[index]}
-                placeholder={"선택해주세요."}
-                minuteStep={15}
-                defaultOpenValue={moment(sortedDays[index]!.startTime, "HHmm")}
-                onChange={(time, timestring) => {
-                  const startTime = time.format("HHmm")
-                  setSlotStartTime(startTime, index)
-                }}
-                format="HH:mm"
-              />
-              <Typography.Text
-                disabled={fullTimeDays[index]}
-                style={{ marginLeft: "10px" }}
-              >
-                부터
-              </Typography.Text>
-            </TimePickerCell>
-            <TimePickerCell>
-              <TimePicker
-                disabled={fullTimeDays[index]}
-                placeholder={"선택해주세요."}
-                minuteStep={15}
-                defaultOpenValue={moment(sortedDays[index]!.endTime, "HHmm")}
-                onChange={(time, timestring) => {
-                  const endTime = time.format("HHmm")
-                  setSlotEndTime(endTime, index)
-                }}
-                format="HH:mm"
-              />
-              <Typography.Text
-                disabled={fullTimeDays[index]}
-                style={{ marginLeft: "10px" }}
-              >
-                까지
-              </Typography.Text>
-            </TimePickerCell>
-          </Wrapper>
-        </Card>
-      )
-    } else {
-      return null
-    }
-  })
+              <Wrapper>
+                <Typography.Text strong={true}>시간대 선택</Typography.Text>
+                <Checkbox
+                  id={`${index}/${idx}`}
+                  checked={slot.isFulltime}
+                  onChange={handleFulltime}
+                >
+                  풀타임
+                </Checkbox>
+                <TimePickerCell>
+                  <TimePicker
+                    disabled={slot.isFulltime}
+                    placeholder={"선택해주세요."}
+                    minuteStep={15}
+                    defaultOpenValue={moment(
+                      sortedDays[index]!.startTime,
+                      "HHmm"
+                    )}
+                    onChange={(time, timestring) => {
+                      const startTime = time.format("HHmm")
+                      setSlotStartTime(startTime, index, idx)
+                    }}
+                    format="HH:mm"
+                  />
+                  <Typography.Text
+                    disabled={slot.isFulltime}
+                    style={{ marginLeft: "10px" }}
+                  >
+                    부터
+                  </Typography.Text>
+                </TimePickerCell>
+                <TimePickerCell>
+                  <TimePicker
+                    disabled={slot.isFulltime}
+                    placeholder={"선택해주세요."}
+                    minuteStep={15}
+                    defaultOpenValue={moment(
+                      sortedDays[index]!.endTime,
+                      "HHmm"
+                    )}
+                    onChange={(time, timestring) => {
+                      const endTime = time.format("HHmm")
+                      setSlotEndTime(endTime, index, idx)
+                    }}
+                    format="HH:mm"
+                  />
+                  <Typography.Text
+                    disabled={slot.isFulltime}
+                    style={{ marginLeft: "10px" }}
+                  >
+                    까지
+                  </Typography.Text>
+                </TimePickerCell>
+              </Wrapper>
+            </Card>
+          )
+        })}
+      </TabPaneBody>
+    </Tabs.TabPane>
+  ))
 }
 
 const Content = styled.div`
@@ -257,22 +294,23 @@ const SelectContainer = styled.div`
   display: flex;
   align-items: center;
 `
+const TabsContainer = styled.div`
+  width: 100%;
+  height: 68%;
+  padding-bottom: 2%;
+`
 
-const CheckboxContainer = styled.div`
+const TabPaneHeader = styled.div`
   width: 100%;
   height: 10%;
   display: flex;
-  align-items: center;
 `
 
-const TimePickerContainer = styled.div`
+const TabPaneBody = styled.div`
   width: 100%;
-  height: 60%;
+  height: 90%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  overflow: auto;
-  padding-top: 5%;
 `
 
 const Wrapper = styled.div`
