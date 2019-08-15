@@ -156,6 +156,7 @@ const Count = styled.div`
 
 const InfoContainer = styled.div`
   width: 70%;
+  min-width: 880px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -179,6 +180,7 @@ const TableContainer = styled.div`
 
 const UserContainer = styled.div`
   width: 30%;
+  min-width: 400px;
   height: 100%;
 `
 
