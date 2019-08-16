@@ -201,6 +201,51 @@ export interface GetOrganizationProfile {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: GetDays
+// ====================================================
+
+export interface GetDays_GetDays_days_slots_user {
+  __typename: "User";
+  name: string;
+  personalCode: string;
+}
+
+export interface GetDays_GetDays_days_slots {
+  __typename: "Slot";
+  isFulltime: boolean;
+  startTime: string;
+  endTime: string;
+  user: GetDays_GetDays_days_slots_user;
+}
+
+export interface GetDays_GetDays_days {
+  __typename: "Day";
+  id: number;
+  dayNumber: number;
+  startTime: string;
+  endTime: string;
+  isEndTimeNextDay: boolean;
+  timetableId: number | null;
+  slots: (GetDays_GetDays_days_slots | null)[] | null;
+}
+
+export interface GetDays_GetDays {
+  __typename: "GetDaysResponse";
+  days: (GetDays_GetDays_days | null)[] | null;
+}
+
+export interface GetDays {
+  GetDays: GetDays_GetDays;
+}
+
+export interface GetDaysVariables {
+  timetableId: number;
+}
+
+/* tslint:disable */
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: OrganizationSignIn
 // ====================================================
 
