@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.js": "/shift/static/js/main.d6d0d219.chunk.js",
+    "main.js.map": "/shift/static/js/main.d6d0d219.chunk.js.map",
+    "runtime~main.js": "/shift/static/js/runtime~main.42dbfaa6.js",
+    "runtime~main.js.map": "/shift/static/js/runtime~main.42dbfaa6.js.map",
+    "static/css/2.a317ec87.chunk.css": "/shift/static/css/2.a317ec87.chunk.css",
+    "static/js/2.9681833c.chunk.js": "/shift/static/js/2.9681833c.chunk.js",
+    "static/js/2.9681833c.chunk.js.map": "/shift/static/js/2.9681833c.chunk.js.map",
+    "index.html": "/shift/index.html",
+    "precache-manifest.158dc57a614855ea69044b4b9289ca7d.js": "/shift/precache-manifest.158dc57a614855ea69044b4b9289ca7d.js",
+    "service-worker.js": "/shift/service-worker.js",
+    "static/css/2.a317ec87.chunk.css.map": "/shift/static/css/2.a317ec87.chunk.css.map"
+  }
+}
