@@ -2,12 +2,12 @@ import React from "react"
 import { Redirect, Route, Router, Switch } from "react-router-dom"
 
 import history from "../../history"
+import Application from "../../Routes/Application"
 import Calendar from "../../Routes/Calendar"
 import EditTimeTable from "../../Routes/EditTimeTable"
 import Forgot from "../../Routes/Forgot"
 import Home from "../../Routes/Home"
 import Login from "../../Routes/Login"
-import MakeSlot from "../../Routes/MakeSlot"
 import MakeTimeTable from "../../Routes/MakeTimeTable"
 import Profile from "../../Routes/Profile"
 import SignUp from "../../Routes/SignUp"
@@ -32,7 +32,7 @@ const LoggedOutRoutes: React.SFC = () => (
     <Route path={"/forgot"} component={Forgot} />
     <Route
       path={"/application/:organizationId/:timetableId"}
-      component={MakeSlot}
+      component={Application}
     />
     <Redirect path={"*"} to={"/"} />
   </Switch>
