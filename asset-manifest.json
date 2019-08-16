@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.js": "/shift/static/js/main.3dadfe7e.chunk.js",
-    "main.js.map": "/shift/static/js/main.3dadfe7e.chunk.js.map",
+    "main.js": "/shift/static/js/main.a129dfcd.chunk.js",
+    "main.js.map": "/shift/static/js/main.a129dfcd.chunk.js.map",
     "runtime~main.js": "/shift/static/js/runtime~main.42dbfaa6.js",
     "runtime~main.js.map": "/shift/static/js/runtime~main.42dbfaa6.js.map",
     "static/css/2.a317ec87.chunk.css": "/shift/static/css/2.a317ec87.chunk.css",
     "static/js/2.9681833c.chunk.js": "/shift/static/js/2.9681833c.chunk.js",
     "static/js/2.9681833c.chunk.js.map": "/shift/static/js/2.9681833c.chunk.js.map",
     "index.html": "/shift/index.html",
-    "precache-manifest.6f08131c42a99d7781972768adbc3f59.js": "/shift/precache-manifest.6f08131c42a99d7781972768adbc3f59.js",
+    "precache-manifest.24519148cc5a942592ee1b24b2e94bb7.js": "/shift/precache-manifest.24519148cc5a942592ee1b24b2e94bb7.js",
     "service-worker.js": "/shift/service-worker.js",
     "static/css/2.a317ec87.chunk.css.map": "/shift/static/css/2.a317ec87.chunk.css.map"
   }
