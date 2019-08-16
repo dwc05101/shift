@@ -117,29 +117,23 @@ const makeTableCell = (data: GetCurrentTimeTable | null, dayNumber: number) => {
       )
       if (dayElement[0]!.slots) {
         const rowElement = possibleTime.map(hourTime => {
-          return dayElement[0]!.slots!.map(slot => {
-            if (
+          return dayElement[0]!.slots!.filter(
+            slot =>
               (parseInt(slot!.startTime, 10) / 100 <= hourTime &&
                 hourTime <= parseInt(slot!.endTime, 10) / 100) ||
               slot!.isFulltime
-            ) {
-              return slot
-            }
-          })
+          )
         })
         let cellColor: string = ""
         return rowElement.map(element => {
-          const fakeLength: number = element.filter(
-            x => typeof x === "undefined"
-          ).length
-          if (element.length - fakeLength >= 3) {
+          if (element.length >= 3) {
             cellColor = theme.colors.white
-          } else if (element.length - fakeLength === 2) {
-            cellColor = theme.colors.bbb_red
-          } else if (element.length - fakeLength === 1) {
-            cellColor = theme.colors.bb_red
+          } else if (element.length === 2) {
+            cellColor = theme.colors.bbbred
+          } else if (element.length === 1) {
+            cellColor = theme.colors.bbred
           } else {
-            cellColor = theme.colors.b_red
+            cellColor = theme.colors.bred
           }
           return (
             <TableCell
@@ -147,7 +141,7 @@ const makeTableCell = (data: GetCurrentTimeTable | null, dayNumber: number) => {
               style={{ backgroundColor: cellColor }}
             >
               <Typography.Title level={4} style={{ margin: "auto" }}>
-                {element.length - fakeLength}
+                {element.length}
               </Typography.Title>
             </TableCell>
           )
@@ -191,7 +185,6 @@ const TableHeader = styled.div`
   display: flex;
   width: 100%;
   height: 10%;
-  /* border: 1px solid black; */
 `
 
 const TableBody = styled.div`
@@ -199,14 +192,12 @@ const TableBody = styled.div`
   height: 90%;
   display: flex;
   flex-direction: column;
-  /* border: 1px solid black; */
 `
 
 const TableRow = styled.div`
   display: flex;
   width: 100%;
   flex: 1 1 0;
-  /* border: 1px solid black; */
 `
 
 const IndexBlock = styled.div`
