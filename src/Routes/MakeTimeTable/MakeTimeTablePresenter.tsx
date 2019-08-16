@@ -114,6 +114,7 @@ const MakeTimeTablePresenter: React.SFC<IProps> = ({
                   placeholder="시간 선택"
                   format="HH:mm"
                   style={{ marginTop: "5px" }}
+                  minuteStep={15}
                   defaultOpenValue={moment("10:00", "HH:mm")}
                   onChange={time => {
                     changeSameTableDayStartTime(time.format("HHmm"))
@@ -137,6 +138,7 @@ const MakeTimeTablePresenter: React.SFC<IProps> = ({
                   placeholder="시간 선택"
                   format="HH:mm"
                   style={{ marginTop: "5px" }}
+                  minuteStep={15}
                   onChange={time => {
                     changeSameTableDayEndTime(time.format("HHmm"))
                   }}
@@ -172,6 +174,7 @@ const makeSeparateDay = (
             placeholder="시간 선택"
             format="HH:mm"
             style={{ marginTop: "5px" }}
+            minuteStep={15}
             defaultOpenValue={moment("10:00", "HH:mm")}
             onChange={time => {
               changeStartTime(count, time.format("HHmm"))
@@ -195,6 +198,7 @@ const makeSeparateDay = (
             placeholder="시간 선택"
             format="HH:mm"
             style={{ marginTop: "5px" }}
+            minuteStep={15}
             onChange={time => {
               changeEndTime(count, time.format("HHmm"))
             }}
