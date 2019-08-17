@@ -10,17 +10,8 @@ import {
 } from "../../types/api"
 import EditTimeTablePresenter from "./EditTimeTablePresenter"
 
-interface IMatchParams {
-  timetableId: string
-}
-
-interface IState {
-  data: GetCurrentTimeTable | null
-  organizationId: string
-  yearMonthWeek: string | null | undefined
-}
-
 interface IProps {
+  match: { params: { timetableId } }
   yearMonthWeek: string
   organizationId: number | null
 }
@@ -40,24 +31,19 @@ const isoLastWeek = `${
         .getFullYear()
 }${moment().isoWeek() - 1 === 0 ? 52 : moment().isoWeek() - 1}`
 
-class MakeTimeTableContainer extends React.Component<
-  RouteComponentProps<IMatchParams>,
-  IState,
-  IProps
-> {
+class EditTimeTableContainer extends React.Component<IProps> {
   public state = {
     data: null,
-    organizationId: this.props.match.params.timetableId,
+    timetableId: parseInt(this.props.match.params.timetableId, 10),
     yearMonthWeek: isoLastWeek
   }
 
   public render() {
-    const { organizationId, yearMonthWeek } = this.state
-    const tableId: number = parseInt(organizationId, 10)
+    const { timetableId, yearMonthWeek } = this.state
     return (
       <GetTimetableQuery
         query={GET_TIMETABLE}
-        variables={{ timetableId: tableId, yearMonthWeek }}
+        variables={{ timetableId, yearMonthWeek }}
       >
         {({ loading, data }) => {
           return <EditTimeTablePresenter data={data} loading={loading} />
@@ -67,4 +53,4 @@ class MakeTimeTableContainer extends React.Component<
   }
 }
 
-export default MakeTimeTableContainer
+export default EditTimeTableContainer

@@ -7,7 +7,9 @@ export const theme: ShiftTheme = {
     blue: "#4CACF3",
     bred: "#ff4d4f",
     dark_grey: "#A9A9A9",
+    dark_pale_blue: "#5561a1",
     grey: "#E8E8E8",
+    pale_blue: "#7986cb",
     purple: "#BE74D8",
     red: "#DD3103",
     white: "#FFFFFF"

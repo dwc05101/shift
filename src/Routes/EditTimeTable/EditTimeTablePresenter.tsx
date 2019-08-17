@@ -1,7 +1,9 @@
-import { Tabs } from "antd"
+import { Tabs, Typography } from "antd"
 import React from "react"
 import styled from "styled-components"
+import ApplyStatus from "../../Components/ApplyStatus"
 import Loading from "../../Components/Loading"
+import Statistics from "../../Components/Statistics"
 import { Container, Content, InnerShadowedBox } from "../../styledComponents"
 import { GetCurrentTimeTable } from "../../types/api"
 import KoreanDays from "../../utils/KoreanDays"
@@ -13,36 +15,37 @@ interface IProps {
 
 const { TabPane } = Tabs
 
-const MakeTimeTablePresenter: React.SFC<IProps> = ({ data, loading }) =>
-  loading ? (
+const EditTimeTablePresenter: React.SFC<IProps> = ({ data, loading }) => {
+  return loading ? (
     <Loading />
   ) : (
     <Container>
       <Content>
         <InnerShadowedBox>
-          <Wrapper>
-            <Header>
-              <Tabs
-                onChange={e => console.log(e)}
-                type="line"
-                tabBarStyle={{
-                  display: "flex",
-                  margin: "0"
-                }}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "100%"
-                }}
-              >
-                {makeTabs(data!)}
-              </Tabs>
-            </Header>
-          </Wrapper>
+          <RightWrapper>
+            <Tabs
+              onChange={e => console.log(e)}
+              type="line"
+              tabBarStyle={{
+                margin: "0",
+                height: "10%",
+                border: "0"
+              }}
+              style={{ height: "100%", border: "1px solid blue" }}
+            >
+              {makeTabs(data!)}
+            </Tabs>
+          </RightWrapper>
+          <LeftWrapper>
+            <StatisticsView>
+              <Statistics />
+            </StatisticsView>
+          </LeftWrapper>
         </InnerShadowedBox>
       </Content>
     </Container>
   )
+}
 
 const makeTabs = (data: GetCurrentTimeTable | null) => {
   if (data) {
@@ -57,39 +60,57 @@ const makeTabs = (data: GetCurrentTimeTable | null) => {
           <TabPane
             tab={
               <Tab>
-                {day!.dayNumber} ({KoreanDays[sortedTimeTable.indexOf(day)]})
+                <Typography.Text strong={true}>
+                  {day!.dayNumber} ({KoreanDays[sortedTimeTable.indexOf(day)]})
+                </Typography.Text>
               </Tab>
             }
-            style={{ backgroundColor: "red" }}
+            style={{
+              width: "100%",
+              height: "calc(90%)",
+              border: "1px solid black"
+            }}
             key={String(day!.dayNumber)}
-          />
+          >
+            <DayView>
+              <ApplyStatus day={day!} dayIndex={sortedTimeTable.indexOf(day)} />
+            </DayView>
+          </TabPane>
         )
       })
     }
   }
 }
 
-const Wrapper = styled.div`
-  width: 100%;
+const RightWrapper = styled.div`
+  width: 60%;
+  min-width: 740px;
   height: 100%;
   display: flex;
   flex-direction: column;
 `
 
-const Header = styled.div`
+const LeftWrapper = styled.div`
+  width: 40%;
+  height: 100%;
   display: flex;
-  align-items: flex-end;
-  width: 100%;
-  height: 10%;
+  flex-direction: column;
+  padding-left: 20px;
 `
-
-// const Body = styled.div`
-//   width: 100%;
-//   height: 90%;
-// `
 
 const Tab = styled.div`
-  flex: 1 1 0;
+  height: 100%;
 `
 
-export default MakeTimeTablePresenter
+const DayView = styled.div`
+  height: 100%;
+  flex: 3;
+`
+
+const StatisticsView = styled.div`
+  flex: 1;
+  background-color: #f1f3f4;
+  padding: 2%;
+`
+
+export default EditTimeTablePresenter
