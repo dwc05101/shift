@@ -437,6 +437,7 @@ export interface GetTimeTables {
 //==============================================================
 
 export interface SlotInfo {
+  isSelected: boolean;
   isFulltime: boolean;
   dayNumber: number;
   startTime: string;

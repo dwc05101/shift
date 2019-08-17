@@ -50,7 +50,7 @@ class SignUpContainer extends React.Component<
           } = data
           if (ok) {
             localStorage.setItem("jwt", token!)
-            window.location.pathname = "/"
+            window.location.reload()
           } else {
             message.error(error)
           }

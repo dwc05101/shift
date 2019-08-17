@@ -968,6 +968,22 @@
             "deprecationReason": null
           },
           {
+            "name": "isSelected",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "isFulltime",
             "description": "",
             "args": [],
@@ -3027,6 +3043,20 @@
         "description": "",
         "fields": null,
         "inputFields": [
+          {
+            "name": "isSelected",
+            "description": "",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
           {
             "name": "isFulltime",
             "description": "",

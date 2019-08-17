@@ -2,6 +2,7 @@ import { message } from "antd"
 import React from "react"
 import { Mutation } from "react-apollo"
 import { RouteComponentProps } from "react-router"
+import history from "../../history"
 import {
   OrganizationSignIn,
   OrganizationSignInVariables
@@ -41,7 +42,7 @@ class LoginContainer extends React.Component<RouteComponentProps<any>, IState> {
           } = data
           if (ok) {
             localStorage.setItem("jwt", token!)
-            window.location.pathname = "/"
+            window.location.reload()
           } else {
             message.error(error)
           }
@@ -83,7 +84,7 @@ class LoginContainer extends React.Component<RouteComponentProps<any>, IState> {
   public onClickSignUp: React.MouseEventHandler<HTMLElement> = (
     event: React.MouseEvent<HTMLElement, MouseEvent>
   ) => {
-    window.location.pathname = "/sign-up"
+    history.push("sign-up")
   }
 }
 
