@@ -6,7 +6,6 @@ import {
   CREATE_LINK,
   GET_TIMETABLE
 } from "../../Components/TimeTable/TimeTableQueries"
-import history from "../../history"
 import {
   CreateLink,
   CreateLinkVariables,
@@ -141,7 +140,7 @@ class MakeTimeTableContainer extends React.Component<
                     "시간표가 생성되었습니다! 잠시후 대시보드로 이동합니다..."
                   )
                   setTimeout(() => {
-                    history.push("/dashboard")
+                    window.location.pathname = "/shift/dashboard"
                   }, 2000)
                 } else {
                   message.error("서버 내부 오류: 링크 발급 실패")

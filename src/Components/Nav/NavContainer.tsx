@@ -55,7 +55,7 @@ class Nav extends React.Component<{}, IState> {
   }
 
   public goToProfile = e => {
-    window.location.pathname = "/profile"
+    window.location.pathname = "/shift/profile"
     this.setState({
       current: "profile",
       isProfile: true

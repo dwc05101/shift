@@ -2,7 +2,6 @@ import { message } from "antd"
 import React from "react"
 import { Mutation } from "react-apollo"
 import { RouteComponentProps } from "react-router"
-import history from "../../history"
 import {
   CreateOrganization,
   CreateOrganizationVariables
@@ -51,7 +50,7 @@ class SignUpContainer extends React.Component<
           } = data
           if (ok) {
             localStorage.setItem("jwt", token!)
-            history.push("/dashboard")
+            window.location.reload()
           } else {
             message.error(error)
           }

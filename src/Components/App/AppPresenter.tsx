@@ -3,7 +3,6 @@ import { Redirect, Route, Router, Switch } from "react-router-dom"
 
 import history from "../../history"
 import Application from "../../Routes/Application"
-import Calendar from "../../Routes/Calendar"
 import EditTimeTable from "../../Routes/EditTimeTable"
 import Forgot from "../../Routes/Forgot"
 import Home from "../../Routes/Home"
@@ -54,7 +53,6 @@ class LoggedInRoutes extends React.Component {
           />
           <Route path={"/timetable/:timetableId"} component={EditTimeTable} />
           <Route path={"/timetable"} exact={true} component={ViewTimeTable} />
-          <Route path={"/calendar"} component={Calendar} />
           <Redirect path={"*"} to={"/dashboard"} />
         </Switch>
       </>
