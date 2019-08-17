@@ -2,7 +2,7 @@ import moment from "moment"
 import React from "react"
 import { Query } from "react-apollo"
 // import { ComponentProps } from "react"
-import { RouteComponentProps } from "react-router-dom"
+// import { RouteComponentProps } from "react-router-dom"
 import { GET_TIMETABLE } from "../../Components/TimeTable/TimeTableQueries"
 import {
   GetCurrentTimeTable,

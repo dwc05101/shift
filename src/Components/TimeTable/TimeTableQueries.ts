@@ -31,6 +31,7 @@ export const GET_TIMETABLE = gql`
           startTime
           endTime
           dayNumber
+          isEndTimeNextDay
           slots {
             id
             isFulltime

@@ -1,5 +1,5 @@
 import { Typography } from "antd"
-import React, { useState, useEffect } from "react"
+import React from "react"
 import styled from "styled-components"
 import { theme } from "../../theme"
 
@@ -10,11 +10,18 @@ interface IProps {
   storeEndTime: number
   startTime: number
   endTime: number
+  updateSelectedSlots: (result: string[]) => void
 }
 
 interface ITimeProps {
   startTime: number
   endTime: number
+}
+
+interface IUpdateProps {
+  storeStartTime: number
+  storeEndTime: number
+  selectedSlots: {}
 }
 
 export const StoreTime: React.SFC<ITimeProps> = ({ startTime, endTime }) => {
@@ -35,27 +42,119 @@ export const TimeBar: React.SFC<IProps> = ({
   storeStartTime,
   storeEndTime,
   startTime,
-  endTime
+  endTime,
+  updateSelectedSlots
 }) => {
   const totalHour = storeEndTime - storeStartTime
   const firstIndex = startTime - storeStartTime || 0
   const endIndex = endTime - storeStartTime || totalHour
-  const boxResult = colorBar(userCode, totalHour, firstIndex, endIndex)
+  const boxResult = colorBar(
+    userCode,
+    totalHour,
+    firstIndex,
+    endIndex,
+    updateSelectedSlots
+  )
   return <View>{boxResult}</View>
 }
 
-// class StatusBar extends Component {
-//   constructor(props) {
-//     super(props)
-//   }
+export const StatusBar: React.SFC<IUpdateProps> = ({
+  storeStartTime,
+  storeEndTime,
+  selectedSlots
+}) => {
+  const totalArray: JSX.Element[] = []
+  const statusArray: any[] = []
+  let finalStatusArray: any[] = []
+  const userArray: string[] = Object.keys(selectedSlots)
+  const timeArray: string[] = Object.values(selectedSlots)
+  const timeCount: {} = {}
+  for (let i = storeStartTime; i < storeEndTime; i++) {
+    timeCount[i] = 0
+  }
+  if (timeArray) {
+    timeArray.map(time => {
+      const times: string[] = String(time).split(",")
+      times.map(eachTime => {
+        timeCount[parseInt(eachTime, 10) + storeStartTime] += 1
+        return null
+      })
+      return null
+    })
+  }
+  let bgColor: string = ""
+  for (let i = storeStartTime; i < storeEndTime; i++) {
+    if (timeCount[i] >= 3) {
+      bgColor = theme.colors.white
+    } else if (timeCount[i] === 2) {
+      bgColor = theme.colors.bbbred
+    } else if (timeCount[i] === 1) {
+      bgColor = theme.colors.bbred
+    } else {
+      bgColor = theme.colors.bred
+    }
+    totalArray.push(
+      <TimeBox
+        key={-i}
+        style={{
+          backgroundColor: `${bgColor}`,
+          border: "1px solid black",
+          height: "10px"
+        }}
+      />
+    )
+    const subArray: any[] = []
+    const index: number = i
+    for (let j = 0; j < userArray.length; j++) {
+      let userTime: string[] = String(timeArray[j]).split(",")
+      userTime = userTime.map(time =>
+        String(parseInt(time, 10) + storeStartTime)
+      )
+      if (userTime.includes(String(index))) {
+        subArray.push(
+          <TimeBox
+            key={`${j}-${index}`}
+            style={{
+              backgroundColor: `${theme.colors.white}`,
+              border: "1px solid black",
+              fontSize: "10px",
+              height: "20px"
+            }}
+          >
+            {userArray[j]}
+          </TimeBox>
+        )
+      } else {
+        subArray.push(
+          <TimeBox
+            key={`${j}-${index}`}
+            style={{
+              backgroundColor: `${theme.colors.white}`,
+              height: "20px"
+            }}
+          />
+        )
+      }
+    }
+    statusArray.push(subArray)
+    console.log(statusArray)
+    finalStatusArray = statusArray.map(status => (
+      <StatusView key={`status-${index}`}>{status}</StatusView>
+    ))
+  }
+  return (
+    <StatusView>
+      <TimeView>{totalArray}</TimeView>
+      <TimeView>{finalStatusArray}</TimeView>
+    </StatusView>
+  )
+}
 
-//   render() {
-//     return <div>hi</div>
-//   }
-// }
-
-const selectUserAtTime = (event: any) => {
-  let info = JSON.parse(event.target.id)
+const selectUserAtTime = (
+  event: any,
+  updateSelectedSlots: (result: string[]) => void
+) => {
+  const info = JSON.parse(event.target.id)
   const boxId: any = String(`${info.code}-${info.index}`)
   const prevLength: number = selectedResult.length
   selectedResult = selectedResult.filter(box => box !== boxId)
@@ -68,7 +167,7 @@ const selectUserAtTime = (event: any) => {
   } else {
     event.target.style.backgroundColor = theme.colors.pale_blue
   }
-  console.log(selectedResult)
+  updateSelectedSlots(selectedResult)
 }
 
 let selectedResult: string[] = []
@@ -77,7 +176,8 @@ const colorBar = (
   userCode: any,
   totalHour: any,
   firstIndex: any,
-  endIndex: any
+  endIndex: any,
+  updateSelectedSlots: (result: string[]) => void
 ) => {
   const boxResult: JSX.Element[] = []
   for (let i = 0; i < totalHour; i++) {
@@ -87,7 +187,7 @@ const colorBar = (
           key={i}
           id={`{"code":"${userCode}","index":"${i}"}`}
           onClick={event => {
-            selectUserAtTime(event)
+            selectUserAtTime(event, updateSelectedSlots)
           }}
         />
       )
@@ -99,6 +199,11 @@ const colorBar = (
   }
   return boxResult
 }
+
+const StatusView = styled.div`
+  flex-direction: column;
+  display: flex;
+`
 
 const TimeView = styled.div`
   flex-direction: row;
@@ -139,5 +244,3 @@ const Item = styled.div`
     cursor: pointer;
   }
 `
-
-// export default StatusBar

@@ -27,9 +27,9 @@ const EditTimeTablePresenter: React.SFC<IProps> = ({ data, loading }) => {
               onChange={e => console.log(e)}
               type="line"
               tabBarStyle={{
-                margin: "0",
+                border: "0",
                 height: "10%",
-                border: "0"
+                margin: "0"
               }}
               style={{ height: "100%", border: "1px solid blue" }}
             >
@@ -66,9 +66,9 @@ const makeTabs = (data: GetCurrentTimeTable | null) => {
               </Tab>
             }
             style={{
-              width: "100%",
+              border: "1px solid black",
               height: "calc(90%)",
-              border: "1px solid black"
+              width: "100%"
             }}
             key={String(day!.dayNumber)}
           >
