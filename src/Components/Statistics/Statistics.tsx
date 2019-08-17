@@ -1,6 +1,10 @@
 import React from "react"
 import styled from "styled-components"
+import { GetCurrentTimeTable_GetCurrentTimeTable_timetable_days } from "../../types/api"
 
+interface Props {
+  days: (GetCurrentTimeTable_GetCurrentTimeTable_timetable_days | null)[] | null
+}
 interface IProps {
   rank: number
   name: string
@@ -20,7 +24,8 @@ const AssignInfo: React.SFC<IProps> = ({ rank, name, time }) => {
     </Row>
   )
 }
-const StatisticsPresenter: React.SFC = () => {
+const StatisticsPresenter: React.SFC<Props> = ({ days }) => {
+  makeStatistic(days)
   return (
     <View>
       <Title>8월 3주차 통계</Title>
@@ -38,6 +43,66 @@ const StatisticsPresenter: React.SFC = () => {
     </View>
   )
 }
+
+const makeStatistic = days => {
+  const daysSlots = days.map(day => extractSelectedSlots(day))
+  const selectedSlots = daysSlots.reduce((acc, curr) => acc.concat(curr))
+  let result = {}
+  for (var i = 0; i < selectedSlots.length; i++) {
+    const slot = selectedSlots[i]
+    const userId = slot.userId
+    const time = countTime(
+      slot.startTime,
+      slot.endTime,
+      slot.isStartTimeNextDay,
+      slot.isEndTimeNextDay
+    )
+    if (result.hasOwnProperty(userId)) {
+      result[userId].time += time
+    } else {
+      result[userId] = {
+        userId: slot.userId,
+        user: slot.user,
+        time: time
+      }
+    }
+  }
+  console.log("makeStatistic", result)
+  return result
+}
+const countTime = (
+  startTime,
+  endTime,
+  isStartTimeNextDay,
+  isEndTimeNextDay
+) => {
+  const start = time2Int(startTime)
+  const end = time2Int(endTime)
+  if (isStartTimeNextDay) {
+    if (isEndTimeNextDay) {
+      return end - start
+    } else {
+      return 0
+    }
+  } else {
+    if (isEndTimeNextDay) {
+      return 24 + end - start
+    } else {
+      return end - start
+    }
+  }
+}
+
+const extractSelectedSlots = day => {
+  const selectedSlots = day.slots
+  selectedSlots.filter(slot => slot.isSelected)
+  return selectedSlots
+}
+const time2Int = (time: string) => {
+  const t = time.substring(0, 2)
+  return parseInt(t, 10)
+}
+
 const View = styled.div`
   flex: 1;
 `

@@ -10,11 +10,16 @@ export const GET_DAYS = gql`
         endTime
         isEndTimeNextDay
         timetableId
-
         slots {
+          id
+          isSelected
           isFulltime
           startTime
           endTime
+          isStartTimeNextDay
+          isEndTimeNextDay
+          userId
+          dayId
           user {
             name
             personalCode

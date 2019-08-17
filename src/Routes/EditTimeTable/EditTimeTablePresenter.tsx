@@ -38,7 +38,7 @@ const EditTimeTablePresenter: React.SFC<IProps> = ({ data, loading }) => {
           </RightWrapper>
           <LeftWrapper>
             <StatisticsView>
-              <Statistics />
+              <Statistics days={data!.GetCurrentTimeTable.timetable!.days} />
             </StatisticsView>
           </LeftWrapper>
         </InnerShadowedBox>

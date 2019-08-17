@@ -28,14 +28,20 @@ export const GET_TIMETABLE = gql`
           url
         }
         days {
+          id
           startTime
           endTime
           dayNumber
+          isEndTimeNextDay
           slots {
             id
+            userId
+            isSelected
             isFulltime
             startTime
             endTime
+            isStartTimeNextDay
+            isEndTimeNextDay
             user {
               name
               personalCode
