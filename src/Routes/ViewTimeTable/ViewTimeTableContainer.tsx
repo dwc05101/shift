@@ -1,6 +1,5 @@
 import React from "react"
 import { Query } from "react-apollo"
-import history from "../../history"
 import { GetTimeTables } from "../../types/api"
 import ViewTimeTablePresenter from "./ViewTimeTablePresenter"
 import { GET_ALL_TIMETABLES } from "./ViewTimeTableQueries"

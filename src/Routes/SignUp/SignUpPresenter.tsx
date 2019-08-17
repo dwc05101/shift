@@ -29,7 +29,13 @@ const SignUpPresenter: React.SFC<IProps> = ({
   onInputChange,
   onSubmit
 }) => (
-  <CenterContainerWithBackground style={{ backgroundColor: theme.colors.grey }}>
+  <CenterContainerWithBackground
+    style={{
+      alignItems: "center",
+      backgroundColor: theme.colors.grey,
+      justifyContent: "center"
+    }}
+  >
     <Helmet>
       <title>Shift | 회원가입</title>
     </Helmet>
