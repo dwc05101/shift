@@ -1,15 +1,16 @@
 {
   "files": {
-    "main.js": "/shift/static/js/main.869cc26e.chunk.js",
-    "main.js.map": "/shift/static/js/main.869cc26e.chunk.js.map",
+    "main.js": "/shift/static/js/main.87c5c23d.chunk.js",
+    "main.js.map": "/shift/static/js/main.87c5c23d.chunk.js.map",
     "runtime~main.js": "/shift/static/js/runtime~main.42dbfaa6.js",
     "runtime~main.js.map": "/shift/static/js/runtime~main.42dbfaa6.js.map",
     "static/css/2.a317ec87.chunk.css": "/shift/static/css/2.a317ec87.chunk.css",
-    "static/js/2.7a43d0b6.chunk.js": "/shift/static/js/2.7a43d0b6.chunk.js",
-    "static/js/2.7a43d0b6.chunk.js.map": "/shift/static/js/2.7a43d0b6.chunk.js.map",
+    "static/js/2.16c991a5.chunk.js": "/shift/static/js/2.16c991a5.chunk.js",
+    "static/js/2.16c991a5.chunk.js.map": "/shift/static/js/2.16c991a5.chunk.js.map",
     "index.html": "/shift/index.html",
-    "precache-manifest.94423530fdaaeec0ece4da1637571cd3.js": "/shift/precache-manifest.94423530fdaaeec0ece4da1637571cd3.js",
+    "precache-manifest.276862b6f604cee5a6633d6ba9f6998a.js": "/shift/precache-manifest.276862b6f604cee5a6633d6ba9f6998a.js",
     "service-worker.js": "/shift/service-worker.js",
-    "static/css/2.a317ec87.chunk.css.map": "/shift/static/css/2.a317ec87.chunk.css.map"
+    "static/css/2.a317ec87.chunk.css.map": "/shift/static/css/2.a317ec87.chunk.css.map",
+    "static/media/background.png": "/shift/static/media/background.34b8d21f.png"
   }
 }
