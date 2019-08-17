@@ -25,6 +25,30 @@ export interface CreateUserToOrganizationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: CreateSlot
+// ====================================================
+
+export interface CreateSlot_CreateSlot {
+  __typename: "CreateSlotResponse";
+  ok: boolean;
+  error: string | null;
+}
+
+export interface CreateSlot {
+  CreateSlot: CreateSlot_CreateSlot;
+}
+
+export interface CreateSlotVariables {
+  slots: (SlotInfo | null)[];
+  timetableId: number;
+  personalCode: string;
+  organizationId: number;
+}
+
+/* tslint:disable */
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: GetCurrentTimeTable
 // ====================================================
 
@@ -66,7 +90,11 @@ export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots {
 
 export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable_days {
   __typename: "Day";
+<<<<<<< HEAD
   id: number;
+=======
+  isEndTimeNextDay: boolean;
+>>>>>>> 2f07a7964b42b4727bc2f2e44bfd95ed47706ee4
   startTime: string;
   endTime: string;
   dayNumber: number;
@@ -261,6 +289,49 @@ export interface GetDaysVariables {
 // GraphQL mutation operation: OrganizationSignIn
 // ====================================================
 
+export interface AuthenticateUser_AuthenticateUser_user_slots_day {
+  __typename: "Day";
+  dayNumber: number;
+}
+
+export interface AuthenticateUser_AuthenticateUser_user_slots {
+  __typename: "Slot";
+  isFulltime: boolean;
+  startTime: string;
+  isEndTimeNextDay: boolean;
+  isStartTimeNextDay: boolean;
+  endTime: string;
+  day: AuthenticateUser_AuthenticateUser_user_slots_day;
+}
+
+export interface AuthenticateUser_AuthenticateUser_user {
+  __typename: "User";
+  slots: (AuthenticateUser_AuthenticateUser_user_slots | null)[] | null;
+}
+
+export interface AuthenticateUser_AuthenticateUser {
+  __typename: "AuthenticateUserResponse";
+  ok: boolean;
+  error: string | null;
+  user: AuthenticateUser_AuthenticateUser_user | null;
+}
+
+export interface AuthenticateUser {
+  AuthenticateUser: AuthenticateUser_AuthenticateUser;
+}
+
+export interface AuthenticateUserVariables {
+  personalCode: string;
+  organizationId: number;
+}
+
+/* tslint:disable */
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: OrganizationSignIn
+// ====================================================
+
 export interface OrganizationSignIn_OrganizationSignIn {
   __typename: "OrganizationSignInResponse";
   ok: boolean;
@@ -275,30 +346,6 @@ export interface OrganizationSignIn {
 export interface OrganizationSignInVariables {
   loginId: string;
   password: string;
-}
-
-/* tslint:disable */
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL mutation operation: CreateSlot
-// ====================================================
-
-export interface CreateSlot_CreateSlot {
-  __typename: "CreateSlotResponse";
-  ok: boolean;
-  error: string | null;
-}
-
-export interface CreateSlot {
-  CreateSlot: CreateSlot_CreateSlot;
-}
-
-export interface CreateSlotVariables {
-  slots: (SlotInfo | null)[];
-  timetableId: number;
-  personalCode: string;
-  organizationId: number;
 }
 
 /* tslint:disable */

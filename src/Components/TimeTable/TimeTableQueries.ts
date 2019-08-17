@@ -29,6 +29,7 @@ export const GET_TIMETABLE = gql`
         }
         days {
           id
+          isEndTimeNextDay
           startTime
           endTime
           dayNumber

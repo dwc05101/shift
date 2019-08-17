@@ -2,6 +2,7 @@ import { message } from "antd"
 import React from "react"
 import { Mutation, Query } from "react-apollo"
 import { GET_PROFILE } from "../../GlobalQuries"
+import history from "../../history"
 import {
   GetOrganizationProfile,
   UpdateOrganization,
@@ -51,7 +52,7 @@ class ProfileContainer extends React.Component<IState> {
                 message.success("내 정보가 업데이트 되었습니다!")
               } else if (data.UpdateOrganization.error) {
                 message.error("인증되지 않았습니다.")
-                window.location.pathname = "/"
+                history.push("/dashboard")
               } else {
                 message.error("서버 내부 에러가 발생했습니다.")
               }

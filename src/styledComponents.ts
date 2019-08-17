@@ -3,13 +3,8 @@ import { theme } from "./theme"
 
 export const CenterContainerWithBackground = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
   width: 100vw;
   height: 100vh;
-  background: url(https://www.xmple.com/wallpaper/linear-red-blue-gradient-1920x1080-c2-cd5c5c-4169e1-a-105-f-14.svg);
-  background-size: 100% 100%;
 `
 
 export const Container = styled.div`

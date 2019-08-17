@@ -51,10 +51,6 @@ const NavPresenter: React.SFC<IProps> = ({
           <Icon type="user" />
           구성원
         </Menu.Item>
-        <Menu.Item key="calendar">
-          <Icon type="calendar" />
-          일정
-        </Menu.Item>
       </Menu>
       <Toolbar>
         <Profile onClick={isProfile ? undefined : goToProfile}>
