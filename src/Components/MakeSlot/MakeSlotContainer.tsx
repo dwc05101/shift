@@ -140,6 +140,7 @@ class MakeSlotContainer extends React.Component<IProps, IState> {
           endTime: slot.endTime,
           isEndTimeNextDay: slot.isEndTimeNextDay,
           isFulltime: slot.isFulltime,
+          isSelected: false,
           isStartTimeNextDay: slot.isStartTimeNextDay,
           startTime: slot.startTime
         }
@@ -172,6 +173,7 @@ class MakeSlotContainer extends React.Component<IProps, IState> {
       endTime: "",
       isEndTimeNextDay: false,
       isFulltime: false,
+      isSelected: false,
       isStartTimeNextDay: false,
       startTime: ""
     }
