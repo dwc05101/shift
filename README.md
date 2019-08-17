@@ -6,21 +6,17 @@ Time Management System for part-time job
 
 ### Logged In
 
-- [ ] Home
-- [ ] My Profile
-- [ ] Edit Account
-- [ ] Settings
-- [ ] Manage Users
-- [ ] Add Timetable
-- [ ] Edit Timetable
-- [ ] View Timetable
+- [x] Home
+- [x] My Profile
+- [x] Edit Account
+- [x] Settings
+- [x] Manage Users
+- [x] Add Timetable
+- [x] Edit Timetable
+- [x] View Timetable
 
 ### Logged Out
 
 - [x] Login
 - [x] Sign Up
-- [ ] Forgot ID/PW
-
-### Link
-
-- [ ] Make Slot
+- [x] Application
