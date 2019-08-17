@@ -12,18 +12,10 @@ class ViewTimeTableContainer extends React.Component {
     return (
       <GetAllTimeTableQuery query={GET_ALL_TIMETABLES}>
         {({ data, loading }) => (
-          <ViewTimeTablePresenter
-            data={data}
-            loading={loading}
-            goToMakeTimetable={this.goToMakeTimetable}
-          />
+          <ViewTimeTablePresenter data={data} loading={loading} />
         )}
       </GetAllTimeTableQuery>
     )
-  }
-
-  public goToMakeTimetable = () => {
-    history.push("timetable/make")
   }
 }
 
