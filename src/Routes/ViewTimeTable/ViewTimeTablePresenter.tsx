@@ -1,4 +1,4 @@
-import { Button, Table, Tag, Typography } from "antd"
+import { Table, Tag, Typography } from "antd"
 import React from "react"
 import { Link } from "react-router-dom"
 import styled from "styled-components"
@@ -100,12 +100,6 @@ const Header = styled.div`
   height: 10%;
 `
 
-const Operations = styled.div`
-  width: fit-content;
-  height: 100%;
-  margin-left: auto;
-  display: flex;
-`
 const Body = styled.div`
   width: 100%;
   height: 90%;

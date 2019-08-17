@@ -9,7 +9,6 @@ import {
 } from "antd"
 import moment from "moment"
 import React from "react"
-import { Link } from "react-router-dom"
 import styled from "styled-components"
 import { Container, Content, InnerShadowedBox } from "../../styledComponents"
 import { TimeTableDay } from "../../types/api"
