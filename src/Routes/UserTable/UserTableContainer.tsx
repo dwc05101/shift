@@ -13,8 +13,15 @@ import { REMOVE_USER } from "./UserTableQueries"
 interface IState {
   selectedRowKeys: string[]
   createUserModalVisible: boolean
+  editUserModalVisible: boolean
   showDeleteConfirm: boolean
   isConfirmed: boolean
+  data: GetUsers | undefined
+  userId: number
+  name: string
+  personalCode: string
+  phoneNumber: string
+  userRank: number
 }
 
 class GetUsersQuery extends Query<GetUsers> {}
@@ -29,14 +36,24 @@ class UserTableContainer extends React.Component<{}, IState> {
 
   public state = {
     createUserModalVisible: false,
+    data: undefined,
+    editUserModalVisible: false,
     isConfirmed: false,
+    name: "",
+    personalCode: "",
+    phoneNumber: "",
     selectedRowKeys: [],
-    showDeleteConfirm: false
+    showDeleteConfirm: false,
+    userId: -1,
+    userRank: 3
   }
 
   public render() {
     return (
-      <GetUsersQuery query={GET_USERS}>
+      <GetUsersQuery
+        query={GET_USERS}
+        onCompleted={data => this.setState({ data })}
+      >
         {({ data, loading }) => (
           <RemoveUserMutation
             mutation={REMOVE_USER}
@@ -60,18 +77,36 @@ class UserTableContainer extends React.Component<{}, IState> {
             refetchQueries={[{ query: GET_USERS }]}
           >
             {mutationFn => {
+              const {
+                selectedRowKeys,
+                createUserModalVisible,
+                editUserModalVisible,
+                showDeleteConfirm,
+                userId,
+                name,
+                userRank,
+                personalCode,
+                phoneNumber
+              } = this.state
               this.removeMutationFn = mutationFn
               return (
                 <UserTablePresenter
                   data={data}
                   loading={loading}
-                  selectedRowKeys={this.state.selectedRowKeys}
+                  selectedRowKeys={selectedRowKeys}
                   onChange={this.onChange}
-                  createUserModalVisible={this.state.createUserModalVisible}
+                  createUserModalVisible={createUserModalVisible}
                   openCreateUserModal={this.openCreateUserModal}
-                  showDeleteConfirm={this.state.showDeleteConfirm}
+                  showDeleteConfirm={showDeleteConfirm}
                   onConfirm={this.onConfirm}
                   onDelete={this.onDelete}
+                  userId={userId}
+                  name={name}
+                  userRank={userRank}
+                  personalCode={personalCode}
+                  phoneNumber={phoneNumber}
+                  editUserModalVisible={editUserModalVisible}
+                  onClickEdit={this.onClickEdit}
                 />
               )
             }}
@@ -103,6 +138,26 @@ class UserTableContainer extends React.Component<{}, IState> {
     this.setState({
       showDeleteConfirm: true
     })
+  }
+
+  public onClickEdit = target => {
+    const data: GetUsers | undefined = this.state.data
+    const index = data!.GetUsers.users!.findIndex(
+      user => user!.personalCode === target.personalCode
+    )
+    if (index > -1) {
+      const targetUser = data!.GetUsers.users![index]
+      this.setState({
+        editUserModalVisible: !this.state.editUserModalVisible,
+        name: targetUser!.name,
+        personalCode: targetUser!.personalCode,
+        phoneNumber: targetUser!.phoneNumber,
+        userId: targetUser!.id,
+        userRank: targetUser!.userRank
+      })
+    } else {
+      message.error("존재하지 않는 유저 입니다.")
+    }
   }
 }
 
