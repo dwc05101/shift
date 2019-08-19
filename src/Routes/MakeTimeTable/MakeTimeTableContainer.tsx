@@ -42,39 +42,27 @@ class MakeTimeTableContainer extends React.Component<
 
   public constructor(props: ComponentProps<any>) {
     super(props)
+
     const thisWeekTimeTableDays: TimeTableDay[] = []
-    for (
-      let i = moment()
+    const nextWeekTimeTableDays: TimeTableDay[] = []
+    for (let i = 0; i < 7; i++) {
+      const dayNumberThisWeek = moment()
         .startOf("isoWeek")
-        .date();
-      i <=
-      moment()
-        .endOf("isoWeek")
-        .date();
-      i++
-    ) {
+        .add(i, "days")
+        .date()
+      const dayNumberNextWeek = moment()
+        .startOf("isoWeek")
+        .add(1, "weeks")
+        .add(i, "days")
+        .date()
       thisWeekTimeTableDays.push({
-        dayNumber: i,
+        dayNumber: dayNumberThisWeek,
         endTime: "",
         isEndTimeNextDay: false,
         startTime: ""
       })
-    }
-    const nextWeekTimeTableDays: TimeTableDay[] = []
-    for (
-      let i = moment()
-        .startOf("isoWeek")
-        .add(1, "weeks")
-        .date();
-      i <=
-      moment()
-        .endOf("isoWeek")
-        .add(1, "weeks")
-        .date();
-      i++
-    ) {
       nextWeekTimeTableDays.push({
-        dayNumber: i,
+        dayNumber: dayNumberNextWeek,
         endTime: "",
         isEndTimeNextDay: false,
         startTime: ""

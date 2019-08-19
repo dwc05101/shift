@@ -1,4 +1,4 @@
-import { Button, Table, Tag, Typography } from "antd"
+import { Table, Tag, Typography } from "antd"
 import React from "react"
 import { Link } from "react-router-dom"
 import styled from "styled-components"
@@ -10,14 +10,9 @@ import isoToRelative from "../../utils/isoToRelative"
 interface IProps {
   loading: boolean
   data: GetTimeTables | undefined
-  goToMakeTimetable: () => void
 }
 
-const ViewTimeTablePresenter: React.SFC<IProps> = ({
-  loading,
-  data,
-  goToMakeTimetable
-}) => {
+const ViewTimeTablePresenter: React.SFC<IProps> = ({ loading, data }) => {
   return (
     <Container>
       <Content>
@@ -28,11 +23,6 @@ const ViewTimeTablePresenter: React.SFC<IProps> = ({
             <Wrapper>
               <Header>
                 <Typography.Title level={1}>시간표 관리</Typography.Title>
-                <Operations>
-                  <Button type="primary" onClick={goToMakeTimetable}>
-                    추가
-                  </Button>
-                </Operations>
               </Header>
               <Body>
                 <Table
@@ -110,12 +100,6 @@ const Header = styled.div`
   height: 10%;
 `
 
-const Operations = styled.div`
-  width: fit-content;
-  height: 100%;
-  margin-left: auto;
-  display: flex;
-`
 const Body = styled.div`
   width: 100%;
   height: 90%;

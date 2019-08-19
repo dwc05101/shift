@@ -6,21 +6,20 @@
 // GraphQL mutation operation: CreateSlot
 // ====================================================
 
-export interface CreateSlot_CreateSlot {
-  __typename: "CreateSlotResponse";
-  ok: boolean;
-  error: string | null;
+export interface CreateUserToOrganization_CreateUserToOrganization {
+  __typename: "CreateUserToOrganizationResponse"
+  ok: boolean
+  error: string | null
 }
 
-export interface CreateSlot {
-  CreateSlot: CreateSlot_CreateSlot;
+export interface CreateUserToOrganization {
+  CreateUserToOrganization: CreateUserToOrganization_CreateUserToOrganization
 }
 
-export interface CreateSlotVariables {
-  slots: (SlotInfo | null)[];
-  timetableId: number;
-  personalCode: string;
-  organizationId: number;
+export interface CreateUserToOrganizationVariables {
+  personalCode: string
+  name: string
+  phoneNumber: string
 }
 
 /* tslint:disable */
@@ -31,20 +30,20 @@ export interface CreateSlotVariables {
 // GraphQL mutation operation: CreateUserToOrganization
 // ====================================================
 
-export interface CreateUserToOrganization_CreateUserToOrganization {
-  __typename: "CreateUserToOrganizationResponse";
-  ok: boolean;
-  error: string | null;
+export interface CreateSlot_CreateSlot {
+  __typename: "CreateSlotResponse"
+  ok: boolean
+  error: string | null
 }
 
-export interface CreateUserToOrganization {
-  CreateUserToOrganization: CreateUserToOrganization_CreateUserToOrganization;
+export interface CreateSlot {
+  CreateSlot: CreateSlot_CreateSlot
 }
 
-export interface CreateUserToOrganizationVariables {
-  personalCode: string;
-  name: string;
-  phoneNumber: string;
+export interface CreateSlotVariables {
+  slots: (SlotInfo | null)[]
+  timetableId: number
+  organizationId: number
 }
 
 /* tslint:disable */
@@ -56,73 +55,77 @@ export interface CreateUserToOrganizationVariables {
 // ====================================================
 
 export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable_organization_users {
-  __typename: "User";
-  name: string;
-  personalCode: string;
+  __typename: "User"
+  name: string
+  personalCode: string
 }
 
 export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable_organization {
-  __typename: "Organization";
-  name: string;
-  users: (GetCurrentTimeTable_GetCurrentTimeTable_timetable_organization_users | null)[] | null;
+  __typename: "Organization"
+  name: string
+  users:
+    | (GetCurrentTimeTable_GetCurrentTimeTable_timetable_organization_users | null)[]
+    | null
 }
 
 export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable_links {
-  __typename: "Link";
-  url: string;
+  __typename: "Link"
+  url: string
 }
 
 export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots_user {
-  __typename: "User";
-  name: string;
-  personalCode: string;
+  __typename: "User"
+  name: string
+  personalCode: string
 }
 
 export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots {
-  __typename: "Slot";
-  id: number;
-  isFulltime: boolean;
-  startTime: string;
-  endTime: string;
-  isStartTimeNextDay: boolean;
-  isEndTimeNextDay: boolean;
-  user: GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots_user;
+  __typename: "Slot"
+  id: number
+  isFulltime: boolean
+  startTime: string
+  endTime: string
+  user: GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots_user
 }
 
 export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable_days {
-  __typename: "Day";
-  startTime: string;
-  endTime: string;
-  dayNumber: number;
-  isEndTimeNextDay: boolean;
-  slots: (GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots | null)[] | null;
+  __typename: "Day"
+  isEndTimeNextDay: boolean
+  startTime: string
+  endTime: string
+  dayNumber: number
+  slots:
+    | (GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots | null)[]
+    | null
 }
 
 export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable {
-  __typename: "TimeTable";
-  yearMonthWeek: string;
-  id: number;
-  isConfirmed: boolean;
-  organization: GetCurrentTimeTable_GetCurrentTimeTable_timetable_organization;
-  links: (GetCurrentTimeTable_GetCurrentTimeTable_timetable_links | null)[] | null;
-  days: (GetCurrentTimeTable_GetCurrentTimeTable_timetable_days | null)[] | null;
+  __typename: "TimeTable"
+  yearMonthWeek: string
+  id: number
+  isConfirmed: boolean
+  organization: GetCurrentTimeTable_GetCurrentTimeTable_timetable_organization
+  links:
+    | (GetCurrentTimeTable_GetCurrentTimeTable_timetable_links | null)[]
+    | null
+  days: (GetCurrentTimeTable_GetCurrentTimeTable_timetable_days | null)[] | null
 }
 
 export interface GetCurrentTimeTable_GetCurrentTimeTable {
-  __typename: "GetCurrentTimeTableResponse";
-  ok: boolean;
-  error: string | null;
-  timetable: GetCurrentTimeTable_GetCurrentTimeTable_timetable | null;
+  __typename: "GetCurrentTimeTableResponse"
+  ok: boolean
+  error: string | null
+  timetable: GetCurrentTimeTable_GetCurrentTimeTable_timetable | null
 }
 
 export interface GetCurrentTimeTable {
-  GetCurrentTimeTable: GetCurrentTimeTable_GetCurrentTimeTable;
+  GetCurrentTimeTable: GetCurrentTimeTable_GetCurrentTimeTable
 }
 
 export interface GetCurrentTimeTableVariables {
-  yearMonthWeek?: string | null;
-  organizationId?: number | null;
-  timetableId?: number | null;
+  yearMonthWeek?: string | null
+  organizationId?: number | null
+  timetableId?: number | null
 }
 
 /* tslint:disable */
@@ -134,23 +137,23 @@ export interface GetCurrentTimeTableVariables {
 // ====================================================
 
 export interface CreateLink_CreateLink_link {
-  __typename: "Link";
-  url: string;
+  __typename: "Link"
+  url: string
 }
 
 export interface CreateLink_CreateLink {
-  __typename: "CreateLinkResponse";
-  ok: boolean;
-  error: string | null;
-  link: CreateLink_CreateLink_link | null;
+  __typename: "CreateLinkResponse"
+  ok: boolean
+  error: string | null
+  link: CreateLink_CreateLink_link | null
 }
 
 export interface CreateLink {
-  CreateLink: CreateLink_CreateLink;
+  CreateLink: CreateLink_CreateLink
 }
 
 export interface CreateLinkVariables {
-  timetableId: number;
+  timetableId: number
 }
 
 /* tslint:disable */
@@ -162,41 +165,41 @@ export interface CreateLinkVariables {
 // ====================================================
 
 export interface GetUsers_GetUsers_users_slots_day_timetable {
-  __typename: "TimeTable";
-  id: number;
-  yearMonthWeek: string;
+  __typename: "TimeTable"
+  id: number
+  yearMonthWeek: string
 }
 
 export interface GetUsers_GetUsers_users_slots_day {
-  __typename: "Day";
-  timetable: GetUsers_GetUsers_users_slots_day_timetable;
+  __typename: "Day"
+  timetable: GetUsers_GetUsers_users_slots_day_timetable
 }
 
 export interface GetUsers_GetUsers_users_slots {
-  __typename: "Slot";
-  id: number;
-  day: GetUsers_GetUsers_users_slots_day;
+  __typename: "Slot"
+  id: number
+  day: GetUsers_GetUsers_users_slots_day
 }
 
 export interface GetUsers_GetUsers_users {
-  __typename: "User";
-  id: number;
-  personalCode: string;
-  name: string;
-  phoneNumber: string;
-  organizationId: number | null;
-  slots: (GetUsers_GetUsers_users_slots | null)[] | null;
+  __typename: "User"
+  id: number
+  personalCode: string
+  name: string
+  phoneNumber: string
+  organizationId: number | null
+  slots: (GetUsers_GetUsers_users_slots | null)[] | null
 }
 
 export interface GetUsers_GetUsers {
-  __typename: "GetUsersResponse";
-  ok: boolean;
-  error: string | null;
-  users: (GetUsers_GetUsers_users | null)[] | null;
+  __typename: "GetUsersResponse"
+  ok: boolean
+  error: string | null
+  users: (GetUsers_GetUsers_users | null)[] | null
 }
 
 export interface GetUsers {
-  GetUsers: GetUsers_GetUsers;
+  GetUsers: GetUsers_GetUsers
 }
 
 /* tslint:disable */
@@ -208,26 +211,28 @@ export interface GetUsers {
 // ====================================================
 
 export interface GetOrganizationProfile_GetOrganizationProfile_organization_users {
-  __typename: "User";
-  id: number;
+  __typename: "User"
+  id: number
 }
 
 export interface GetOrganizationProfile_GetOrganizationProfile_organization {
-  __typename: "Organization";
-  name: string;
-  email: string;
-  users: (GetOrganizationProfile_GetOrganizationProfile_organization_users | null)[] | null;
+  __typename: "Organization"
+  name: string
+  email: string
+  users:
+    | (GetOrganizationProfile_GetOrganizationProfile_organization_users | null)[]
+    | null
 }
 
 export interface GetOrganizationProfile_GetOrganizationProfile {
-  __typename: "GetOrganizationProfileResponse";
-  ok: boolean;
-  error: string | null;
-  organization: GetOrganizationProfile_GetOrganizationProfile_organization | null;
+  __typename: "GetOrganizationProfileResponse"
+  ok: boolean
+  error: string | null
+  organization: GetOrganizationProfile_GetOrganizationProfile_organization | null
 }
 
 export interface GetOrganizationProfile {
-  GetOrganizationProfile: GetOrganizationProfile_GetOrganizationProfile;
+  GetOrganizationProfile: GetOrganizationProfile_GetOrganizationProfile
 }
 
 /* tslint:disable */
@@ -239,39 +244,39 @@ export interface GetOrganizationProfile {
 // ====================================================
 
 export interface AuthenticateUser_AuthenticateUser_user_slots_day {
-  __typename: "Day";
-  dayNumber: number;
+  __typename: "Day"
+  dayNumber: number
 }
 
 export interface AuthenticateUser_AuthenticateUser_user_slots {
-  __typename: "Slot";
-  isFulltime: boolean;
-  startTime: string;
-  isEndTimeNextDay: boolean;
-  isStartTimeNextDay: boolean;
-  endTime: string;
-  day: AuthenticateUser_AuthenticateUser_user_slots_day;
+  __typename: "Slot"
+  isFulltime: boolean
+  startTime: string
+  isEndTimeNextDay: boolean
+  isStartTimeNextDay: boolean
+  endTime: string
+  day: AuthenticateUser_AuthenticateUser_user_slots_day
 }
 
 export interface AuthenticateUser_AuthenticateUser_user {
-  __typename: "User";
-  slots: (AuthenticateUser_AuthenticateUser_user_slots | null)[] | null;
+  __typename: "User"
+  slots: (AuthenticateUser_AuthenticateUser_user_slots | null)[] | null
 }
 
 export interface AuthenticateUser_AuthenticateUser {
-  __typename: "AuthenticateUserResponse";
-  ok: boolean;
-  error: string | null;
-  user: AuthenticateUser_AuthenticateUser_user | null;
+  __typename: "AuthenticateUserResponse"
+  ok: boolean
+  error: string | null
+  user: AuthenticateUser_AuthenticateUser_user | null
 }
 
 export interface AuthenticateUser {
-  AuthenticateUser: AuthenticateUser_AuthenticateUser;
+  AuthenticateUser: AuthenticateUser_AuthenticateUser
 }
 
 export interface AuthenticateUserVariables {
-  personalCode: string;
-  organizationId: number;
+  personalCode: string
+  organizationId: number
 }
 
 /* tslint:disable */
@@ -283,41 +288,41 @@ export interface AuthenticateUserVariables {
 // ====================================================
 
 export interface GetDays_GetDays_days_slots_user {
-  __typename: "User";
-  name: string;
-  personalCode: string;
+  __typename: "User"
+  name: string
+  personalCode: string
 }
 
 export interface GetDays_GetDays_days_slots {
-  __typename: "Slot";
-  isFulltime: boolean;
-  startTime: string;
-  endTime: string;
-  user: GetDays_GetDays_days_slots_user;
+  __typename: "Slot"
+  isFulltime: boolean
+  startTime: string
+  endTime: string
+  user: GetDays_GetDays_days_slots_user
 }
 
 export interface GetDays_GetDays_days {
-  __typename: "Day";
-  id: number;
-  dayNumber: number;
-  startTime: string;
-  endTime: string;
-  isEndTimeNextDay: boolean;
-  timetableId: number | null;
-  slots: (GetDays_GetDays_days_slots | null)[] | null;
+  __typename: "Day"
+  id: number
+  dayNumber: number
+  startTime: string
+  endTime: string
+  isEndTimeNextDay: boolean
+  timetableId: number | null
+  slots: (GetDays_GetDays_days_slots | null)[] | null
 }
 
 export interface GetDays_GetDays {
-  __typename: "GetDaysResponse";
-  days: (GetDays_GetDays_days | null)[] | null;
+  __typename: "GetDaysResponse"
+  days: (GetDays_GetDays_days | null)[] | null
 }
 
 export interface GetDays {
-  GetDays: GetDays_GetDays;
+  GetDays: GetDays_GetDays
 }
 
 export interface GetDaysVariables {
-  timetableId: number;
+  timetableId: number
 }
 
 /* tslint:disable */
@@ -329,19 +334,19 @@ export interface GetDaysVariables {
 // ====================================================
 
 export interface OrganizationSignIn_OrganizationSignIn {
-  __typename: "OrganizationSignInResponse";
-  ok: boolean;
-  error: string | null;
-  token: string | null;
+  __typename: "OrganizationSignInResponse"
+  ok: boolean
+  error: string | null
+  token: string | null
 }
 
 export interface OrganizationSignIn {
-  OrganizationSignIn: OrganizationSignIn_OrganizationSignIn;
+  OrganizationSignIn: OrganizationSignIn_OrganizationSignIn
 }
 
 export interface OrganizationSignInVariables {
-  loginId: string;
-  password: string;
+  loginId: string
+  password: string
 }
 
 /* tslint:disable */
@@ -353,19 +358,19 @@ export interface OrganizationSignInVariables {
 // ====================================================
 
 export interface CreateTimeTable_CreateTimeTable {
-  __typename: "CreateTimeTableResponse";
-  ok: boolean;
-  error: string | null;
-  timetableId: number | null;
+  __typename: "CreateTimeTableResponse"
+  ok: boolean
+  error: string | null
+  timetableId: number | null
 }
 
 export interface CreateTimeTable {
-  CreateTimeTable: CreateTimeTable_CreateTimeTable;
+  CreateTimeTable: CreateTimeTable_CreateTimeTable
 }
 
 export interface CreateTimeTableVariables {
-  yearMonthWeek: string;
-  days: (TimeTableDay | null)[];
+  yearMonthWeek: string
+  days: (TimeTableDay | null)[]
 }
 
 /* tslint:disable */
@@ -377,19 +382,19 @@ export interface CreateTimeTableVariables {
 // ====================================================
 
 export interface UpdateOrganization_UpdateOrganization {
-  __typename: "UpdateOrganizationResponse";
-  ok: boolean;
-  error: string | null;
+  __typename: "UpdateOrganizationResponse"
+  ok: boolean
+  error: string | null
 }
 
 export interface UpdateOrganization {
-  UpdateOrganization: UpdateOrganization_UpdateOrganization;
+  UpdateOrganization: UpdateOrganization_UpdateOrganization
 }
 
 export interface UpdateOrganizationVariables {
-  name: string;
-  password: string;
-  email: string;
+  name: string
+  password: string
+  email: string
 }
 
 /* tslint:disable */
@@ -401,21 +406,21 @@ export interface UpdateOrganizationVariables {
 // ====================================================
 
 export interface CreateOrganization_CreateOrganization {
-  __typename: "CreateOrganizationResponse";
-  ok: boolean;
-  error: string | null;
-  token: string | null;
+  __typename: "CreateOrganizationResponse"
+  ok: boolean
+  error: string | null
+  token: string | null
 }
 
 export interface CreateOrganization {
-  CreateOrganization: CreateOrganization_CreateOrganization;
+  CreateOrganization: CreateOrganization_CreateOrganization
 }
 
 export interface CreateOrganizationVariables {
-  name: string;
-  loginId: string;
-  email: string;
-  password: string;
+  name: string
+  loginId: string
+  email: string
+  password: string
 }
 
 /* tslint:disable */
@@ -427,17 +432,17 @@ export interface CreateOrganizationVariables {
 // ====================================================
 
 export interface RemoveUserFromOrganization_RemoveUserFromOrganization {
-  __typename: "RemoveUserFromOrganizationResponse";
-  ok: boolean;
-  error: string | null;
+  __typename: "RemoveUserFromOrganizationResponse"
+  ok: boolean
+  error: string | null
 }
 
 export interface RemoveUserFromOrganization {
-  RemoveUserFromOrganization: RemoveUserFromOrganization_RemoveUserFromOrganization;
+  RemoveUserFromOrganization: RemoveUserFromOrganization_RemoveUserFromOrganization
 }
 
 export interface RemoveUserFromOrganizationVariables {
-  users: (number | null)[];
+  users: (number | null)[]
 }
 
 /* tslint:disable */
@@ -449,45 +454,45 @@ export interface RemoveUserFromOrganizationVariables {
 // ====================================================
 
 export interface GetTimeTables_GetTimeTables_timetables_days_slots_user {
-  __typename: "User";
-  name: string;
-  personalCode: string;
+  __typename: "User"
+  name: string
+  personalCode: string
 }
 
 export interface GetTimeTables_GetTimeTables_timetables_days_slots {
-  __typename: "Slot";
-  startTime: string;
-  endTime: string;
-  user: GetTimeTables_GetTimeTables_timetables_days_slots_user;
+  __typename: "Slot"
+  startTime: string
+  endTime: string
+  user: GetTimeTables_GetTimeTables_timetables_days_slots_user
 }
 
 export interface GetTimeTables_GetTimeTables_timetables_days {
-  __typename: "Day";
-  dayNumber: number;
-  startTime: string;
-  endTime: string;
-  slots: (GetTimeTables_GetTimeTables_timetables_days_slots | null)[] | null;
+  __typename: "Day"
+  dayNumber: number
+  startTime: string
+  endTime: string
+  slots: (GetTimeTables_GetTimeTables_timetables_days_slots | null)[] | null
 }
 
 export interface GetTimeTables_GetTimeTables_timetables {
-  __typename: "TimeTable";
-  id: number;
-  isConfirmed: boolean;
-  yearMonthWeek: string;
-  createdAt: string;
-  updatedAt: string | null;
-  days: (GetTimeTables_GetTimeTables_timetables_days | null)[] | null;
+  __typename: "TimeTable"
+  id: number
+  isConfirmed: boolean
+  yearMonthWeek: string
+  createdAt: string
+  updatedAt: string | null
+  days: (GetTimeTables_GetTimeTables_timetables_days | null)[] | null
 }
 
 export interface GetTimeTables_GetTimeTables {
-  __typename: "GetTimeTablesResponse";
-  ok: boolean;
-  error: string | null;
-  timetables: (GetTimeTables_GetTimeTables_timetables | null)[] | null;
+  __typename: "GetTimeTablesResponse"
+  ok: boolean
+  error: string | null
+  timetables: (GetTimeTables_GetTimeTables_timetables | null)[] | null
 }
 
 export interface GetTimeTables {
-  GetTimeTables: GetTimeTables_GetTimeTables;
+  GetTimeTables: GetTimeTables_GetTimeTables
 }
 
 /* tslint:disable */
@@ -499,20 +504,21 @@ export interface GetTimeTables {
 //==============================================================
 
 export interface SlotInfo {
-  isSelected: boolean;
-  isFulltime: boolean;
-  dayNumber: number;
-  startTime: string;
-  endTime: string;
-  isEndTimeNextDay: boolean;
-  isStartTimeNextDay: boolean;
+  personalCode: string
+  isSelected: boolean
+  isFulltime: boolean
+  dayNumber: number
+  startTime: string
+  endTime: string
+  isEndTimeNextDay: boolean
+  isStartTimeNextDay: boolean
 }
 
 export interface TimeTableDay {
-  dayNumber: number;
-  startTime: string;
-  endTime: string;
-  isEndTimeNextDay: boolean;
+  dayNumber: number
+  startTime: string
+  endTime: string
+  isEndTimeNextDay: boolean
 }
 
 //==============================================================
