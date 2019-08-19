@@ -127,9 +127,9 @@ class MakeTimeTableContainer extends React.Component<
                   message.success(
                     "시간표가 생성되었습니다! 잠시후 대시보드로 이동합니다..."
                   )
-                  // setTimeout(() => {
-                  //   window.location.pathname = "/shift/dashboard"
-                  // }, 2000)
+                  setTimeout(() => {
+                    window.location.pathname = "/shift/dashboard"
+                  }, 2000)
                 } else {
                   message.error("서버 내부 오류: 링크 발급 실패")
                 }
@@ -208,7 +208,6 @@ class MakeTimeTableContainer extends React.Component<
       message.error("시간대를 모두 입력해주세요.")
       return
     }
-    console.log(this.state.nextWeekTimeTableDays)
     await this.setState({
       loading: true
     })

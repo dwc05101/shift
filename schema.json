@@ -2217,20 +2217,6 @@
                 "defaultValue": null
               },
               {
-                "name": "personalCode",
-                "description": "",
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null
-              },
-              {
                 "name": "timetableId",
                 "description": "",
                 "type": {
@@ -3043,6 +3029,20 @@
         "description": "",
         "fields": null,
         "inputFields": [
+          {
+            "name": "personalCode",
+            "description": "",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
           {
             "name": "isSelected",
             "description": "",
