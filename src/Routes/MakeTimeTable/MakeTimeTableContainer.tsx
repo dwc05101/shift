@@ -42,39 +42,27 @@ class MakeTimeTableContainer extends React.Component<
 
   public constructor(props: ComponentProps<any>) {
     super(props)
+
     const thisWeekTimeTableDays: TimeTableDay[] = []
-    for (
-      let i = moment()
+    const nextWeekTimeTableDays: TimeTableDay[] = []
+    for (let i = 0; i < 7; i++) {
+      const dayNumberThisWeek = moment()
         .startOf("isoWeek")
-        .date();
-      i <=
-      moment()
-        .endOf("isoWeek")
-        .date();
-      i++
-    ) {
+        .add(i, "days")
+        .date()
+      const dayNumberNextWeek = moment()
+        .startOf("isoWeek")
+        .add(1, "weeks")
+        .add(i, "days")
+        .date()
       thisWeekTimeTableDays.push({
-        dayNumber: i,
+        dayNumber: dayNumberThisWeek,
         endTime: "",
         isEndTimeNextDay: false,
         startTime: ""
       })
-    }
-    const nextWeekTimeTableDays: TimeTableDay[] = []
-    for (
-      let i = moment()
-        .startOf("isoWeek")
-        .add(1, "weeks")
-        .date();
-      i <=
-      moment()
-        .endOf("isoWeek")
-        .add(1, "weeks")
-        .date();
-      i++
-    ) {
       nextWeekTimeTableDays.push({
-        dayNumber: i,
+        dayNumber: dayNumberNextWeek,
         endTime: "",
         isEndTimeNextDay: false,
         startTime: ""
@@ -139,9 +127,9 @@ class MakeTimeTableContainer extends React.Component<
                   message.success(
                     "시간표가 생성되었습니다! 잠시후 대시보드로 이동합니다..."
                   )
-                  setTimeout(() => {
-                    window.location.pathname = "/shift/dashboard"
-                  }, 2000)
+                  // setTimeout(() => {
+                  //   window.location.pathname = "/shift/dashboard"
+                  // }, 2000)
                 } else {
                   message.error("서버 내부 오류: 링크 발급 실패")
                 }
@@ -220,6 +208,7 @@ class MakeTimeTableContainer extends React.Component<
       message.error("시간대를 모두 입력해주세요.")
       return
     }
+    console.log(this.state.nextWeekTimeTableDays)
     await this.setState({
       loading: true
     })
