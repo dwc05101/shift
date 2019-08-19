@@ -1,9 +1,7 @@
 import {
-  Breadcrumb,
   Button,
   Card,
   Checkbox,
-  Icon,
   Select,
   Switch,
   TimePicker,
@@ -11,7 +9,6 @@ import {
 } from "antd"
 import moment from "moment"
 import React from "react"
-import { Link } from "react-router-dom"
 import styled from "styled-components"
 import { Container, Content, InnerShadowedBox } from "../../styledComponents"
 import { TimeTableDay } from "../../types/api"
@@ -65,14 +62,6 @@ const MakeTimeTablePresenter: React.SFC<IProps> = ({
   <Container>
     <Content>
       <InnerShadowedBox style={{ flexDirection: "column" }}>
-        <Breadcrumb style={{ height: "5%" }}>
-          <Breadcrumb.Item>
-            <Link to="/timetable">
-              <Icon type="table" /> 시간표
-            </Link>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>시간표 만들기</Breadcrumb.Item>
-        </Breadcrumb>
         <Typography.Title level={1}>시간표 만들기</Typography.Title>
         <DateContainer>
           <Select defaultValue={week} onChange={onChangeWeek}>
@@ -142,7 +131,11 @@ const MakeTimeTablePresenter: React.SFC<IProps> = ({
                   onChange={time => {
                     changeSameTableDayEndTime(time.format("HHmm"))
                   }}
-                  defaultOpenValue={moment("22:00", "HH:mm")}
+                  defaultOpenValue={
+                    sameTableDay.isEndTimeNextDay
+                      ? moment("00:00", "HH:mm")
+                      : moment("22:00", "HH:mm")
+                  }
                 />
               </TimePickerContainer>
             </Card>
@@ -202,7 +195,11 @@ const makeSeparateDay = (
             onChange={time => {
               changeEndTime(count, time.format("HHmm"))
             }}
-            defaultOpenValue={moment("22:00", "HH:mm")}
+            defaultOpenValue={
+              day.isEndTimeNextDay
+                ? moment("00:00", "HH:mm")
+                : moment("22:00", "HH:mm")
+            }
           />
         </TimePickerContainer>
       </Card>
