@@ -44,7 +44,7 @@ const client = new ApolloClient({
       }
     }
   },
-  uri: "http://server-shift.herokuapp.com/graphql"
+  uri: "https://server-shift.herokuapp.com/graphql"
 })
 
 export default client
