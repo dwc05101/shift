@@ -13,7 +13,11 @@ import styled from "styled-components"
 import logo from "../../images/logo_colored.png"
 import { Container, InnerShadowedBox } from "../../styledComponents"
 import { theme } from "../../theme"
-import { GetCurrentTimeTable, SlotInfo } from "../../types/api"
+import {
+  GetCurrentTimeTable,
+  GetCurrentTimeTable_GetCurrentTimeTable_timetable_days,
+  SlotInfo
+} from "../../types/api"
 import isoToRelative from "../../utils/isoToRelative"
 import KoreanDays from "../../utils/KoreanDays"
 import Loading from "../Loading"
@@ -173,9 +177,16 @@ const makeTabPanes = (
   onClickAddButton: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void,
   onClickDeleteButton: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void
 ) => {
-  const sortedDays = data.GetCurrentTimeTable.timetable!.days!.sort(
-    (a, b) => a!.dayNumber - b!.dayNumber
-  )
+  const sortedDays: Array<GetCurrentTimeTable_GetCurrentTimeTable_timetable_days | null> = []
+  dayNumbers.forEach(dayNumber => {
+    const index = data.GetCurrentTimeTable.timetable!.days!.findIndex(
+      day => day!.dayNumber === dayNumber
+    )
+    if (index > -1) {
+      sortedDays.push(data.GetCurrentTimeTable.timetable!.days![index])
+    }
+  })
+
   return dayNumbers.map((dayNumber, index) => {
     const dayStartTimeString = data!.GetCurrentTimeTable.timetable!.days!.find(
       day => day!.dayNumber === dayNumber

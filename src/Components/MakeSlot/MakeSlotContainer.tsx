@@ -84,7 +84,7 @@ class MakeSlotContainer extends React.Component<IProps, IState> {
           return (
             <CreateSlotMutation
               mutation={CREATE_SLOT}
-              variables={{ organizationId, timetableId, slots, personalCode }}
+              variables={{ organizationId, timetableId, slots }}
               onCompleted={response => {
                 if (response.CreateSlot.ok) {
                   this.setState({
@@ -128,7 +128,7 @@ class MakeSlotContainer extends React.Component<IProps, IState> {
   }
 
   public parseSlotProps = () => {
-    const { slotTabArray, dayNumbers } = this.state
+    const { slotTabArray, dayNumbers, personalCode } = this.state
     const propSlots = this.props.slots
     for (const slot of propSlots) {
       const index = dayNumbers.findIndex(
@@ -142,6 +142,7 @@ class MakeSlotContainer extends React.Component<IProps, IState> {
           isFulltime: slot.isFulltime,
           isSelected: false,
           isStartTimeNextDay: slot.isStartTimeNextDay,
+          personalCode,
           startTime: slot.startTime
         }
         slotTabArray[index].push(newSlot)
@@ -152,7 +153,7 @@ class MakeSlotContainer extends React.Component<IProps, IState> {
   }
 
   public setDayNumbers = (data: GetCurrentTimeTable) => {
-    const { dayNumbers } = this.state
+    let { dayNumbers } = this.state
     if (data.GetCurrentTimeTable.ok) {
       data.GetCurrentTimeTable.timetable!.days!.map(day => {
         dayNumbers.push(day!.dayNumber)
@@ -161,13 +162,31 @@ class MakeSlotContainer extends React.Component<IProps, IState> {
     } else {
       message.error("시간표가 존재하지 않습니다.")
     }
-    dayNumbers.sort((a, b) => a - b)
+    const maxDayNumber = Math.max.apply(null, dayNumbers)
+    const minDayNumber = Math.min.apply(null, dayNumbers)
+    const isContainNextMonth: boolean = maxDayNumber - minDayNumber >= 7
+    if (isContainNextMonth) {
+      const sortedDayNumbers: number[] = []
+      const previousMonthDayNumbers = dayNumbers
+        .filter(dayNumber => Math.abs(maxDayNumber - dayNumber) <= 6)
+        .sort((a, b) => a - b)
+      const nextMonthDayNumbers = dayNumbers
+        .filter(dayNumber => Math.abs(dayNumber - minDayNumber) <= 6)
+        .sort((a, b) => a - b)
+      previousMonthDayNumbers.forEach(dayNumber =>
+        sortedDayNumbers.push(dayNumber)
+      )
+      nextMonthDayNumbers.forEach(dayNumber => sortedDayNumbers.push(dayNumber))
+      dayNumbers = sortedDayNumbers
+    } else {
+      dayNumbers.sort((a, b) => a - b)
+    }
     this.setState({ dayNumbers })
   }
 
   public onClickAddButton = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     const index = parseInt(e.currentTarget.id, 10)
-    const { slotTabArray, dayNumbers } = this.state
+    const { slotTabArray, dayNumbers, personalCode } = this.state
     const newSlot: SlotInfo = {
       dayNumber: dayNumbers[index],
       endTime: "",
@@ -175,6 +194,7 @@ class MakeSlotContainer extends React.Component<IProps, IState> {
       isFulltime: false,
       isSelected: false,
       isStartTimeNextDay: false,
+      personalCode,
       startTime: ""
     }
 
@@ -257,7 +277,7 @@ class MakeSlotContainer extends React.Component<IProps, IState> {
     const { personalCode } = this.state
 
     if (personalCode === "") {
-      message.error("개인번호를 선택해주세요.")
+      message.error("잘못된 접근입니다.")
       return
     }
 
