@@ -154,6 +154,7 @@ const makeTableCell = (data: GetCurrentTimeTable | null, dayNumber: number) => {
 const makeHeaderRow = (data: GetCurrentTimeTable | null) => {
   if (data) {
     if (data.GetCurrentTimeTable.timetable) {
+      console.log(data.GetCurrentTimeTable)
       const [startTime, endTime] = getTime(data)
       const indexArray = Array.from(Array(endTime - startTime + 1).keys())
       const possibleTime = indexArray.map(

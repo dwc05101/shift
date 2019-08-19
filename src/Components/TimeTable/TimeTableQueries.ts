@@ -37,6 +37,8 @@ export const GET_TIMETABLE = gql`
             isFulltime
             startTime
             endTime
+            isStartTimeNextDay
+            isEndTimeNextDay
             user {
               name
               personalCode

@@ -46,7 +46,13 @@ class EditTimeTableContainer extends React.Component<IProps> {
         variables={{ timetableId, yearMonthWeek }}
       >
         {({ loading, data }) => {
-          return <EditTimeTablePresenter data={data} loading={loading} />
+          return (
+            <EditTimeTablePresenter
+              data={data}
+              loading={loading}
+              timetableId={timetableId}
+            />
+          )
         }}
       </GetTimetableQuery>
     )

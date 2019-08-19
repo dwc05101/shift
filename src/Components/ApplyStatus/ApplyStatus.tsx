@@ -1,6 +1,7 @@
 import { Button, Typography } from "antd"
 import React from "react"
 import styled from "styled-components"
+import { theme } from "../../theme"
 import { GetCurrentTimeTable_GetCurrentTimeTable_timetable_days } from "../../types/api"
 import KoreanDays from "../../utils/KoreanDays"
 import { StatusBar, StoreTime, TimeBar } from "./TimeBar"
@@ -8,6 +9,17 @@ import { StatusBar, StoreTime, TimeBar } from "./TimeBar"
 interface IProps {
   day: GetCurrentTimeTable_GetCurrentTimeTable_timetable_days | null
   dayIndex: number
+  selectedSlots: Array<{}>
+  updateSelectedSlots: (result: string[], dayIndex: number) => void
+  clearSelectedSlots: (selectedSlots: Array<{}>, dayIndex: number) => void
+}
+
+interface IState {
+  boxColors: string[]
+  clearStatus: boolean[]
+  endTime: number
+  startTime: number
+  selectedResult: string[][]
 }
 
 const parseTimeNextDay = (endTime: string) => {
@@ -34,108 +46,202 @@ const timeFormat = (time: string) => {
   return t + ":" + m
 }
 
-class ApplyStatus extends React.Component<IProps> {
+class ApplyStatus extends React.Component<IProps, IState> {
   public state = {
-    day: this.props.day,
-    dayIndex: this.props.dayIndex,
+    boxColors: ["", "", "", "", "", "", ""],
+    clearStatus: [false, false, false, false, false, false, false],
     endTime: this.props.day!.isEndTimeNextDay
       ? parseTimeNextDay(this.props.day!.endTime)
       : time2Int(this.props.day!.endTime),
-    selectedSlots: {},
+    selectedResult: [[], [], [], [], [], [], []],
     startTime: time2Int(this.props.day!.startTime)
   }
 
-  public updateSelectedSlots = (result: string[]) => {
-    const selectedSlots: {} = {}
-
-    result.map(res => {
-      const user: string = res.split("-")[0]
-      const timeIndex: string = res.split("-")[1]
-      if (!selectedSlots[user]) {
-        selectedSlots[user] = [timeIndex]
-      } else {
-        selectedSlots[user].push(timeIndex)
-      }
-      return null
-    })
-    this.setState({ selectedSlots })
+  public updateSelectedResult = async (
+    selectedResult: string[][],
+    clearStatus: boolean[],
+    dayIndex: number,
+    boxId: string
+  ) => {
+    let subSelectedResult: string[] = selectedResult[dayIndex]
+    const prevLength: number = subSelectedResult.length
+    subSelectedResult = subSelectedResult.filter(box => box !== boxId)
+    const currLength: number = subSelectedResult.length
+    if (prevLength === currLength) {
+      subSelectedResult.push(boxId)
+    }
+    selectedResult[dayIndex] = subSelectedResult
+    clearStatus[dayIndex] = false
+    await this.setState({ clearStatus, selectedResult })
+    return subSelectedResult
   }
 
   public render() {
-    const { startTime, endTime, day, dayIndex } = this.state
+    const {
+      day,
+      dayIndex,
+      selectedSlots,
+      updateSelectedSlots,
+      clearSelectedSlots
+    } = this.props
+    const { clearStatus, selectedResult, endTime, startTime } = this.state
     return (
       <View>
-        <InfoNButton>
+        <Top>
           <Day>
-            <Typography.Title level={4}>
+            <Typography.Title level={4} style={{ margin: "0" }}>
               {day!.dayNumber}일 ({KoreanDays[dayIndex]})
             </Typography.Title>
-            <Typography.Text>
-              영업 시작 : {timeFormat(day!.startTime)}
-            </Typography.Text>
-            <Typography.Text>
-              영업 종료 : {timeFormat(day!.endTime)}
-            </Typography.Text>
+            <StartEndTime>
+              <Typography.Text>
+                영업 시작 : {timeFormat(day!.startTime)}
+              </Typography.Text>
+              <Typography.Text>
+                영업 종료 : {timeFormat(day!.endTime)}
+              </Typography.Text>
+            </StartEndTime>
           </Day>
-          <ButtonGroup>
-            <Button type="danger" style={{ marginRight: "5px" }}>
-              Clear
+          <Day>
+            <Button
+              type="danger"
+              style={{ marginRight: "5px" }}
+              onClick={async e => {
+                selectedResult[dayIndex] = []
+                clearStatus[dayIndex] = true
+                await this.setState({ clearStatus, selectedResult })
+                await clearSelectedSlots(selectedSlots, dayIndex)
+              }}
+            >
+              <Typography.Text style={{ fontWeight: "bolder", color: "white" }}>
+                초기화
+              </Typography.Text>
             </Button>
-            <Button type="primary">Save</Button>
-          </ButtonGroup>
-        </InfoNButton>
-        <TimeBars>
-          <TimeNotice>
-            <Username />
-            <StoreTime startTime={startTime} endTime={endTime} />
-          </TimeNotice>
-          {day!.slots!.map((slot, index) => {
-            return (
-              <Slot key={index}>
-                <Username>
-                  <Typography.Text strong={true}>
-                    {slot!.user.name}
-                  </Typography.Text>
-                </Username>
-                <TimeBar
-                  userCode={slot!.user.personalCode}
-                  isFullTime={slot!.isFulltime}
-                  storeStartTime={startTime}
-                  storeEndTime={endTime}
-                  startTime={parseTime(startTime, slot!.startTime)}
-                  endTime={parseTime(startTime, slot!.endTime)}
-                  updateSelectedSlots={this.updateSelectedSlots}
-                />
-              </Slot>
-            )
-          })}
-        </TimeBars>
-        <Day>
-          <TimeNotice style={{ margin: "0" }}>
-            <Username />
-            <StoreTime startTime={startTime} endTime={endTime} />
-          </TimeNotice>
-          <TimeNotice style={{ margin: "0" }}>
-            <Username style={{ width: "calc(50px + 1em)" }} />
-            <StatusBar
-              storeStartTime={startTime}
-              storeEndTime={endTime}
-              selectedSlots={this.state.selectedSlots}
-            />
-          </TimeNotice>
-        </Day>
+            <Button type="primary">
+              <Typography.Text style={{ fontWeight: "bolder", color: "white" }}>
+                임시저장
+              </Typography.Text>
+            </Button>
+          </Day>
+        </Top>
+        <Middle>
+          <Title>
+            <Typography.Title
+              level={4}
+              style={{
+                borderRight: `3px solid ${theme.colors.blue}`,
+                paddingRight: "5px"
+              }}
+            >
+              신청 현황
+            </Typography.Title>
+          </Title>
+          <TimeBars>
+            <TimeNotice style={{ margin: "0" }}>
+              <Username />
+              <StoreTime startTime={startTime} endTime={endTime} />
+            </TimeNotice>
+            {day!.slots!.map((slot, index) => {
+              return (
+                <Slot key={index}>
+                  <Username>
+                    <Typography.Text strong={true}>
+                      {slot!.user.name}
+                    </Typography.Text>
+                  </Username>
+                  <TimeBar
+                    userCode={slot!.user.personalCode}
+                    isFullTime={slot!.isFulltime}
+                    storeStartTime={startTime}
+                    storeEndTime={endTime}
+                    dayNumber={dayIndex}
+                    startTime={parseTime(startTime, slot!.startTime)}
+                    endTime={parseTime(startTime, slot!.endTime)}
+                    updateSelectedSlots={updateSelectedSlots}
+                    updateSelectedResult={this.updateSelectedResult}
+                    selectedResult={selectedResult}
+                    clearStatus={clearStatus}
+                  />
+                </Slot>
+              )
+            })}
+          </TimeBars>
+        </Middle>
+        <Bottom>
+          <Title>
+            <Typography.Title
+              level={4}
+              style={{
+                borderRight: `3px solid ${theme.colors.blue}`,
+                paddingRight: "8px"
+              }}
+            >
+              배정 현황
+            </Typography.Title>
+          </Title>
+          <UserTime>
+            <TimeNotice style={{ margin: "0" }}>
+              <Username />
+              <StoreTime startTime={startTime} endTime={endTime} />
+            </TimeNotice>
+            <TimeNotice style={{ margin: "0" }}>
+              <Username style={{ marginLeft: "1em" }} />
+              <StatusBar
+                storeStartTime={startTime}
+                storeEndTime={endTime}
+                dayNumber={dayIndex}
+                selectedSlots={selectedSlots}
+              />
+            </TimeNotice>
+          </UserTime>
+        </Bottom>
       </View>
     )
   }
 }
 
 const View = styled.div`
-  padding: 10px;
+  height: 100%;
+  padding: 0 1%;
 `
 
-const ButtonGroup = styled.div`
+const Top = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  height: 10%;
+`
+
+const Day = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`
+
+const StartEndTime = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+`
+
+const Middle = styled.div`
+  display: flex;
+  flex-direction: row;
+  height: 60%;
+  max-height: 60%;
+  overflow: auto;
+`
+
+const Title = styled.div`
+  border: 0;
+`
+
+const TimeBars = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-height: 300px;
+  overflow: auto;
+  height: 100%;
+  margin-left: 5px;
 `
 
 const TimeNotice = styled.div`
@@ -146,6 +252,12 @@ const TimeNotice = styled.div`
   margin-top: 10px;
 `
 
+const Username = styled.div`
+  font-weight: 500;
+  font-size: 1em;
+  text-align: right;
+`
+
 const Slot = styled.div`
   flex-direction: row;
   align-items: center;
@@ -153,29 +265,19 @@ const Slot = styled.div`
   margin-bottom: 20px;
 `
 
-const Day = styled.div`
-  display: flex;
-  flex-direction: column;
-`
-
-const InfoNButton = styled.div`
+const Bottom = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  height: 30%;
+  max-height: 30%;
+  overflow: auto;
 `
 
-const TimeBars = styled.div`
+const UserTime = styled.div`
   display: flex;
   flex-direction: column;
-  max-height: 300px;
-  overflow: auto;
-  border: 1px solid red;
-`
-
-const Username = styled.div`
-  font-weight: 500;
-  text-align: right;
-  width: 50px;
+  height: 100%;
+  margin-left: 5px;
 `
 
 export default ApplyStatus

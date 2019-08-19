@@ -10,22 +10,14 @@ import isoToRelative from "../../utils/isoToRelative"
 interface IProps {
   loading: boolean
   data: GetTimeTables | undefined
-  selectedRowKeys: string[]
-  onChange: (selectedRowKeys: any) => void
   goToMakeTimetable: () => void
 }
 
 const ViewTimeTablePresenter: React.SFC<IProps> = ({
   loading,
   data,
-  selectedRowKeys,
-  onChange,
   goToMakeTimetable
 }) => {
-  const rowSelection = {
-    onChange,
-    selectedRowKeys
-  }
   return (
     <Container>
       <Content>
@@ -37,13 +29,6 @@ const ViewTimeTablePresenter: React.SFC<IProps> = ({
               <Header>
                 <Typography.Title level={1}>시간표 관리</Typography.Title>
                 <Operations>
-                  <Button
-                    type="danger"
-                    disabled={selectedRowKeys.length === 0}
-                    style={{ marginRight: "20px" }}
-                  >
-                    삭제
-                  </Button>
                   <Button type="primary" onClick={goToMakeTimetable}>
                     추가
                   </Button>
@@ -52,7 +37,6 @@ const ViewTimeTablePresenter: React.SFC<IProps> = ({
               <Body>
                 <Table
                   columns={columns}
-                  rowSelection={rowSelection}
                   dataSource={parseData(data)}
                   loading={loading}
                 />

@@ -31,7 +31,6 @@ class TimeTableContainer extends React.Component<IProps> {
         variables={{ organizationId, yearMonthWeek }}
       >
         {({ data, loading }) => {
-          console.log(data)
           return <TimeTablePresenter data={data} loading={loading} />
         }}
       </GetTimetableQuery>

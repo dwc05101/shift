@@ -2,7 +2,7 @@ import { ShiftTheme } from "styled-components"
 
 export const theme: ShiftTheme = {
   colors: {
-    bbbred: "#fff1f0",
+    bbbred: "#ffccc7",
     bbred: "#ffa39e",
     blue: "#4CACF3",
     bred: "#ff4d4f",

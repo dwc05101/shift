@@ -84,6 +84,8 @@ export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots {
   isFulltime: boolean;
   startTime: string;
   endTime: string;
+  isStartTimeNextDay: boolean;
+  isEndTimeNextDay: boolean;
   user: GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots_user;
 }
 
@@ -226,6 +228,50 @@ export interface GetOrganizationProfile_GetOrganizationProfile {
 
 export interface GetOrganizationProfile {
   GetOrganizationProfile: GetOrganizationProfile_GetOrganizationProfile;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: AuthenticateUser
+// ====================================================
+
+export interface AuthenticateUser_AuthenticateUser_user_slots_day {
+  __typename: "Day";
+  dayNumber: number;
+}
+
+export interface AuthenticateUser_AuthenticateUser_user_slots {
+  __typename: "Slot";
+  isFulltime: boolean;
+  startTime: string;
+  isEndTimeNextDay: boolean;
+  isStartTimeNextDay: boolean;
+  endTime: string;
+  day: AuthenticateUser_AuthenticateUser_user_slots_day;
+}
+
+export interface AuthenticateUser_AuthenticateUser_user {
+  __typename: "User";
+  slots: (AuthenticateUser_AuthenticateUser_user_slots | null)[] | null;
+}
+
+export interface AuthenticateUser_AuthenticateUser {
+  __typename: "AuthenticateUserResponse";
+  ok: boolean;
+  error: string | null;
+  user: AuthenticateUser_AuthenticateUser_user | null;
+}
+
+export interface AuthenticateUser {
+  AuthenticateUser: AuthenticateUser_AuthenticateUser;
+}
+
+export interface AuthenticateUserVariables {
+  personalCode: string;
+  organizationId: number;
 }
 
 /* tslint:disable */
