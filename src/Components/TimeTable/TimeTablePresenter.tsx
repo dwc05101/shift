@@ -155,6 +155,8 @@ const makeHeaderRow = (data: GetCurrentTimeTable | null) => {
   if (data) {
     if (data.GetCurrentTimeTable.timetable) {
       const [startTime, endTime] = getTime(data)
+      console.log(startTime)
+      console.log(endTime)
       const indexArray = Array.from(Array(endTime - startTime + 1).keys())
       const possibleTime = indexArray.map(
         index => String(startTime + index) + ":00"
