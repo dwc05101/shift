@@ -16,6 +16,7 @@ interface IProps {
 const { TabPane } = Tabs
 
 const EditTimeTablePresenter: React.SFC<IProps> = ({ data, loading }) => {
+  if (!loading) console.log(data!.GetCurrentTimeTable.timetable!.yearMonthWeek)
   return loading ? (
     <Loading />
   ) : (
@@ -25,13 +26,14 @@ const EditTimeTablePresenter: React.SFC<IProps> = ({ data, loading }) => {
           <RightWrapper>
             <Tabs
               onChange={e => console.log(e)}
+              size="small"
               type="line"
               tabBarStyle={{
                 margin: "0",
                 height: "10%",
                 border: "0"
               }}
-              style={{ height: "100%", border: "1px solid blue" }}
+              style={{ height: "100%" }}
             >
               {makeTabs(data!)}
             </Tabs>
@@ -52,7 +54,7 @@ const makeTabs = (data: GetCurrentTimeTable | null) => {
     if (data.GetCurrentTimeTable.timetable) {
       const sortedTimeTable = data.GetCurrentTimeTable.timetable.days!.sort(
         (a, b) => {
-          return a!.dayNumber - b!.dayNumber
+          return a!.id - b!.id
         }
       )
       return sortedTimeTable.map(day => {
@@ -60,15 +62,14 @@ const makeTabs = (data: GetCurrentTimeTable | null) => {
           <TabPane
             tab={
               <Tab>
-                <Typography.Text strong={true}>
+                <Text>
                   {day!.dayNumber} ({KoreanDays[sortedTimeTable.indexOf(day)]})
-                </Typography.Text>
+                </Text>
               </Tab>
             }
             style={{
               width: "100%",
-              height: "calc(90%)",
-              border: "1px solid black"
+              height: "calc(90%)"
             }}
             key={String(day!.dayNumber)}
           >
@@ -112,5 +113,6 @@ const StatisticsView = styled.div`
   background-color: #f1f3f4;
   padding: 2%;
 `
+const Text = styled.div``
 
 export default EditTimeTablePresenter

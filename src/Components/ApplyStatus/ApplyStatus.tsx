@@ -18,9 +18,9 @@ const ApplyStatus: React.SFC<IProps> = ({ day, dayIndex }) => {
   return (
     <View>
       <Day>
-        <Typography.Title level={4}>
+        <DayText>
           {day!.dayNumber}일 ({KoreanDays[dayIndex]})
-        </Typography.Title>
+        </DayText>
         <Typography.Text>
           영업 시작 : {timeFormat(day!.startTime)}
         </Typography.Text>
@@ -28,40 +28,44 @@ const ApplyStatus: React.SFC<IProps> = ({ day, dayIndex }) => {
           영업 종료 : {timeFormat(day!.endTime)}
         </Typography.Text>
       </Day>
-      <TimeBars>
-        <TimeNotice>
-          <Username />
-          <StoreTime startTime={startTime} endTime={endTime} />
-        </TimeNotice>
-        {day!.slots!.map((slot, index) => {
-          return (
-            <Slot key={index}>
-              <Username>
-                <Typography.Text strong={true}>
-                  {slot!.user.name}
-                </Typography.Text>
-              </Username>
-              <TimeBar
-                userCode={slot!.user.personalCode}
-                isFullTime={slot!.isFulltime}
-                storeStartTime={startTime}
-                storeEndTime={endTime}
-                startTime={parseTime(startTime, slot!.startTime)}
-                endTime={parseTime(startTime, slot!.endTime)}
-              />
-            </Slot>
-          )
-        })}
-      </TimeBars>
-      <Day>
-        <TimeNotice style={{ margin: "0" }}>
-          <StoreTime startTime={startTime} endTime={endTime} />
-        </TimeNotice>
-        <TimeNotice style={{ margin: "0" }}>
-          <Username style={{ width: "calc(50px + 1em)" }} />
-          {/* <StatusBar /> */}
-        </TimeNotice>
-      </Day>
+      {day!.slots!.length > 0 ? (
+        <>
+          <TimeBars>
+            <TimeNotice>
+              <Username />
+              <StoreTime startTime={startTime} endTime={endTime} />
+            </TimeNotice>
+            {day!.slots!.map((slot, index) => {
+              return (
+                <Slot key={index}>
+                  <Username>{slot!.user.name}</Username>
+                  <TimeBar
+                    userCode={slot!.user.personalCode}
+                    isFullTime={slot!.isFulltime}
+                    storeStartTime={startTime}
+                    storeEndTime={endTime}
+                    startTime={parseTime(startTime, slot!.startTime)}
+                    endTime={parseTime(startTime, slot!.endTime)}
+                  />
+                </Slot>
+              )
+            })}
+          </TimeBars>
+          <Day>
+            <TimeNotice style={{ margin: "0" }}>
+              <StoreTime startTime={startTime} endTime={endTime} />
+            </TimeNotice>
+            <TimeNotice style={{ margin: "0" }}>
+              <Username style={{ width: "calc(50px + 1em)" }} />
+              {/* <StatusBar /> */}
+            </TimeNotice>
+          </Day>
+        </>
+      ) : (
+        <EmptyNotice>
+          <Text>지원자가 없습니다.</Text>
+        </EmptyNotice>
+      )}
     </View>
   )
 }
@@ -93,6 +97,16 @@ const timeFormat = (time: string) => {
 const View = styled.div`
   padding: 10px;
 `
+const EmptyNotice = styled.div`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  height: 300px;
+`
+const Text = styled.div`
+  align-self: center;
+`
 
 const TimeNotice = styled.div`
   flex-direction: row;
@@ -113,7 +127,11 @@ const Day = styled.div`
   display: flex;
   flex-direction: column;
 `
-
+const DayText = styled.div`
+  font-weight: 600;
+  font-size: 20px;
+  color: #3f51b5;
+`
 const Bars = styled.div`
   display: flex;
   flex-direction: column;
@@ -125,12 +143,10 @@ const TimeBars = styled.div`
   flex-direction: column;
   max-height: 300px;
   overflow-y: auto;
-  border: 1px solid red;
 `
 
 const Stack = styled.div`
   height: 100px;
-  border: 1px solid blue;
   display: flex;
 `
 
@@ -138,6 +154,7 @@ const Username = styled.div`
   font-weight: 500;
   text-align: right;
   width: 50px;
+  letter-spacing: 1px;
 `
 
 export default ApplyStatus

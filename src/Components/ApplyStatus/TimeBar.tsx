@@ -39,7 +39,7 @@ export const TimeBar: React.SFC<IProps> = ({
 }) => {
   const totalHour = storeEndTime - storeStartTime
   const firstIndex = startTime - storeStartTime || 0
-  const endIndex = endTime - storeStartTime || totalHour
+  const endIndex = endTime - storeStartTime - 1 || totalHour
   const boxResult = colorBar(userCode, totalHour, firstIndex, endIndex)
   return <View>{boxResult}</View>
 }

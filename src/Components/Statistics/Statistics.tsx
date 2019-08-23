@@ -25,51 +25,76 @@ const AssignInfo: React.SFC<IProps> = ({ rank, name, time }) => {
   )
 }
 const StatisticsPresenter: React.SFC<Props> = ({ days }) => {
-  makeStatistic(days)
+  const statistics = makeStatistic(days)
+  const sortedStatistic = sortedTime(statistics)
   return (
     <View>
-      <Title>8월 3주차 통계</Title>
+      <Title>8월 n주차 통계</Title>
       <Table>
         <InfoRow>
           <Rank>순위</Rank>
           <Name>이름</Name>
           <Time>배정시간</Time>
         </InfoRow>
-        <AssignInfo rank={1} name={"허구슬"} time={15} />
-        <AssignInfo rank={2} name={"김보성"} time={10} />
-        <AssignInfo rank={3} name={"문석현"} time={9} />
+        {renderRanking(sortedStatistic)}
       </Table>
       <Confirm>시간표 확정</Confirm>
     </View>
   )
 }
 
-const makeStatistic = days => {
-  const daysSlots = days.map(day => extractSelectedSlots(day))
-  const selectedSlots = daysSlots.reduce((acc, curr) => acc.concat(curr))
-  let result = {}
-  for (var i = 0; i < selectedSlots.length; i++) {
-    const slot = selectedSlots[i]
-    const userId = slot.userId
-    const time = countTime(
-      slot.startTime,
-      slot.endTime,
-      slot.isStartTimeNextDay,
-      slot.isEndTimeNextDay
+const renderRanking = sortedTime => {
+  const acc: JSX.Element[] = []
+  for (var i = 0; i < sortedTime.length; i++) {
+    const item = sortedTime[i]
+    const time = (
+      <AssignInfo key={i} rank={i + 1} name={item.user.name} time={item.time} />
     )
-    if (result.hasOwnProperty(userId)) {
-      result[userId].time += time
-    } else {
-      result[userId] = {
-        userId: slot.userId,
-        user: slot.user,
-        time: time
+    acc.push(time)
+  }
+  return acc
+}
+
+const makeStatistic = days => {
+  let result = {}
+  for (var i = 0; i < days.length; i++) {
+    const day = days[i]
+    const fulltime = countFullTime(day)
+    console.log("fulltime", fulltime)
+    const selected = extractSelectedSlots(day)
+    for (var j = 0; j < selected.length; j++) {
+      const slot = selected[j]
+      const userId = slot.userId
+      let time
+      if (slot.isFulltime) time = fulltime
+      else
+        time = countTime(
+          slot.startTime,
+          slot.endTime,
+          slot.isStartTimeNextDay,
+          slot.isEndTimeNextDay
+        )
+      if (result.hasOwnProperty(userId)) {
+        result[userId].time += time
+      } else {
+        result[userId] = {
+          userId: slot.userId,
+          user: slot.user,
+          time: time
+        }
       }
     }
   }
-  console.log("makeStatistic", result)
-  return result
+  return Object.values(result)
 }
+
+const countFullTime = day => {
+  const start = time2Int(day.startTime)
+  let end = time2Int(day.endTime)
+  if (day.isEndTimeNextDay) end += 24
+  return end - start
+}
+
 const countTime = (
   startTime,
   endTime,
@@ -94,17 +119,25 @@ const countTime = (
 }
 
 const extractSelectedSlots = day => {
-  const selectedSlots = day.slots
-  selectedSlots.filter(slot => slot.isSelected)
-  return selectedSlots
+  const slots = day.slots
+  const selectedSlots = slots.filter(slot => slot.isSelected)
+  return slots //
 }
 const time2Int = (time: string) => {
   const t = time.substring(0, 2)
   return parseInt(t, 10)
 }
+const sortedTime = times => {
+  const sortedTimes = times.sort((a, b) => {
+    return b.time - a.time
+  })
+  console.log("sortedTimes", sortedTimes)
+  return sortedTimes
+}
 
 const View = styled.div`
   flex: 1;
+  padding: 2%;
 `
 const Title = styled.div`
   font-weight: 600;
