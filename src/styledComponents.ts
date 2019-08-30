@@ -19,6 +19,7 @@ export const FlexContainer = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
+  border: 1.5px solid black;
 `
 
 export const Content = styled.div`
@@ -31,6 +32,7 @@ export const Content = styled.div`
 export const InnerShadowedBox = styled.div`
   height: 100%;
   width: 100%;
+  overflow-x: auto;
   background: white;
   padding: 2%;
   display: flex;

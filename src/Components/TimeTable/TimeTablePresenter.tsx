@@ -5,9 +5,14 @@ import styled from "styled-components"
 import history from "../../history"
 import { FlexContainer } from "../../styledComponents"
 import { theme } from "../../theme"
-import { GetCurrentTimeTable } from "../../types/api"
+import {
+  GetCurrentTimeTable,
+  GetCurrentTimeTable_GetCurrentTimeTable_timetable_days
+} from "../../types/api"
 import KoreanDays from "../../utils/KoreanDays"
 import Loading from "../Loading"
+// import { array } from "prop-types"
+// import { theme } from "../../theme"
 
 interface IProps {
   data: GetCurrentTimeTable | undefined
@@ -50,136 +55,158 @@ const TimeTablePresenter: React.SFC<IProps> = ({ data, loading }) =>
       <FlexContainer
         style={{
           flexDirection: "column",
-          minHeight: "500px",
-          minWidth: "880px"
+          minWidth: "880px",
+          overflow: "auto"
         }}
       >
         <TableHeader>
           <IndexBlock />
           {makeHeaderRow(data!)}
         </TableHeader>
-        <TableBody>
-          <TableRow>
-            <IndexBlock>
-              <Typography.Title level={4}>오전</Typography.Title>
-            </IndexBlock>
-            {makeTableCell(data!, "AM")}
-          </TableRow>
-          <TableRow>
-            <IndexBlock>
-              <Typography.Title level={4}>오후</Typography.Title>
-            </IndexBlock>
-            {makeTableCell(data!, "PM")}
-          </TableRow>
-          <TableRow>
-            <IndexBlock>
-              <Typography.Title level={4}>마감</Typography.Title>
-            </IndexBlock>
-            {makeTableCell(data!, "MD")}
-          </TableRow>
-        </TableBody>
+        <TableBody>{makeTableColumn(data!)}</TableBody>
       </FlexContainer>
     </>
   )
 
-const makeHeaderRow = (data: GetCurrentTimeTable | null) => {
+const makeTableColumn = (data: GetCurrentTimeTable | null) => {
   if (data) {
     if (data.GetCurrentTimeTable.timetable) {
-      const sortedTimeTable = data.GetCurrentTimeTable.timetable.days!.sort(
-        (a, b) => {
-          return a!.dayNumber - b!.dayNumber
+      let dayNumbers: number[] = []
+      data!.GetCurrentTimeTable.timetable!.days!.map(day => {
+        dayNumbers.push(day!.dayNumber)
+        return null
+      })
+
+      const maxDayNumber = Math.max.apply(null, dayNumbers)
+      const minDayNumber = Math.min.apply(null, dayNumbers)
+      const isContainNextMonth: boolean = maxDayNumber - minDayNumber >= 7
+      if (isContainNextMonth) {
+        const sortedDayNumbers: number[] = []
+        const previousMonthDayNumbers = dayNumbers
+          .filter(dayNumber => Math.abs(maxDayNumber - dayNumber) <= 6)
+          .sort((a, b) => a - b)
+        const nextMonthDayNumbers = dayNumbers
+          .filter(dayNumber => Math.abs(dayNumber - minDayNumber) <= 6)
+          .sort((a, b) => a - b)
+        previousMonthDayNumbers.forEach(dayNumber =>
+          sortedDayNumbers.push(dayNumber)
+        )
+        nextMonthDayNumbers.forEach(dayNumber =>
+          sortedDayNumbers.push(dayNumber)
+        )
+        dayNumbers = sortedDayNumbers
+      } else {
+        dayNumbers.sort((a, b) => a - b)
+      }
+
+      const sortedDays: Array<GetCurrentTimeTable_GetCurrentTimeTable_timetable_days | null> = []
+      dayNumbers.forEach(dayNumber => {
+        const index = data.GetCurrentTimeTable.timetable!.days!.findIndex(
+          day => day!.dayNumber === dayNumber
+        )
+        if (index > -1) {
+          sortedDays.push(data.GetCurrentTimeTable.timetable!.days![index])
         }
-      )
-      return sortedTimeTable.map(day => (
-        <TableHeaderCell key={day!.dayNumber}>
-          <Typography.Title level={4} style={{ margin: "auto" }}>
-            {day!.dayNumber}
-          </Typography.Title>
-          <Typography.Text>
-            {KoreanDays[sortedTimeTable.indexOf(day)]}
-          </Typography.Text>
-        </TableHeaderCell>
+      })
+
+      return sortedDays.map(day => (
+        <TableRow key={day!.dayNumber}>
+          <IndexBlock>
+            <Typography.Title level={4} style={{ marginBottom: "0" }}>
+              {day!.dayNumber} ({KoreanDays[sortedDays.indexOf(day)]})
+            </Typography.Title>
+          </IndexBlock>
+          {makeTableCell(data!, day!.dayNumber)}
+        </TableRow>
       ))
     }
   }
 }
 
-const makeTableCell = (data: GetCurrentTimeTable | null, time: string) => {
+const getTime = (data: GetCurrentTimeTable | null) => {
+  const timeTable = data!.GetCurrentTimeTable.timetable
+  const startTime =
+    Math.min.apply(
+      null,
+      timeTable!.days!.map(day => parseInt(day!.startTime, 10))
+    ) / 100
+  const endTime =
+    Math.max.apply(
+      null,
+      timeTable!.days!.map(day =>
+        day!.isEndTimeNextDay
+          ? parseInt(day!.endTime, 10) + 2400
+          : parseInt(day!.endTime, 10)
+      )
+    ) / 100
+  return [startTime, endTime]
+}
+
+const makeTableCell = (data: GetCurrentTimeTable | null, dayNumber: number) => {
   if (data) {
     if (data.GetCurrentTimeTable.timetable) {
       const sortedTimeTable = data.GetCurrentTimeTable.timetable.days!.sort(
         (a, b) => {
-          return a!.dayNumber - b!.dayNumber
+          return a!.id - b!.id
         }
       )
-
-      switch (time) {
-        case "AM":
-          return sortedTimeTable.map(day => {
-            if (day!.slots) {
-              const amSlots = day!.slots.filter(
-                slot => parseInt(slot!.startTime, 10) < 1200 || slot!.isFulltime
-              )
-              return (
-                <TableCell key={day!.dayNumber}>
-                  <Typography.Title level={4}>
-                    {`${amSlots.length}명`}
-                  </Typography.Title>
-                </TableCell>
-              )
-            } else {
-              return (
-                <TableCell
-                  style={{ background: theme.colors.red }}
-                  key={day!.dayNumber}
-                />
-              )
-            }
-          })
-        case "PM":
-          return sortedTimeTable.map(day => {
-            if (day!.slots) {
-              const pmSlots = day!.slots.filter(
-                slot =>
-                  (parseInt(slot!.startTime, 10) >= 1200 &&
-                    parseInt(slot!.startTime, 10) < 2200) ||
-                  parseInt(slot!.endTime, 10) >= 1200 ||
-                  slot!.isFulltime
-              )
-              return (
-                <TableCell key={day!.dayNumber}>
-                  <Typography.Title level={4}>
-                    {`${pmSlots.length}명`}
-                  </Typography.Title>
-                </TableCell>
-              )
-            } else {
-              return <TableCell key={day!.dayNumber} />
-            }
-          })
-        case "MD":
-          return sortedTimeTable.map(day => {
-            if (day!.slots) {
-              const mdSlots = day!.slots.filter(
-                slot =>
-                  parseInt(slot!.startTime, 10) >= 2200 ||
-                  parseInt(slot!.endTime, 10) >= 2200 ||
-                  slot!.isFulltime
-              )
-              return (
-                <TableCell key={day!.dayNumber}>
-                  <Typography.Title level={4}>
-                    {`${mdSlots.length}명`}
-                  </Typography.Title>
-                </TableCell>
-              )
-            } else {
-              return <TableCell key={day!.dayNumber} />
-            }
-          })
-        default:
-          return null
+      const [startTime, endTime] = getTime(data)
+      const indexArray = Array.from(Array(endTime - startTime + 1).keys())
+      const possibleTime = indexArray.map(index => startTime + index)
+      const dayElement = sortedTimeTable.filter(
+        day => day!.dayNumber === dayNumber
+      )
+      if (dayElement[0]!.slots) {
+        const rowElement = possibleTime.map(hourTime => {
+          return dayElement[0]!.slots!.filter(
+            slot =>
+              (parseInt(slot!.startTime, 10) / 100 <= hourTime &&
+                hourTime <= parseInt(slot!.endTime, 10) / 100) ||
+              slot!.isFulltime
+          )
+        })
+        let cellColor: string = ""
+        return rowElement.map(element => {
+          if (element.length >= 3) {
+            cellColor = theme.colors.white
+          } else if (element.length === 2) {
+            cellColor = theme.colors.bbbred
+          } else if (element.length === 1) {
+            cellColor = theme.colors.bbred
+          } else {
+            cellColor = theme.colors.bred
+          }
+          return (
+            <TableCell
+              key={`${dayNumber}-${possibleTime[rowElement.indexOf(element)]}`}
+              style={{ backgroundColor: cellColor }}
+            >
+              <Typography.Title level={4}>{element.length}</Typography.Title>
+            </TableCell>
+          )
+        })
       }
+    }
+  }
+}
+
+const makeHeaderRow = (data: GetCurrentTimeTable | null) => {
+  if (data) {
+    if (data.GetCurrentTimeTable.timetable) {
+      // console.log(data.GetCurrentTimeTable)
+      const [startTime, endTime] = getTime(data)
+      const indexArray = Array.from(Array(endTime - startTime + 1).keys())
+      const possibleTime = indexArray.map(index =>
+        startTime + index > 24
+          ? String(startTime + index - 24) + ":00"
+          : String(startTime + index) + ":00"
+      )
+
+      return possibleTime.map(time => (
+        <TableHeaderCell key={time}>
+          <Typography.Title level={4}>{time}</Typography.Title>
+        </TableHeaderCell>
+      ))
     }
   }
 }
@@ -197,7 +224,6 @@ const TableHeader = styled.div`
   display: flex;
   width: 100%;
   height: 10%;
-  border: 1px solid black;
 `
 
 const TableBody = styled.div`
@@ -205,14 +231,12 @@ const TableBody = styled.div`
   height: 90%;
   display: flex;
   flex-direction: column;
-  border: 1px solid black;
 `
 
 const TableRow = styled.div`
   display: flex;
   width: 100%;
   flex: 1 1 0;
-  border: 1px solid black;
 `
 
 const IndexBlock = styled.div`
@@ -221,7 +245,7 @@ const IndexBlock = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid black;
+  border: 1px solid lightgray;
 `
 
 const TableHeaderCell = styled.div`
@@ -229,9 +253,10 @@ const TableHeaderCell = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 60px;
   flex: 1 1 0;
   height: 100%;
-  border: 1px solid black;
+  border: 1px solid lightgray;
 `
 
 const TableCell = styled.div`
@@ -239,9 +264,10 @@ const TableCell = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 60px;
   flex: 1 1 0;
   height: 100%;
-  border: 1px solid black;
+  border: 1px solid lightgray;
 `
 
 export default TimeTablePresenter

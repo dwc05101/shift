@@ -94,6 +94,8 @@ class MakeTimeTableContainer extends React.Component<
       checked,
       loading
     } = this.state
+
+    console.log(nextWeekTimeTableDays)
     return (
       <MakeTimeTableMutation
         mutation={MAKE_TIMETABLE}
