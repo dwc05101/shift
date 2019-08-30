@@ -1,5 +1,5 @@
 import { Typography } from "antd"
-import React, { useState } from "react"
+import React from "react"
 import styled from "styled-components"
 import { theme } from "../../theme"
 
@@ -19,6 +19,7 @@ interface IProps {
     boxId: string
   ) => Promise<string[]>
   selectedResult: string[][]
+  selectedSlots: Array<{}>
   clearStatus: boolean[]
 }
 
@@ -57,6 +58,7 @@ export const TimeBar: React.SFC<IProps> = ({
   updateSelectedSlots,
   updateSelectedResult,
   selectedResult,
+  selectedSlots,
   clearStatus
 }) => {
   const totalHour = storeEndTime - storeStartTime
@@ -75,6 +77,7 @@ export const TimeBar: React.SFC<IProps> = ({
     updateSelectedSlots,
     updateSelectedResult,
     selectedResult,
+    selectedSlots,
     boxColor,
     clearStatus
   )
@@ -95,12 +98,19 @@ const colorBar = (
     boxId: string
   ) => Promise<string[]>,
   selectedResult: string[][],
+  selectedSlots: Array<{}>,
   boxColor: string,
   clearStatus: boolean[]
 ) => {
   const boxResult: JSX.Element[] = []
+  const defaultColoredBox: string[] = selectedSlots[dayNumber][userCode]
   for (let i = 0; i < totalHour; i++) {
-    if (firstIndex <= i && i <= endIndex) {
+    if (firstIndex <= i && i < endIndex) {
+      if (defaultColoredBox && defaultColoredBox.indexOf(String(i)) !== -1) {
+        boxColor = theme.colors.red
+      } else {
+        boxColor = theme.colors.pale_blue
+      }
       boxResult.push(
         <Item
           key={i}
@@ -149,12 +159,13 @@ const selectUserAtTime = async (
     dayNumber,
     boxId
   )
+  console.log(updatingResult)
   if (updatingResult.includes(boxId)) {
     event.target.style.backgroundColor = theme.colors.red
   } else {
     event.target.style.backgroundColor = theme.colors.pale_blue
   }
-  updateSelectedSlots(updatingResult, dayNumber)
+  await updateSelectedSlots(updatingResult, dayNumber)
 }
 
 export const StatusBar: React.SFC<IUpdateProps> = ({

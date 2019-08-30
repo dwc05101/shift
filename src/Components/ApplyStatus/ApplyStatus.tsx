@@ -12,6 +12,12 @@ interface IProps {
   selectedSlots: Array<{}>
   updateSelectedSlots: (result: string[], dayIndex: number) => void
   clearSelectedSlots: (selectedSlots: Array<{}>, dayIndex: number) => void
+  handleTempSave: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void
+  // loadDefaultSlots: (
+  //   slot: GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots | null,
+  //   startTime: number,
+  //   dayIndex: number
+  // ) => string[]
 }
 
 interface IState {
@@ -53,7 +59,7 @@ class ApplyStatus extends React.Component<IProps, IState> {
     endTime: this.props.day!.isEndTimeNextDay
       ? parseTimeNextDay(this.props.day!.endTime)
       : time2Int(this.props.day!.endTime),
-    selectedResult: [[], [], [], [], [], [], []],
+    selectedResult: [[], [], [], [], [], [], []] as string[][],
     startTime: time2Int(this.props.day!.startTime)
   }
 
@@ -76,15 +82,50 @@ class ApplyStatus extends React.Component<IProps, IState> {
     return subSelectedResult
   }
 
+  public async componentDidMount() {
+    const { day, updateSelectedSlots, dayIndex } = this.props
+    const { selectedResult, startTime } = this.state
+    console.log(day!.slots!)
+    day!.slots!.map(slot => {
+      if (slot!.isSelected) {
+        const userStartTimeNextDay: boolean = slot!.isStartTimeNextDay
+        const userEndTimeNextDay: boolean = slot!.isEndTimeNextDay
+
+        const userStartTime: number = userStartTimeNextDay
+          ? parseInt(slot!.startTime, 10) + 24
+          : parseInt(slot!.startTime, 10)
+        const userEndTime: number = userEndTimeNextDay
+          ? parseInt(slot!.endTime, 10) + 24
+          : parseInt(slot!.endTime, 10)
+
+        for (
+          let i = userStartTime - startTime;
+          i < userEndTime - startTime;
+          i++
+        ) {
+          const result = slot!.user.personalCode + "-" + String(i)
+          selectedResult[dayIndex].push(result)
+        }
+      }
+      return null
+    })
+
+    await updateSelectedSlots(selectedResult[dayIndex], dayIndex)
+    await this.setState({ selectedResult })
+  }
+
   public render() {
     const {
       day,
       dayIndex,
       selectedSlots,
       updateSelectedSlots,
-      clearSelectedSlots
+      clearSelectedSlots,
+      handleTempSave
     } = this.props
     const { clearStatus, selectedResult, endTime, startTime } = this.state
+
+    // console.log(selectedResult)
     return (
       <View>
         <Top>
@@ -116,7 +157,7 @@ class ApplyStatus extends React.Component<IProps, IState> {
                 초기화
               </Typography.Text>
             </Button>
-            <Button type="primary">
+            <Button type="primary" onClick={handleTempSave}>
               <Typography.Text style={{ fontWeight: "bolder", color: "white" }}>
                 임시저장
               </Typography.Text>
@@ -137,32 +178,36 @@ class ApplyStatus extends React.Component<IProps, IState> {
           </Title>
           <TimeBars>
             <TimeNotice style={{ margin: "0" }}>
-              <Username />
+              <Username style={{ marginRight: "32px" }} />
               <StoreTime startTime={startTime} endTime={endTime} />
             </TimeNotice>
             {day!.slots!.map((slot, index) => {
-              return (
-                <Slot key={index}>
-                  <Username>
-                    <Typography.Text strong={true}>
-                      {slot!.user.name}
-                    </Typography.Text>
-                  </Username>
-                  <TimeBar
-                    userCode={slot!.user.personalCode}
-                    isFullTime={slot!.isFulltime}
-                    storeStartTime={startTime}
-                    storeEndTime={endTime}
-                    dayNumber={dayIndex}
-                    startTime={parseTime(startTime, slot!.startTime)}
-                    endTime={parseTime(startTime, slot!.endTime)}
-                    updateSelectedSlots={updateSelectedSlots}
-                    updateSelectedResult={this.updateSelectedResult}
-                    selectedResult={selectedResult}
-                    clearStatus={clearStatus}
-                  />
-                </Slot>
-              )
+              if (!slot!.isSelected) {
+                return (
+                  <Slot key={index}>
+                    <Username>
+                      <Typography.Text strong={true}>
+                        {slot!.user.name}
+                      </Typography.Text>
+                    </Username>
+                    <TimeBar
+                      userCode={slot!.user.personalCode}
+                      isFullTime={slot!.isFulltime}
+                      storeStartTime={startTime}
+                      storeEndTime={endTime}
+                      dayNumber={dayIndex}
+                      startTime={parseTime(startTime, slot!.startTime)}
+                      endTime={parseTime(startTime, slot!.endTime)}
+                      updateSelectedSlots={updateSelectedSlots}
+                      updateSelectedResult={this.updateSelectedResult}
+                      selectedResult={selectedResult}
+                      selectedSlots={selectedSlots}
+                      clearStatus={clearStatus}
+                    />
+                  </Slot>
+                )
+              }
+              return null
             })}
           </TimeBars>
         </Middle>
@@ -180,11 +225,11 @@ class ApplyStatus extends React.Component<IProps, IState> {
           </Title>
           <UserTime>
             <TimeNotice style={{ margin: "0" }}>
-              <Username />
+              <Username style={{ marginRight: "32px" }} />
               <StoreTime startTime={startTime} endTime={endTime} />
             </TimeNotice>
             <TimeNotice style={{ margin: "0" }}>
-              <Username style={{ marginLeft: "1em" }} />
+              <Username style={{ marginLeft: "44px" }} />
               <StatusBar
                 storeStartTime={startTime}
                 storeEndTime={endTime}

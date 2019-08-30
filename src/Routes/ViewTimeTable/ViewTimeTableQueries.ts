@@ -9,6 +9,7 @@ export const GET_ALL_TIMETABLES = gql`
         id
         isConfirmed
         yearMonthWeek
+        organizationId
         createdAt
         updatedAt
         days {

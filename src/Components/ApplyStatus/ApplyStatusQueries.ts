@@ -4,15 +4,22 @@ export const CREATE_SLOT = gql`
   mutation CreateSlot(
     $slots: [SlotInfo]!
     $timetableId: Int!
-    $personalCode: String!
     $organizationId: Int!
   ) {
     CreateSlot(
       slots: $slots
       timetableId: $timetableId
-      personalCode: $personalCode
       organizationId: $organizationId
     ) {
+      ok
+      error
+    }
+  }
+`
+
+export const REMOVE_SLOT = gql`
+  mutation RemoveSlot($slotId: Int!) {
+    RemoveSlot(slotId: $slotId) {
       ok
       error
     }

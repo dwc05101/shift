@@ -17,6 +17,7 @@ export const GET_TIMETABLE = gql`
         yearMonthWeek
         id
         isConfirmed
+        organizationId
         organization {
           name
           users {
@@ -35,6 +36,7 @@ export const GET_TIMETABLE = gql`
           slots {
             id
             isFulltime
+            isSelected
             startTime
             endTime
             isStartTimeNextDay
