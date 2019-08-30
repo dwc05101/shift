@@ -1,10 +1,11 @@
-import { Form, Icon, Input, Modal } from "antd"
+import { Form, Icon, Input, Modal, Select } from "antd"
 import React from "react"
 
 interface IProps {
   name: string
   personalCode: string
   phoneNumber: string
+  userRank: number
   visible: boolean
   loading: boolean
   onInputChange: (
@@ -12,21 +13,26 @@ interface IProps {
   ) => void
   onSubmit: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void
   onCancel: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void
+  onSelectChange: (value: any) => void
 }
 
 const CreateUserModalPresenter: React.SFC<IProps> = ({
   name,
   personalCode,
   phoneNumber,
+  userRank,
   visible,
   loading,
   onInputChange,
   onSubmit,
-  onCancel
+  onCancel,
+  onSelectChange
 }) => (
   <Modal
     title="구성원 추가"
     visible={visible}
+    okText="만들기"
+    cancelText="취소"
     onOk={onSubmit}
     confirmLoading={loading}
     onCancel={onCancel}
@@ -61,6 +67,13 @@ const CreateUserModalPresenter: React.SFC<IProps> = ({
           prefix={<Icon type="phone" style={{ color: "rgba(0,0,0,.25" }} />}
           placeholder="전화번호"
         />
+      </Form.Item>
+      <Form.Item label="랭크">
+        <Select defaultValue={userRank} onChange={onSelectChange}>
+          <Select.Option value={1}>1</Select.Option>
+          <Select.Option value={2}>2</Select.Option>
+          <Select.Option value={3}>3</Select.Option>
+        </Select>
       </Form.Item>
     </Form>
   </Modal>

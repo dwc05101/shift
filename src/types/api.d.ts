@@ -27,7 +27,32 @@ export interface CreateUserToOrganizationVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: CreateUserToOrganization
+// GraphQL mutation operation: UpdateUser
+// ====================================================
+
+export interface UpdateUser_UpdateUser {
+  __typename: "UpdateUserResponse"
+  ok: boolean
+  error: string | null
+}
+
+export interface UpdateUser {
+  UpdateUser: UpdateUser_UpdateUser
+}
+
+export interface UpdateUserVariables {
+  userId: number
+  personalCode?: string | null
+  userRank?: number | null
+  name?: string | null
+  phoneNumber?: string | null
+}
+
+/* tslint:disable */
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: CreateSlot
 // ====================================================
 
 export interface CreateSlot_CreateSlot {
@@ -184,6 +209,7 @@ export interface GetUsers_GetUsers_users_slots {
 export interface GetUsers_GetUsers_users {
   __typename: "User"
   id: number
+  userRank: number
   personalCode: string
   name: string
   phoneNumber: string

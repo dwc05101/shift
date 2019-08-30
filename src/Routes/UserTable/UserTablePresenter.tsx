@@ -2,22 +2,32 @@ import { Button, Popconfirm, Table, Typography } from "antd"
 import React from "react"
 import styled from "styled-components"
 import CreateUserModal from "../../Components/CreateUserModal"
+import EditUserModal from "../../Components/EditUserModal"
 import { Container, Content, InnerShadowedBox } from "../../styledComponents"
 import { GetUsers, GetUsers_GetUsers_users } from "../../types/api"
 
 interface IProps {
   loading: boolean
   createUserModalVisible: boolean
+  editUserModalVisible: boolean
   data: GetUsers | undefined
   selectedRowKeys: string[]
   showDeleteConfirm: boolean
+  userId: number
+  name: string
+  personalCode: string
+  phoneNumber: string
+  userRank: number
   onChange: (selectedRowKeys: any) => void
   openCreateUserModal: (
     event: React.MouseEvent<HTMLElement, MouseEvent>
   ) => void
   onConfirm: (e: any) => void
   onDelete: (e: any) => void
+  onClickEdit: (target: any) => void
 }
+
+let onClickEditButton
 
 const UserTablePresenter: React.SFC<IProps> = ({
   data,
@@ -28,8 +38,16 @@ const UserTablePresenter: React.SFC<IProps> = ({
   createUserModalVisible,
   onConfirm,
   showDeleteConfirm,
-  onDelete
+  onDelete,
+  name,
+  userId,
+  userRank,
+  personalCode,
+  phoneNumber,
+  editUserModalVisible,
+  onClickEdit
 }) => {
+  onClickEditButton = onClickEdit
   const rowSelection = {
     onChange,
     selectedRowKeys
@@ -42,6 +60,16 @@ const UserTablePresenter: React.SFC<IProps> = ({
             <Header>
               {createUserModalVisible ? (
                 <CreateUserModal visible={createUserModalVisible} />
+              ) : null}
+              {editUserModalVisible ? (
+                <EditUserModal
+                  visible={editUserModalVisible}
+                  name={name}
+                  userId={userId}
+                  phoneNumber={phoneNumber}
+                  userRank={userRank}
+                  personalCode={personalCode}
+                />
               ) : null}
               <Typography.Title level={1}>구성원 관리</Typography.Title>
               <Operations>
@@ -83,6 +111,10 @@ const UserTablePresenter: React.SFC<IProps> = ({
 
 const columns = [
   {
+    dataIndex: "userRank",
+    title: "랭크"
+  },
+  {
     dataIndex: "name",
     title: "이름"
   },
@@ -93,6 +125,19 @@ const columns = [
   {
     dataIndex: "phoneNumber",
     title: "전화번호"
+  },
+  {
+    render: (text, record) => (
+      <Button
+        type="link"
+        onClick={() => {
+          onClickEditButton(text)
+        }}
+      >
+        수정
+      </Button>
+    ),
+    title: ""
   }
 ]
 
@@ -103,7 +148,8 @@ const parseData = (users: Array<GetUsers_GetUsers_users | null>): any[] => {
       key: user!.id,
       name: user!.name,
       personalCode: user!.personalCode,
-      phoneNumber: user!.phoneNumber
+      phoneNumber: user!.phoneNumber,
+      userRank: user!.userRank
     }
     parsed.push(data)
   })

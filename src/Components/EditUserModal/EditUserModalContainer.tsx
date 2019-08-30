@@ -2,69 +2,85 @@ import { message } from "antd"
 import React from "react"
 import { Mutation } from "react-apollo"
 import { GET_USERS } from "../../GlobalQuries"
-import {
-  CreateUserToOrganization,
-  CreateUserToOrganizationVariables
-} from "../../types/api"
-import CreateUserModalPresenter from "./CreateUserModalPresenter"
-import { CREATE_USER } from "./CreateUserModalQueries"
+import { UpdateUser, UpdateUserVariables } from "../../types/api"
+import EditUserModalPresenter from "./EditUserModalPresenter"
+import { EDIT_USER } from "./EditUserModalQueries"
 
 interface IProps {
   visible: boolean
+  userId: number
+  name: string
+  personalCode: string
+  phoneNumber: string
+  userRank: number
 }
 
-class CreateUserMutation extends Mutation<
-  CreateUserToOrganization,
-  CreateUserToOrganizationVariables
-> {}
+interface IState {
+  userId: number
+  name: string
+  personalCode: string
+  phoneNumber: string
+  userRank: number
+  visible: boolean
+}
 
-class CreateUserModalContainer extends React.Component<IProps> {
-  public createMutation
+class EditUserMutation extends Mutation<UpdateUser, UpdateUserVariables> {}
+
+class EditUserModalContainer extends React.Component<IProps, IState> {
+  public mutationFn
 
   public state = {
-    name: "",
-    personalCode: "",
-    phoneNumber: "",
-    userRank: 3,
+    name: this.props.name,
+    personalCode: this.props.personalCode,
+    phoneNumber: this.props.phoneNumber,
+    userId: this.props.userId,
+    userRank: this.props.userRank,
     visible: this.props.visible
   }
 
   public render() {
-    const { name, personalCode, phoneNumber, visible, userRank } = this.state
+    const {
+      userId,
+      name,
+      personalCode,
+      phoneNumber,
+      userRank,
+      visible
+    } = this.state
     return (
-      <CreateUserMutation
-        mutation={CREATE_USER}
-        variables={{ name, personalCode, phoneNumber }}
+      <EditUserMutation
+        mutation={EDIT_USER}
+        variables={{ userId, name, personalCode, phoneNumber, userRank }}
         onCompleted={data => {
-          if (data.CreateUserToOrganization.ok) {
-            message.success("구성원이 추가되었습니다!")
+          if (data.UpdateUser.ok) {
+            message.success("성공적으로 수정하였습니다!")
             this.setState({
               visible: false
             })
           } else {
-            message.error("개인번호가 중복되었습니다.")
+            message.error("정보 수정에 실패했습니다.")
           }
         }}
         refetchQueries={[{ query: GET_USERS }]}
       >
         {(mutation, { loading }) => {
-          this.createMutation = mutation
+          this.mutationFn = mutation
           return (
-            <CreateUserModalPresenter
+            <EditUserModalPresenter
+              loading={loading}
               visible={visible}
               name={name}
-              userRank={userRank}
               personalCode={personalCode}
               phoneNumber={phoneNumber}
+              userRank={userRank}
               onInputChange={this.onInputChange}
               onSubmit={this.onSubmit}
-              loading={loading}
               onCancel={this.onCancel}
               onSelectChange={this.onSelectChange}
             />
           )
         }}
-      </CreateUserMutation>
+      </EditUserMutation>
     )
   }
 
@@ -88,7 +104,7 @@ class CreateUserModalContainer extends React.Component<IProps> {
       message.error("정보를 모두 입력해 주세요.")
       return
     }
-    this.createMutation()
+    this.mutationFn()
   }
 
   public onCancel: (
@@ -106,4 +122,4 @@ class CreateUserModalContainer extends React.Component<IProps> {
   }
 }
 
-export default CreateUserModalContainer
+export default EditUserModalContainer

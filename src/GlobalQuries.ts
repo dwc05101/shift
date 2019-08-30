@@ -7,6 +7,7 @@ export const GET_USERS = gql`
       error
       users {
         id
+        userRank
         personalCode
         name
         phoneNumber
