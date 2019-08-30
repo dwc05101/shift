@@ -147,11 +147,10 @@ const makeTableCell = (data: GetCurrentTimeTable | null, dayNumber: number) => {
     if (data.GetCurrentTimeTable.timetable) {
       const sortedTimeTable = data.GetCurrentTimeTable.timetable.days!.sort(
         (a, b) => {
-          return a!.dayNumber - b!.dayNumber
+          return a!.id - b!.id
         }
       )
       const [startTime, endTime] = getTime(data)
-
       const indexArray = Array.from(Array(endTime - startTime + 1).keys())
       const possibleTime = indexArray.map(index => startTime + index)
       const dayElement = sortedTimeTable.filter(

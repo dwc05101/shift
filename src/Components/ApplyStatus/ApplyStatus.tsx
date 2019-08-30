@@ -20,12 +20,73 @@ interface IProps {
   // ) => string[]
 }
 
+// <<<<<<< HEAD
 interface IState {
   boxColors: string[]
   clearStatus: boolean[]
   endTime: number
   startTime: number
   selectedResult: string[][]
+  // =======
+  // const ApplyStatus: React.SFC<IProps> = ({ day, dayIndex }) => {
+  //   const startTime = time2Int(day!.startTime)
+  //   const endTime = day!.isEndTimeNextDay
+  //     ? parseTimeNextDay(day!.endTime)
+  //     : time2Int(day!.endTime)
+  //   return (
+  //     <View>
+  //       <Day>
+  //         <DayText>
+  //           {day!.dayNumber}일 ({KoreanDays[dayIndex]})
+  //         </DayText>
+  //         <Typography.Text>
+  //           영업 시작 : {timeFormat(day!.startTime)}
+  //         </Typography.Text>
+  //         <Typography.Text>
+  //           영업 종료 : {timeFormat(day!.endTime)}
+  //         </Typography.Text>
+  //       </Day>
+  //       {day!.slots!.length > 0 ? (
+  //         <>
+  //           <TimeBars>
+  //             <TimeNotice>
+  //               <Username />
+  //               <StoreTime startTime={startTime} endTime={endTime} />
+  //             </TimeNotice>
+  //             {day!.slots!.map((slot, index) => {
+  //               return (
+  //                 <Slot key={index}>
+  //                   <Username>{slot!.user.name}</Username>
+  //                   <TimeBar
+  //                     userCode={slot!.user.personalCode}
+  //                     isFullTime={slot!.isFulltime}
+  //                     storeStartTime={startTime}
+  //                     storeEndTime={endTime}
+  //                     startTime={parseTime(startTime, slot!.startTime)}
+  //                     endTime={parseTime(startTime, slot!.endTime)}
+  //                   />
+  //                 </Slot>
+  //               )
+  //             })}
+  //           </TimeBars>
+  //           <Day>
+  //             <TimeNotice style={{ margin: "0" }}>
+  //               <StoreTime startTime={startTime} endTime={endTime} />
+  //             </TimeNotice>
+  //             <TimeNotice style={{ margin: "0" }}>
+  //               <Username style={{ width: "calc(50px + 1em)" }} />
+  //               {/* <StatusBar /> */}
+  //             </TimeNotice>
+  //           </Day>
+  //         </>
+  //       ) : (
+  //         <EmptyNotice>
+  //           <Text>지원자가 없습니다.</Text>
+  //         </EmptyNotice>
+  //       )}
+  //     </View>
+  //   )
+  // >>>>>>> e1b5523e7e59d68ac4fabaf7d5f8cac5d255b05d
 }
 
 const parseTimeNextDay = (endTime: string) => {
@@ -130,7 +191,10 @@ class ApplyStatus extends React.Component<IProps, IState> {
       <View>
         <Top>
           <Day>
-            <Typography.Title level={4} style={{ margin: "0" }}>
+            <Typography.Title
+              level={4}
+              style={{ margin: "0", color: `${theme.colors.pale_blue}` }}
+            >
               {day!.dayNumber}일 ({KoreanDays[dayIndex]})
             </Typography.Title>
             <StartEndTime>
@@ -164,81 +228,89 @@ class ApplyStatus extends React.Component<IProps, IState> {
             </Button>
           </Day>
         </Top>
-        <Middle>
-          <Title>
-            <Typography.Title
-              level={4}
-              style={{
-                borderRight: `3px solid ${theme.colors.blue}`,
-                paddingRight: "5px"
-              }}
-            >
-              신청 현황
-            </Typography.Title>
-          </Title>
-          <TimeBars>
-            <TimeNotice style={{ margin: "0" }}>
-              <Username style={{ marginRight: "32px" }} />
-              <StoreTime startTime={startTime} endTime={endTime} />
-            </TimeNotice>
-            {day!.slots!.map((slot, index) => {
-              if (!slot!.isSelected) {
-                return (
-                  <Slot key={index}>
-                    <Username>
-                      <Typography.Text strong={true}>
-                        {slot!.user.name}
-                      </Typography.Text>
-                    </Username>
-                    <TimeBar
-                      userCode={slot!.user.personalCode}
-                      isFullTime={slot!.isFulltime}
-                      storeStartTime={startTime}
-                      storeEndTime={endTime}
-                      dayNumber={dayIndex}
-                      startTime={parseTime(startTime, slot!.startTime)}
-                      endTime={parseTime(startTime, slot!.endTime)}
-                      updateSelectedSlots={updateSelectedSlots}
-                      updateSelectedResult={this.updateSelectedResult}
-                      selectedResult={selectedResult}
-                      selectedSlots={selectedSlots}
-                      clearStatus={clearStatus}
-                    />
-                  </Slot>
-                )
-              }
-              return null
-            })}
-          </TimeBars>
-        </Middle>
-        <Bottom>
-          <Title>
-            <Typography.Title
-              level={4}
-              style={{
-                borderRight: `3px solid ${theme.colors.blue}`,
-                paddingRight: "8px"
-              }}
-            >
-              배정 현황
-            </Typography.Title>
-          </Title>
-          <UserTime>
-            <TimeNotice style={{ margin: "0" }}>
-              <Username style={{ marginRight: "32px" }} />
-              <StoreTime startTime={startTime} endTime={endTime} />
-            </TimeNotice>
-            <TimeNotice style={{ margin: "0" }}>
-              <Username style={{ marginLeft: "44px" }} />
-              <StatusBar
-                storeStartTime={startTime}
-                storeEndTime={endTime}
-                dayNumber={dayIndex}
-                selectedSlots={selectedSlots}
-              />
-            </TimeNotice>
-          </UserTime>
-        </Bottom>
+        {day!.slots!.length > 0 ? (
+          <>
+            <Middle>
+              <Title>
+                <Typography.Title
+                  level={4}
+                  style={{
+                    borderRight: `3px solid ${theme.colors.blue}`,
+                    paddingRight: "5px"
+                  }}
+                >
+                  신청 현황
+                </Typography.Title>
+              </Title>
+              <TimeBars>
+                <TimeNotice style={{ margin: "0" }}>
+                  <Username style={{ marginRight: "32px" }} />
+                  <StoreTime startTime={startTime} endTime={endTime} />
+                </TimeNotice>
+                {day!.slots!.map((slot, index) => {
+                  if (!slot!.isSelected) {
+                    return (
+                      <Slot key={index}>
+                        <Username>
+                          <Typography.Text strong={true}>
+                            {slot!.user.name}
+                          </Typography.Text>
+                        </Username>
+                        <TimeBar
+                          userCode={slot!.user.personalCode}
+                          isFullTime={slot!.isFulltime}
+                          storeStartTime={startTime}
+                          storeEndTime={endTime}
+                          dayNumber={dayIndex}
+                          startTime={parseTime(startTime, slot!.startTime)}
+                          endTime={parseTime(startTime, slot!.endTime)}
+                          updateSelectedSlots={updateSelectedSlots}
+                          updateSelectedResult={this.updateSelectedResult}
+                          selectedResult={selectedResult}
+                          selectedSlots={selectedSlots}
+                          clearStatus={clearStatus}
+                        />
+                      </Slot>
+                    )
+                  }
+                  return null
+                })}
+              </TimeBars>
+            </Middle>
+            <Bottom>
+              <Title>
+                <Typography.Title
+                  level={4}
+                  style={{
+                    borderRight: `3px solid ${theme.colors.blue}`,
+                    paddingRight: "8px"
+                  }}
+                >
+                  배정 현황
+                </Typography.Title>
+              </Title>
+              <UserTime>
+                <TimeNotice style={{ margin: "0" }}>
+                  <Username style={{ marginRight: "32px" }} />
+                  <StoreTime startTime={startTime} endTime={endTime} />
+                </TimeNotice>
+                <TimeNotice style={{ margin: "0" }}>
+                  <Username style={{ marginLeft: "44px" }} />
+                  <StatusBar
+                    storeStartTime={startTime}
+                    storeEndTime={endTime}
+                    dayNumber={dayIndex}
+                    selectedSlots={selectedSlots}
+                  />
+                </TimeNotice>
+              </UserTime>
+            </Bottom>
+          </>
+        ) : (
+          <EmptyNotice>
+            <Text>지원자가 없습니다.</Text>
+          </EmptyNotice>
+        )}
       </View>
     )
   }
@@ -247,6 +319,16 @@ class ApplyStatus extends React.Component<IProps, IState> {
 const View = styled.div`
   height: 100%;
   padding: 0 1%;
+`
+const EmptyNotice = styled.div`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  height: 300px;
+`
+const Text = styled.div`
+  align-self: center;
 `
 
 const Top = styled.div`

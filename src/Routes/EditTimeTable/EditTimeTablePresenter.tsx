@@ -184,7 +184,9 @@ class EditTimeTablePresenter extends React.Component<IProps, IState> {
                   </RightWrapper>
                   <LeftWrapper ref={this.height}>
                     <StatisticsView>
-                      <Statistics />
+                      <Statistics
+                        days={data!.GetCurrentTimeTable.timetable!.days}
+                      />
                     </StatisticsView>
                   </LeftWrapper>
                 </InnerShadowedBox>

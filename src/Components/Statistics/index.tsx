@@ -1,2 +1,2 @@
-import StatisticsPresenter from "./StatisticsPresenter"
+import StatisticsPresenter from "./Statistics"
 export default StatisticsPresenter

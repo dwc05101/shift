@@ -27,6 +27,28 @@ export interface CreateSlotVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: RemoveSlot
+// ====================================================
+
+export interface RemoveSlot_RemoveSlot {
+  __typename: "RemoveSlotResponse";
+  ok: boolean;
+  error: string | null;
+}
+
+export interface RemoveSlot {
+  RemoveSlot: RemoveSlot_RemoveSlot;
+}
+
+export interface RemoveSlotVariables {
+  slotId: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: CreateUserToOrganization
 // ====================================================
 
@@ -106,8 +128,9 @@ export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots_us
 export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots {
   __typename: "Slot";
   id: number;
-  isFulltime: boolean;
+  userId: number | null;
   isSelected: boolean;
+  isFulltime: boolean;
   startTime: string;
   endTime: string;
   isStartTimeNextDay: boolean;
@@ -117,10 +140,11 @@ export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots {
 
 export interface GetCurrentTimeTable_GetCurrentTimeTable_timetable_days {
   __typename: "Day";
+  id: number;
+  isEndTimeNextDay: boolean;
   startTime: string;
   endTime: string;
   dayNumber: number;
-  isEndTimeNextDay: boolean;
   slots: (GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots | null)[] | null;
 }
 
@@ -318,9 +342,15 @@ export interface GetDays_GetDays_days_slots_user {
 
 export interface GetDays_GetDays_days_slots {
   __typename: "Slot";
+  id: number;
+  isSelected: boolean;
   isFulltime: boolean;
   startTime: string;
   endTime: string;
+  isStartTimeNextDay: boolean;
+  isEndTimeNextDay: boolean;
+  userId: number | null;
+  dayId: number | null;
   user: GetDays_GetDays_days_slots_user;
 }
 
