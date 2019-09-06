@@ -4,7 +4,7 @@ export const EDIT_USER = gql`
   mutation UpdateUser(
     $userId: Int!
     $personalCode: String
-    $userRank: Int
+    $userRank: UserRank
     $name: String
     $phoneNumber: String
   ) {

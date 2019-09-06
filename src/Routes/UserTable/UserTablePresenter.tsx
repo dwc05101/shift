@@ -17,7 +17,7 @@ interface IProps {
   name: string
   personalCode: string
   phoneNumber: string
-  userRank: number
+  userRank: string
   onChange: (selectedRowKeys: any) => void
   openCreateUserModal: (
     event: React.MouseEvent<HTMLElement, MouseEvent>
@@ -76,7 +76,7 @@ const UserTablePresenter: React.SFC<IProps> = ({
                 <Popconfirm
                   title="정말로 삭제 하시겠습니까?"
                   onConfirm={onConfirm}
-                  disabled={showDeleteConfirm}
+                  disabled={selectedRowKeys.length === 0}
                   okText="네"
                   cancelText="아니오"
                 >
@@ -112,6 +112,18 @@ const UserTablePresenter: React.SFC<IProps> = ({
 const columns = [
   {
     dataIndex: "userRank",
+    render: (text, record) => {
+      switch (text) {
+        case "ONE":
+          return <Typography.Text>1</Typography.Text>
+        case "TWO":
+          return <Typography.Text>2</Typography.Text>
+        case "THREE":
+          return <Typography.Text>3</Typography.Text>
+        default:
+          return null
+      }
+    },
     title: "랭크"
   },
   {

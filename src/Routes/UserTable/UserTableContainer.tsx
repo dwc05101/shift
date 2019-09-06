@@ -5,7 +5,8 @@ import { GET_USERS } from "../../GlobalQuries"
 import {
   GetUsers,
   RemoveUserFromOrganization,
-  RemoveUserFromOrganizationVariables
+  RemoveUserFromOrganizationVariables,
+  UserRank
 } from "../../types/api"
 import UserTablePresenter from "./UserTablePresenter"
 import { REMOVE_USER } from "./UserTableQueries"
@@ -21,7 +22,7 @@ interface IState {
   name: string
   personalCode: string
   phoneNumber: string
-  userRank: number
+  userRank: UserRank
 }
 
 class GetUsersQuery extends Query<GetUsers> {}
@@ -45,7 +46,7 @@ class UserTableContainer extends React.Component<{}, IState> {
     selectedRowKeys: [],
     showDeleteConfirm: false,
     userId: -1,
-    userRank: 3
+    userRank: "ONE" as UserRank
   }
 
   public render() {
@@ -153,7 +154,7 @@ class UserTableContainer extends React.Component<{}, IState> {
         personalCode: targetUser!.personalCode,
         phoneNumber: targetUser!.phoneNumber,
         userId: targetUser!.id,
-        userRank: targetUser!.userRank
+        userRank: targetUser!.userRank as UserRank
       })
     } else {
       message.error("존재하지 않는 유저 입니다.")

@@ -3,30 +3,6 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: CreateSlot
-// ====================================================
-
-export interface CreateSlot_CreateSlot {
-  __typename: "CreateSlotResponse";
-  ok: boolean;
-  error: string | null;
-}
-
-export interface CreateSlot {
-  CreateSlot: CreateSlot_CreateSlot;
-}
-
-export interface CreateSlotVariables {
-  slots: (SlotInfo | null)[];
-  timetableId: number;
-  organizationId: number;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// This file was automatically generated and should not be edited.
-
-// ====================================================
 // GraphQL mutation operation: RemoveSlot
 // ====================================================
 
@@ -41,7 +17,8 @@ export interface RemoveSlot {
 }
 
 export interface RemoveSlotVariables {
-  slotId: number;
+  slotIds: (number | null)[];
+  timetableId: number;
 }
 
 /* tslint:disable */
@@ -66,6 +43,7 @@ export interface CreateUserToOrganizationVariables {
   personalCode: string;
   name: string;
   phoneNumber: string;
+  userRank: UserRank;
 }
 
 /* tslint:disable */
@@ -89,9 +67,33 @@ export interface UpdateUser {
 export interface UpdateUserVariables {
   userId: number;
   personalCode?: string | null;
-  userRank?: number | null;
+  userRank?: UserRank | null;
   name?: string | null;
   phoneNumber?: string | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: CreateSlot
+// ====================================================
+
+export interface CreateSlot_CreateSlot {
+  __typename: "CreateSlotResponse";
+  ok: boolean;
+  error: string | null;
+}
+
+export interface CreateSlot {
+  CreateSlot: CreateSlot_CreateSlot;
+}
+
+export interface CreateSlotVariables {
+  slots: (SlotInfo | null)[];
+  timetableId: number;
+  organizationId: number;
 }
 
 /* tslint:disable */
@@ -232,7 +234,7 @@ export interface GetUsers_GetUsers_users_slots {
 export interface GetUsers_GetUsers_users {
   __typename: "User";
   id: number;
-  userRank: number;
+  userRank: string;
   personalCode: string;
   name: string;
   phoneNumber: string;
@@ -556,6 +558,12 @@ export interface GetTimeTables {
 //==============================================================
 // START Enums and Input Objects
 //==============================================================
+
+export enum UserRank {
+  ONE = "ONE",
+  THREE = "THREE",
+  TWO = "TWO",
+}
 
 export interface SlotInfo {
   personalCode: string;

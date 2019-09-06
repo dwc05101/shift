@@ -821,22 +821,6 @@
             "deprecationReason": null
           },
           {
-            "name": "userRank",
-            "description": "",
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "personalCode",
             "description": "",
             "args": [],
@@ -854,6 +838,22 @@
           },
           {
             "name": "name",
+            "description": "",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "userRank",
             "description": "",
             "args": [],
             "type": {
@@ -2309,7 +2309,25 @@
             "description": "",
             "args": [
               {
-                "name": "slotId",
+                "name": "slotIds",
+                "description": "",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Int",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "timetableId",
                 "description": "",
                 "type": {
                   "kind": "NON_NULL",
@@ -2606,6 +2624,20 @@
                   }
                 },
                 "defaultValue": null
+              },
+              {
+                "name": "userRank",
+                "description": "",
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "UserRank",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
               }
             ],
             "type": {
@@ -2687,8 +2719,8 @@
                 "name": "userRank",
                 "description": "",
                 "type": {
-                  "kind": "SCALAR",
-                  "name": "Int",
+                  "kind": "ENUM",
+                  "name": "UserRank",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -3565,6 +3597,35 @@
         "inputFields": null,
         "interfaces": [],
         "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "UserRank",
+        "description": "",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "ONE",
+            "description": "",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "TWO",
+            "description": "",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "THREE",
+            "description": "",
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
         "possibleTypes": null
       },
       {
