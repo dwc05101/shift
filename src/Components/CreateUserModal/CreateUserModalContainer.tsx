@@ -4,10 +4,19 @@ import { Mutation } from "react-apollo"
 import { GET_USERS } from "../../GlobalQuries"
 import {
   CreateUserToOrganization,
-  CreateUserToOrganizationVariables
+  CreateUserToOrganizationVariables,
+  UserRank
 } from "../../types/api"
 import CreateUserModalPresenter from "./CreateUserModalPresenter"
 import { CREATE_USER } from "./CreateUserModalQueries"
+
+interface IState {
+  name: string
+  personalCode: string
+  phoneNumber: string
+  userRank: UserRank
+  visible: boolean
+}
 
 interface IProps {
   visible: boolean
@@ -18,14 +27,14 @@ class CreateUserMutation extends Mutation<
   CreateUserToOrganizationVariables
 > {}
 
-class CreateUserModalContainer extends React.Component<IProps> {
+class CreateUserModalContainer extends React.Component<IProps, IState> {
   public createMutation
 
   public state = {
     name: "",
     personalCode: "",
     phoneNumber: "",
-    userRank: 3,
+    userRank: "ONE" as UserRank,
     visible: this.props.visible
   }
 
@@ -34,7 +43,7 @@ class CreateUserModalContainer extends React.Component<IProps> {
     return (
       <CreateUserMutation
         mutation={CREATE_USER}
-        variables={{ name, personalCode, phoneNumber }}
+        variables={{ name, personalCode, phoneNumber, userRank }}
         onCompleted={data => {
           if (data.CreateUserToOrganization.ok) {
             message.success("구성원이 추가되었습니다!")
@@ -101,7 +110,7 @@ class CreateUserModalContainer extends React.Component<IProps> {
 
   public onSelectChange = value => {
     this.setState({
-      userRank: value
+      userRank: value as UserRank
     })
   }
 }

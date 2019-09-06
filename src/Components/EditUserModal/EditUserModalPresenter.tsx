@@ -7,7 +7,7 @@ interface IProps {
   name: string
   phoneNumber: string
   personalCode: string
-  userRank: number
+  userRank: string
   onInputChange: (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => void
@@ -71,9 +71,9 @@ const EditUserModalPresenter: React.SFC<IProps> = ({
         </Form.Item>
         <Form.Item label="랭크">
           <Select defaultValue={userRank} onChange={onSelectChange}>
-            <Select.Option value={1}>1</Select.Option>
-            <Select.Option value={2}>2</Select.Option>
-            <Select.Option value={3}>3</Select.Option>
+            <Select.Option value={"ONE"}>1</Select.Option>
+            <Select.Option value={"TWO"}>2</Select.Option>
+            <Select.Option value={"THREE"}>3</Select.Option>
           </Select>
         </Form.Item>
       </Form>
