@@ -83,7 +83,7 @@ const parseData = (data: GetTimeTables | undefined): any[] => {
     }
   }
 
-  return parsed
+  return parsed.sort((a, b) => b.id - a.id)
 }
 
 const Wrapper = styled.div`

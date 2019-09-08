@@ -19,7 +19,6 @@ export const FlexContainer = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
-  border: 1.5px solid black;
 `
 
 export const Content = styled.div`
