@@ -18,8 +18,8 @@ export const CREATE_SLOT = gql`
 `
 
 export const REMOVE_SLOT = gql`
-  mutation RemoveSlot($slotId: Int!) {
-    RemoveSlot(slotId: $slotId) {
+  mutation RemoveSlot($slotIds: [Int]!, $timetableId: Int!) {
+    RemoveSlot(slotIds: $slotIds, timetableId: $timetableId) {
       ok
       error
     }

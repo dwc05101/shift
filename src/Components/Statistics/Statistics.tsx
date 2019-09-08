@@ -59,7 +59,6 @@ const makeStatistic = days => {
   const result = {}
   for (const day of days) {
     const fulltime = countFullTime(day)
-    // console.log("fulltime", fulltime)
     const selected = extractSelectedSlots(day)
     for (const slot of selected) {
       const userId = slot.userId

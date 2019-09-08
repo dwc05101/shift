@@ -13,15 +13,11 @@ interface IProps {
   updateSelectedSlots: (result: string[], dayIndex: number) => void
   clearSelectedSlots: (selectedSlots: Array<{}>, dayIndex: number) => void
   handleTempSave: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void
-  // loadDefaultSlots: (
-  //   slot: GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots | null,
-  //   startTime: number,
-  //   dayIndex: number
-  // ) => string[]
 }
 
 // <<<<<<< HEAD
 interface IState {
+  applyTime: Array<{}>
   boxColors: string[]
   clearStatus: boolean[]
   endTime: number
@@ -99,13 +95,13 @@ const time2Int = (time: string) => {
   return parseInt(t, 10)
 }
 
-const parseTime = (storeStartTime: number, time: string) => {
-  let parsedTime = time2Int(time)
-  if (storeStartTime > parsedTime) {
-    parsedTime += 24
-  }
-  return parsedTime
-}
+// const parseTime = (storeStartTime: number, time: string) => {
+//   let parsedTime = time2Int(time)
+//   if (storeStartTime > parsedTime) {
+//     parsedTime += 24
+//   }
+//   return parsedTime
+// }
 
 const timeFormat = (time: string) => {
   const t = time.substring(0, 2)
@@ -115,6 +111,7 @@ const timeFormat = (time: string) => {
 
 class ApplyStatus extends React.Component<IProps, IState> {
   public state = {
+    applyTime: [{}, {}, {}, {}, {}, {}, {}],
     boxColors: ["", "", "", "", "", "", ""],
     clearStatus: [false, false, false, false, false, false, false],
     endTime: this.props.day!.isEndTimeNextDay
@@ -139,26 +136,23 @@ class ApplyStatus extends React.Component<IProps, IState> {
     }
     selectedResult[dayIndex] = subSelectedResult
     clearStatus[dayIndex] = false
-    await this.setState({ clearStatus, selectedResult })
+    this.setState({ clearStatus, selectedResult })
     return subSelectedResult
   }
 
-  public async componentDidMount() {
+  public componentDidMount() {
     const { day, updateSelectedSlots, dayIndex } = this.props
-    const { selectedResult, startTime } = this.state
-    console.log(day!.slots!)
+    const { applyTime, endTime, selectedResult, startTime } = this.state
     day!.slots!.map(slot => {
       if (slot!.isSelected) {
         const userStartTimeNextDay: boolean = slot!.isStartTimeNextDay
         const userEndTimeNextDay: boolean = slot!.isEndTimeNextDay
-
         const userStartTime: number = userStartTimeNextDay
           ? parseInt(slot!.startTime, 10) + 24
           : parseInt(slot!.startTime, 10)
         const userEndTime: number = userEndTimeNextDay
           ? parseInt(slot!.endTime, 10) + 24
           : parseInt(slot!.endTime, 10)
-
         for (
           let i = userStartTime - startTime;
           i < userEndTime - startTime;
@@ -167,12 +161,45 @@ class ApplyStatus extends React.Component<IProps, IState> {
           const result = slot!.user.personalCode + "-" + String(i)
           selectedResult[dayIndex].push(result)
         }
+      } else {
+        const times: number[] = []
+        let userStartTime: number = 0
+        let userEndTime: number = 0
+        if (slot!.isFulltime) {
+          for (let time = startTime; time < endTime; time++) {
+            times.push(time)
+          }
+        } else {
+          const userStartTimeNextDay: boolean = slot!.isStartTimeNextDay
+          const userEndTimeNextDay: boolean = slot!.isEndTimeNextDay
+          const stringStartTime: string =
+            slot!.startTime.slice(-4, -2) + ":" + slot!.startTime.slice(-2)
+          const stringEndTime: string =
+            slot!.endTime.slice(-4, -2) + ":" + slot!.endTime.slice(-2)
+          userStartTime = userStartTimeNextDay
+            ? parseInt(stringStartTime.split(":")[0], 10) + 24
+            : parseInt(stringStartTime.split(":")[0], 10)
+          userEndTime = userEndTimeNextDay
+            ? parseInt(stringEndTime.split(":")[0], 10) + 24
+            : parseInt(stringEndTime.split(":")[0], 10)
+          for (let time = userStartTime; time < userEndTime; time++) {
+            times.push(time)
+          }
+        }
+        if (!applyTime[dayIndex][slot!.user.personalCode]) {
+          applyTime[dayIndex][slot!.user.personalCode] = times
+        } else {
+          const subApplyTime = applyTime[dayIndex][slot!.user.personalCode]
+          for (let time = userStartTime; time < userEndTime; time++) {
+            subApplyTime.push(time)
+          }
+          applyTime[dayIndex][slot!.user.personalCode] = subApplyTime
+        }
       }
       return null
     })
-
-    await updateSelectedSlots(selectedResult[dayIndex], dayIndex)
-    await this.setState({ selectedResult })
+    updateSelectedSlots(selectedResult[dayIndex], dayIndex)
+    this.setState({ applyTime, selectedResult })
   }
 
   public render() {
@@ -184,9 +211,15 @@ class ApplyStatus extends React.Component<IProps, IState> {
       clearSelectedSlots,
       handleTempSave
     } = this.props
-    const { clearStatus, selectedResult, endTime, startTime } = this.state
+    const {
+      applyTime,
+      clearStatus,
+      selectedResult,
+      endTime,
+      startTime
+    } = this.state
+    const checkDuplicate: string[] = []
 
-    // console.log(selectedResult)
     return (
       <View>
         <Top>
@@ -213,8 +246,8 @@ class ApplyStatus extends React.Component<IProps, IState> {
               onClick={async e => {
                 selectedResult[dayIndex] = []
                 clearStatus[dayIndex] = true
-                await this.setState({ clearStatus, selectedResult })
-                await clearSelectedSlots(selectedSlots, dayIndex)
+                this.setState({ clearStatus, selectedResult })
+                clearSelectedSlots(selectedSlots, dayIndex)
               }}
             >
               <Typography.Text style={{ fontWeight: "bolder", color: "white" }}>
@@ -249,29 +282,32 @@ class ApplyStatus extends React.Component<IProps, IState> {
                 </TimeNotice>
                 {day!.slots!.map((slot, index) => {
                   if (!slot!.isSelected) {
-                    return (
-                      <Slot key={index}>
-                        <Username>
-                          <Typography.Text strong={true}>
-                            {slot!.user.name}
-                          </Typography.Text>
-                        </Username>
-                        <TimeBar
-                          userCode={slot!.user.personalCode}
-                          isFullTime={slot!.isFulltime}
-                          storeStartTime={startTime}
-                          storeEndTime={endTime}
-                          dayNumber={dayIndex}
-                          startTime={parseTime(startTime, slot!.startTime)}
-                          endTime={parseTime(startTime, slot!.endTime)}
-                          updateSelectedSlots={updateSelectedSlots}
-                          updateSelectedResult={this.updateSelectedResult}
-                          selectedResult={selectedResult}
-                          selectedSlots={selectedSlots}
-                          clearStatus={clearStatus}
-                        />
-                      </Slot>
-                    )
+                    if (checkDuplicate.indexOf(slot!.user.name) === -1) {
+                      checkDuplicate.push(slot!.user.name)
+                      // console.log(applyTime)
+                      return (
+                        <Slot key={index}>
+                          <Username>
+                            <Typography.Text strong={true}>
+                              {slot!.user.name}
+                            </Typography.Text>
+                          </Username>
+                          <TimeBar
+                            userCode={slot!.user.personalCode}
+                            isFullTime={slot!.isFulltime}
+                            storeStartTime={startTime}
+                            storeEndTime={endTime}
+                            dayNumber={dayIndex}
+                            applyTime={applyTime}
+                            updateSelectedSlots={updateSelectedSlots}
+                            updateSelectedResult={this.updateSelectedResult}
+                            selectedResult={selectedResult}
+                            selectedSlots={selectedSlots}
+                            clearStatus={clearStatus}
+                          />
+                        </Slot>
+                      )
+                    }
                   }
                   return null
                 })}

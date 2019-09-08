@@ -48,6 +48,7 @@ export const GET_TIMETABLE = gql`
             user {
               name
               personalCode
+              userRank
             }
           }
         }

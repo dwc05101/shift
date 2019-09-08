@@ -34,7 +34,7 @@ class CreateUserModalContainer extends React.Component<IProps> {
     return (
       <CreateUserMutation
         mutation={CREATE_USER}
-        variables={{ name, personalCode, phoneNumber }}
+        variables={{ name, personalCode, phoneNumber, userRank }}
         onCompleted={data => {
           if (data.CreateUserToOrganization.ok) {
             message.success("구성원이 추가되었습니다!")

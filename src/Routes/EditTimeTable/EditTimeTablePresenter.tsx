@@ -3,7 +3,10 @@ import React from "react"
 import { Mutation } from "react-apollo"
 import styled from "styled-components"
 import ApplyStatus from "../../Components/ApplyStatus"
-import { CREATE_SLOT } from "../../Components/ApplyStatus/ApplyStatusQueries"
+import {
+  CREATE_SLOT,
+  REMOVE_SLOT
+} from "../../Components/ApplyStatus/ApplyStatusQueries"
 import Loading from "../../Components/Loading"
 import Statistics from "../../Components/Statistics"
 import { Container, Content, InnerShadowedBox } from "../../styledComponents"
@@ -13,48 +16,57 @@ import {
   GetCurrentTimeTable,
   GetCurrentTimeTable_GetCurrentTimeTable_timetable_days,
   GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots,
+  RemoveSlot,
+  RemoveSlotVariables,
   SlotInfo
 } from "../../types/api"
 import KoreanDays from "../../utils/KoreanDays"
 
 interface IProps {
-  addedSlots: Array<GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots | null>
+  // addedSlots: Array<GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots | null>
   data: GetCurrentTimeTable | undefined
-  defaultSlots: Array<GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots | null>
+  // defaultSlots: Array<GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots | null>
   loading: boolean
   timetableId: number
   organizationId: number
+  slotId: number[][]
 }
 
 interface IState {
+  clearIndex: number
+  dayIndex: number
   height: number
   selectedSlots: Array<{}>
   slots: SlotInfo[]
 }
 
 class CreateSlotMutation extends Mutation<CreateSlot, CreateSlotVariables> {}
+class RemoveSlotMutation extends Mutation<RemoveSlot, RemoveSlotVariables> {}
 
 const { TabPane } = Tabs
 
 class EditTimeTablePresenter extends React.Component<IProps, IState> {
   public state = {
+    clearIndex: -1,
+    dayIndex: -1,
     height: 0,
     selectedSlots: [{}, {}, {}, {}, {}, {}, {}],
     slots: []
   }
 
-  public mutationFn
+  public createSlotMutationFn
+  public removeSlotMutationFn
   private height = React.createRef<HTMLDivElement>()
 
   public clearSelectedSlots = (selectedSlots: Array<{}>, dayIndex: number) => {
     selectedSlots[dayIndex] = {}
-    this.setState({ selectedSlots })
+    const clearIndex: number = dayIndex
+    this.setState({ clearIndex, selectedSlots })
   }
 
   public updateSelectedSlots = (result: string[], dayIndex: number) => {
     const selectedSlots: Array<{}> = this.state.selectedSlots
     const newSelectedSlot = {}
-
     result.map(res => {
       const user: string = res.split("-")[0]
       const timeIndex: string = res.split("-")[1]
@@ -68,12 +80,8 @@ class EditTimeTablePresenter extends React.Component<IProps, IState> {
       })
       return null
     })
-
-    // console.log(resultDict)
-    console.log(newSelectedSlot)
     selectedSlots[dayIndex] = newSelectedSlot
-
-    this.setState({ selectedSlots })
+    this.setState({ dayIndex, selectedSlots })
   }
 
   public componentDidUpdate() {
@@ -82,63 +90,37 @@ class EditTimeTablePresenter extends React.Component<IProps, IState> {
     }
   }
 
-  // public loadDefaultSlots = (
-  //   slot: GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots | null,
-  //   startTime: number,
-  //   dayIndex: number
-  // ) => {
-  //   const userStartTimeNextDay: boolean = slot!.isStartTimeNextDay
-  //   const userEndTimeNextDay: boolean = slot!.isEndTimeNextDay
-
-  //   const userStartTime: number = userStartTimeNextDay
-  //     ? parseInt(slot!.startTime, 10) + 24
-  //     : parseInt(slot!.startTime, 10)
-  //   const userEndTime: number = userEndTimeNextDay
-  //     ? parseInt(slot!.endTime, 10) + 24
-  //     : parseInt(slot!.endTime, 10)
-
-  //   const defaultResults: string[] = []
-  //   for (let i = userStartTime - startTime; i < userEndTime - startTime; i++) {
-  //     const result = slot!.user.personalCode + "-" + String(i)
-  //     defaultResults.push(result)
-  //   }
-  //   this.updateSelectedSlots(defaultResults, dayIndex)
-  //   return defaultResults
-  // }
-
   public handleTempSave = async (
     e: React.MouseEvent<HTMLElement, MouseEvent>
   ) => {
     e.preventDefault()
-
     await this.slotGeneration()
-    console.log(this.state.slots)
-
-    await this.mutationFn()
+    if (this.state.slots.length > 0) {
+      await this.createSlotMutationFn()
+    } else {
+      await this.removeSlotMutationFn()
+    }
   }
 
   public slotGeneration = async () => {
     const slots: SlotInfo[] = []
     const { data, loading } = this.props
     const { selectedSlots } = this.state
-
     if (!loading) {
       const InfoArray = getInfo(data!, selectedSlots)
       InfoArray!.map(day =>
         day.map(user => user.map(slot => slots!.push(slot)))
       )
     }
-
-    await this.setState({
+    this.setState({
       slots
     })
   }
 
   public render() {
     const { data, loading, timetableId, organizationId } = this.props
-    const { height, selectedSlots, slots } = this.state
+    const { clearIndex, dayIndex, height, selectedSlots, slots } = this.state
 
-    // console.log(selectedSlots)
     return (
       <CreateSlotMutation
         mutation={CREATE_SLOT}
@@ -154,44 +136,85 @@ class EditTimeTablePresenter extends React.Component<IProps, IState> {
         }}
       >
         {createSlotMutation => {
-          this.mutationFn = createSlotMutation
-          return loading ? (
-            <Loading />
-          ) : (
-            <Container>
-              <Content>
-                <InnerShadowedBox>
-                  <RightWrapper>
-                    <Tabs
-                      onChange={e => console.log(e)}
-                      type="line"
-                      tabBarStyle={{
-                        border: "0",
-                        height: "10%",
-                        margin: "0"
-                      }}
-                    >
-                      {makeTabPanes(
-                        data!,
-                        selectedSlots,
-                        this.updateSelectedSlots,
-                        this.clearSelectedSlots,
-                        height,
-                        this.handleTempSave
-                        // this.loadDefaultSlots
-                      )}
-                    </Tabs>
-                  </RightWrapper>
-                  <LeftWrapper ref={this.height}>
-                    <StatisticsView>
-                      <Statistics
-                        days={data!.GetCurrentTimeTable.timetable!.days}
-                      />
-                    </StatisticsView>
-                  </LeftWrapper>
-                </InnerShadowedBox>
-              </Content>
-            </Container>
+          this.createSlotMutationFn = createSlotMutation
+          const slotIds: number[] = []
+          if (data) {
+            if (data!.GetCurrentTimeTable) {
+              if (typeof selectedSlots[dayIndex] !== "undefined") {
+                if (
+                  clearIndex !== -1 ||
+                  Object.keys(selectedSlots[dayIndex]).length === 0
+                ) {
+                  let index: number
+                  if (Object.keys(selectedSlots[dayIndex]).length === 0) {
+                    index = dayIndex
+                  } else {
+                    index = clearIndex
+                  }
+                  data!.GetCurrentTimeTable.timetable!.days![
+                    index
+                  ]!.slots!.filter(slot => slot!.isSelected).map(slot =>
+                    slotIds.push(slot!.id)
+                  )
+                }
+              }
+            }
+          }
+          return (
+            <RemoveSlotMutation
+              mutation={REMOVE_SLOT}
+              variables={{ slotIds, timetableId }}
+              onCompleted={response => {
+                if (response.RemoveSlot.ok) {
+                  console.log("success")
+                } else if (response.RemoveSlot.error) {
+                  message.error(response.RemoveSlot.error)
+                } else {
+                  message.error("서버 내부 에러")
+                }
+              }}
+            >
+              {removeSlotMutation => {
+                this.removeSlotMutationFn = removeSlotMutation
+                return loading ? (
+                  <Loading />
+                ) : (
+                  <Container>
+                    <Content>
+                      <InnerShadowedBox>
+                        <RightWrapper>
+                          <Tabs
+                            onChange={e => console.log(e)}
+                            type="line"
+                            tabBarStyle={{
+                              border: "0",
+                              height: "10%",
+                              margin: "0"
+                            }}
+                          >
+                            {makeTabPanes(
+                              data!,
+                              selectedSlots,
+                              this.updateSelectedSlots,
+                              this.clearSelectedSlots,
+                              height,
+                              this.handleTempSave
+                            )}
+                          </Tabs>
+                        </RightWrapper>
+                        <LeftWrapper ref={this.height}>
+                          <StatisticsView>
+                            <Statistics
+                              days={data!.GetCurrentTimeTable.timetable!.days}
+                            />
+                          </StatisticsView>
+                        </LeftWrapper>
+                      </InnerShadowedBox>
+                    </Content>
+                  </Container>
+                )
+              }}
+            </RemoveSlotMutation>
           )
         }}
       </CreateSlotMutation>
@@ -222,6 +245,39 @@ const sortDays = (dayNumbers: number[]) => {
   return dayNumbers
 }
 
+const sortSlotsByRank = (
+  day: GetCurrentTimeTable_GetCurrentTimeTable_timetable_days | null
+) => {
+  const isEndTimeNextDay = day!.isEndTimeNextDay
+  const storeStartTime = parseInt(day!.startTime.slice(-4, -2), 10)
+  const storeEndTime = isEndTimeNextDay
+    ? parseInt(day!.endTime.slice(-4, -2), 10) + 24
+    : parseInt(day!.endTime.slice(-4, -2), 10)
+  const rankSlots = {}
+  day!.slots!.map(slot => {
+    if (!rankSlots[slot!.user.userRank]) {
+      rankSlots[slot!.user.userRank] = [slot]
+    } else {
+      rankSlots[slot!.user.userRank].push(slot)
+    }
+    return null
+  })
+
+  // const newSlots: any[] = (Object.values(rankSlots)).map((subSlots: any) => {
+  //   return subSlots.map(singleSlot => {
+  //     console.log(singleSlot)
+  //   })
+  // })
+  // console.log(newSlots)
+  const rankSortedSlots: any[] = []
+  let slots
+  for (slots of Object.values(rankSlots)) {
+    slots.map(slot => rankSortedSlots.push(slot))
+  }
+  console.log(rankSortedSlots)
+  return rankSortedSlots
+}
+
 const makeTabPanes = (
   data: GetCurrentTimeTable | null,
   selectedSlots: Array<{}>,
@@ -229,11 +285,6 @@ const makeTabPanes = (
   clearSelectedSlots: (selectedSlots: Array<{}>, dayIndex: number) => void,
   height: number,
   handleTempSave: (e: any) => void
-  // loadDefaultSlots: (
-  //   slot: GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots | null,
-  //   startTime: number,
-  //   dayIndex: number
-  // ) => string[]
 ) => {
   if (data) {
     if (data.GetCurrentTimeTable.timetable) {
@@ -255,6 +306,7 @@ const makeTabPanes = (
 
       if (height !== 0) {
         return sortedDays.map(day => {
+          day!.slots = sortSlotsByRank(day)
           return (
             <TabPane
               tab={
@@ -278,7 +330,6 @@ const makeTabPanes = (
                   updateSelectedSlots={updateSelectedSlots}
                   clearSelectedSlots={clearSelectedSlots}
                   handleTempSave={handleTempSave}
-                  // loadDefaultSlots={loadDefaultSlots}
                 />
               </DayView>
             </TabPane>
@@ -308,6 +359,39 @@ const checkContinue = (arr: number[], startTime: number) => {
   }
   const subArr: Array<[]> = Object.values(subDict)
   return subArr
+}
+
+const removeInfo = (
+  slots: Array<GetCurrentTimeTable_GetCurrentTimeTable_timetable_days_slots | null>,
+  dayIndex: number
+) => {
+  const removeSelectedSlots: Array<{}> = [{}, {}, {}, {}, {}, {}, {}]
+  slots.map(slot => {
+    const startTime: number = parseInt(slot!.startTime.split(":")[0], 10)
+    const endTime: number = parseInt(slot!.endTime.split(":")[0], 10)
+    const realStartTime: number = slot!.isStartTimeNextDay
+      ? startTime + 24
+      : startTime
+    const realEndTime: number = slot!.isEndTimeNextDay
+      ? endTime + 23
+      : endTime - 1
+    if (!removeSelectedSlots[dayIndex][slot!.user.personalCode]) {
+      const timeArray: string[] = []
+      for (let i = realStartTime; i <= realEndTime; i++) {
+        timeArray.push(String(i))
+      }
+      removeSelectedSlots[dayIndex][slot!.user.personalCode] = timeArray
+    } else {
+      for (let i = realStartTime; i <= realEndTime; i++) {
+        removeSelectedSlots[dayIndex][slot!.user.personalCode].push(String(i))
+      }
+    }
+    removeSelectedSlots[dayIndex][slot!.user.personalCode].sort(
+      (a: string, b: string) => parseInt(a, 10) - parseInt(b, 10)
+    )
+    return null
+  })
+  return removeSelectedSlots
 }
 
 const getInfo = (

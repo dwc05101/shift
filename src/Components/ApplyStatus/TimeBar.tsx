@@ -9,8 +9,7 @@ interface IProps {
   storeStartTime: number
   storeEndTime: number
   dayNumber: number
-  startTime: number
-  endTime: number
+  applyTime: Array<{}>
   updateSelectedSlots: (result: string[], dayIndex: number) => void
   updateSelectedResult: (
     selectedResult: string[][],
@@ -53,8 +52,7 @@ export const TimeBar: React.SFC<IProps> = ({
   storeStartTime,
   storeEndTime,
   dayNumber,
-  startTime,
-  endTime,
+  applyTime,
   updateSelectedSlots,
   updateSelectedResult,
   selectedResult,
@@ -62,34 +60,38 @@ export const TimeBar: React.SFC<IProps> = ({
   clearStatus
 }) => {
   const totalHour = storeEndTime - storeStartTime
-  const firstIndex = startTime - storeStartTime || 0
-  const endIndex = endTime - storeStartTime || totalHour
-  let boxColor: string = ""
-  if (clearStatus[dayNumber]) {
-    boxColor = theme.colors.pale_blue
+  let timeIndices
+  if (typeof applyTime[dayNumber][userCode] !== "undefined") {
+    timeIndices = applyTime[dayNumber][userCode].map(
+      time => time - storeStartTime
+    )
+    let boxColor: string = ""
+    if (clearStatus[dayNumber]) {
+      boxColor = theme.colors.pale_blue
+    }
+    const boxResult = colorBar(
+      userCode,
+      totalHour,
+      dayNumber,
+      timeIndices,
+      updateSelectedSlots,
+      updateSelectedResult,
+      selectedResult,
+      selectedSlots,
+      boxColor,
+      clearStatus
+    )
+    return <View>{boxResult}</View>
+  } else {
+    return <>loading</>
   }
-  const boxResult = colorBar(
-    userCode,
-    totalHour,
-    dayNumber,
-    firstIndex,
-    endIndex,
-    updateSelectedSlots,
-    updateSelectedResult,
-    selectedResult,
-    selectedSlots,
-    boxColor,
-    clearStatus
-  )
-  return <View>{boxResult}</View>
 }
 
 const colorBar = (
   userCode: any,
   totalHour: any,
   dayNumber: number,
-  firstIndex: any,
-  endIndex: any,
+  timeIndices: number[],
   updateSelectedSlots: (result: string[], dayIndex: number) => void,
   updateSelectedResult: (
     selectedResult: string[][],
@@ -105,7 +107,7 @@ const colorBar = (
   const boxResult: JSX.Element[] = []
   const defaultColoredBox: string[] = selectedSlots[dayNumber][userCode]
   for (let i = 0; i < totalHour; i++) {
-    if (firstIndex <= i && i < endIndex) {
+    if (timeIndices.indexOf(i) !== -1) {
       if (defaultColoredBox && defaultColoredBox.indexOf(String(i)) !== -1) {
         boxColor = theme.colors.red
       } else {
@@ -122,15 +124,37 @@ const colorBar = (
               updateSelectedSlots,
               updateSelectedResult,
               selectedResult,
-              clearStatus
+              clearStatus,
+              false
             )
           }}
           style={{ backgroundColor: `${boxColor}` }}
         />
       )
     } else {
+      let nonSelectedBoxColor: string = ""
+      if (defaultColoredBox && defaultColoredBox.indexOf(String(i)) !== -1) {
+        nonSelectedBoxColor = theme.colors.red
+      } else {
+        nonSelectedBoxColor = theme.colors.grey
+      }
       boxResult.push(
-        <TimeBox id={userCode} key={i} color={theme.colors.grey} />
+        <TimeBox
+          id={`{"code":"${userCode}","index":"${i}"}`}
+          onClick={event => {
+            selectUserAtTime(
+              event,
+              dayNumber,
+              updateSelectedSlots,
+              updateSelectedResult,
+              selectedResult,
+              clearStatus,
+              true
+            )
+          }}
+          key={i}
+          color={`${nonSelectedBoxColor}`}
+        />
       )
     }
   }
@@ -148,7 +172,8 @@ const selectUserAtTime = async (
     boxId: string
   ) => Promise<string[]>,
   selectedResult: string[][],
-  clearStatus: boolean[]
+  clearStatus: boolean[],
+  supervisorSelect: boolean
 ) => {
   event.persist()
   const info = JSON.parse(event.target.id)
@@ -159,12 +184,14 @@ const selectUserAtTime = async (
     dayNumber,
     boxId
   )
-  console.log(updatingResult)
   if (updatingResult.includes(boxId)) {
     event.target.style.backgroundColor = theme.colors.red
+  } else if (supervisorSelect) {
+    event.target.style.backgroundColor = theme.colors.grey
   } else {
     event.target.style.backgroundColor = theme.colors.pale_blue
   }
+
   await updateSelectedSlots(updatingResult, dayNumber)
 }
 
@@ -306,7 +333,7 @@ const Item = styled.div`
   display: flex;
   font-size: 12px;
   &:hover {
-    background-color: ${theme.colors.dark_pale_blue};
+    background-color: ${theme.colors.dark_pale_blue} !important;
     cursor: pointer;
   }
 `
