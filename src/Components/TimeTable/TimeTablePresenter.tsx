@@ -1,18 +1,14 @@
 import { Button, message, Result, Typography } from "antd"
 import React from "react"
 import { CopyToClipboard } from "react-copy-to-clipboard"
+import Chart from "react-google-charts"
 import styled from "styled-components"
 import history from "../../history"
 import { FlexContainer } from "../../styledComponents"
-import { theme } from "../../theme"
-import {
-  GetCurrentTimeTable,
-  GetCurrentTimeTable_GetCurrentTimeTable_timetable_days
-} from "../../types/api"
+import { GetCurrentTimeTable } from "../../types/api"
 import KoreanDays from "../../utils/KoreanDays"
+// import KoreanDays from "../../utils/KoreanDays"
 import Loading from "../Loading"
-// import { array } from "prop-types"
-// import { theme } from "../../theme"
 
 interface IProps {
   data: GetCurrentTimeTable | undefined
@@ -54,163 +50,119 @@ const TimeTablePresenter: React.SFC<IProps> = ({ data, loading }) =>
       </LinkContainer>
       <FlexContainer
         style={{
+          border: "none",
           flexDirection: "column",
-          minWidth: "880px",
-          overflow: "auto"
+          minWidth: "880px"
         }}
       >
-        <TableHeader>
-          <IndexBlock />
-          {makeHeaderRow(data!)}
-        </TableHeader>
-        <TableBody>{makeTableColumn(data!)}</TableBody>
+        <Chart
+          width={"100%"}
+          height={"100%"}
+          chartType="Bar"
+          loader={<Loading />}
+          data={makeData(data!)}
+        />
       </FlexContainer>
     </>
   )
 
-const makeTableColumn = (data: GetCurrentTimeTable | null) => {
-  if (data) {
-    if (data.GetCurrentTimeTable.timetable) {
-      let dayNumbers: number[] = []
-      data!.GetCurrentTimeTable.timetable!.days!.map(day => {
-        dayNumbers.push(day!.dayNumber)
-        return null
-      })
-
-      const maxDayNumber = Math.max.apply(null, dayNumbers)
-      const minDayNumber = Math.min.apply(null, dayNumbers)
-      const isContainNextMonth: boolean = maxDayNumber - minDayNumber >= 7
-      if (isContainNextMonth) {
-        const sortedDayNumbers: number[] = []
-        const previousMonthDayNumbers = dayNumbers
-          .filter(dayNumber => Math.abs(maxDayNumber - dayNumber) <= 6)
-          .sort((a, b) => a - b)
-        const nextMonthDayNumbers = dayNumbers
-          .filter(dayNumber => Math.abs(dayNumber - minDayNumber) <= 6)
-          .sort((a, b) => a - b)
-        previousMonthDayNumbers.forEach(dayNumber =>
-          sortedDayNumbers.push(dayNumber)
-        )
-        nextMonthDayNumbers.forEach(dayNumber =>
-          sortedDayNumbers.push(dayNumber)
-        )
-        dayNumbers = sortedDayNumbers
-      } else {
-        dayNumbers.sort((a, b) => a - b)
+const makeData = (data: GetCurrentTimeTable) => {
+  const baseData: any[][] = [
+    ["날짜", "점심 (10시 ~ 14시)", "저녁 (17시 ~ 21시)", "마감 (22시 ~)"]
+  ]
+  const sortedDay = sortDay(data)
+  sortedDay!.forEach((day, index) => {
+    const lunchSlots = day!.slots!.filter(slot => {
+      if (slot!.isSelected) {
+        return false
+      }
+      if (slot!.isFulltime) {
+        return true
       }
 
-      const sortedDays: Array<GetCurrentTimeTable_GetCurrentTimeTable_timetable_days | null> = []
-      dayNumbers.forEach(dayNumber => {
-        const index = data.GetCurrentTimeTable.timetable!.days!.findIndex(
-          day => day!.dayNumber === dayNumber
-        )
-        if (index > -1) {
-          sortedDays.push(data.GetCurrentTimeTable.timetable!.days![index])
-        }
-      })
-
-      return sortedDays.map(day => (
-        <TableRow key={day!.dayNumber}>
-          <IndexBlock>
-            <Typography.Title level={4} style={{ marginBottom: "0" }}>
-              {day!.dayNumber} ({KoreanDays[sortedDays.indexOf(day)]})
-            </Typography.Title>
-          </IndexBlock>
-          {makeTableCell(data!, day!.dayNumber)}
-        </TableRow>
-      ))
-    }
-  }
-}
-
-const getTime = (data: GetCurrentTimeTable | null) => {
-  const timeTable = data!.GetCurrentTimeTable.timetable
-  const startTime =
-    Math.min.apply(
-      null,
-      timeTable!.days!.map(day => parseInt(day!.startTime, 10))
-    ) / 100
-  const endTime =
-    Math.max.apply(
-      null,
-      timeTable!.days!.map(day =>
-        day!.isEndTimeNextDay
-          ? parseInt(day!.endTime, 10) + 2400
-          : parseInt(day!.endTime, 10)
-      )
-    ) / 100
-  return [startTime, endTime]
-}
-
-const makeTableCell = (data: GetCurrentTimeTable | null, dayNumber: number) => {
-  if (data) {
-    if (data.GetCurrentTimeTable.timetable) {
-      const sortedTimeTable = data.GetCurrentTimeTable.timetable.days!.sort(
-        (a, b) => {
-          return a!.id - b!.id
-        }
-      )
-      const [startTime, endTime] = getTime(data)
-      const indexArray = Array.from(Array(endTime - startTime + 1).keys())
-      const possibleTime = indexArray.map(index => startTime + index)
-      const dayElement = sortedTimeTable.filter(
-        day => day!.dayNumber === dayNumber
-      )
-      if (dayElement[0]!.slots) {
-        const rowElement = possibleTime.map(hourTime => {
-          return dayElement[0]!.slots!.filter(
-            slot =>
-              (parseInt(slot!.startTime, 10) / 100 <= hourTime &&
-                hourTime <= parseInt(slot!.endTime, 10) / 100) ||
-              slot!.isFulltime
-          )
-        })
-        let cellColor: string = ""
-        return rowElement.map(element => {
-          if (element.length >= 3) {
-            cellColor = theme.colors.white
-          } else if (element.length === 2) {
-            cellColor = theme.colors.bbbred
-          } else if (element.length === 1) {
-            cellColor = theme.colors.bbred
-          } else {
-            cellColor = theme.colors.bred
-          }
-          return (
-            <TableCell
-              key={`${dayNumber}-${possibleTime[rowElement.indexOf(element)]}`}
-              style={{ backgroundColor: cellColor }}
-            >
-              <Typography.Title level={4}>{element.length}</Typography.Title>
-            </TableCell>
-          )
-        })
+      let included = true
+      if (parseInt(slot!.startTime, 10) >= 1400) {
+        included = false
       }
-    }
-  }
+      if (parseInt(slot!.endtime, 10) < 1000) {
+        included = false
+      }
+
+      return included
+    })
+    const dinnerSlots = day!.slots!.filter(slot => {
+      if (slot!.isSelected) {
+        return false
+      }
+      if (slot!.isFulltime) {
+        return true
+      }
+
+      let included = true
+      if (parseInt(slot!.startTime, 10) >= 2100) {
+        included = false
+      }
+      if (parseInt(slot!.endtime, 10) < 1700) {
+        included = false
+      }
+
+      return included
+    })
+    const mdSlots = day!.slots!.filter(slot => {
+      if (slot!.isSelected) {
+        return false
+      }
+      if (slot!.isFulltime) {
+        return true
+      }
+      return parseInt(slot!.endTime, 10) > 2200
+    })
+
+    baseData.push([
+      `${day!.dayNumber}일 (${KoreanDays[index]})`,
+      lunchSlots.length,
+      dinnerSlots.length,
+      mdSlots.length
+    ])
+  })
+
+  return baseData
 }
 
-const makeHeaderRow = (data: GetCurrentTimeTable | null) => {
-  if (data) {
-    if (data.GetCurrentTimeTable.timetable) {
-      // console.log(data.GetCurrentTimeTable)
-      const [startTime, endTime] = getTime(data)
-      const indexArray = Array.from(Array(endTime - startTime + 1).keys())
-      const possibleTime = indexArray.map(index =>
-        startTime + index > 24
-          ? String(startTime + index - 24) + ":00"
-          : String(startTime + index) + ":00"
-      )
+const sortDay = (data: GetCurrentTimeTable) => {
+  const days = data.GetCurrentTimeTable.timetable!.days!
+  const sortedDays: any[] = []
+  let dayNumbers: number[] = []
 
-      return possibleTime.map(time => (
-        <TableHeaderCell key={time}>
-          <Typography.Title level={4}>{time}</Typography.Title>
-        </TableHeaderCell>
-      ))
-    }
+  days.forEach(day => dayNumbers.push(day!.dayNumber))
+
+  const maxDayNumber = Math.max.apply(null, dayNumbers)
+  const minDayNumber = Math.min.apply(null, dayNumbers)
+  const isContainNextMonth: boolean = maxDayNumber - minDayNumber >= 7
+  if (isContainNextMonth) {
+    const sortedDayNumbers: number[] = []
+    const previousMonthDayNumbers = dayNumbers
+      .filter(dayNumber => Math.abs(maxDayNumber - dayNumber) <= 6)
+      .sort((a, b) => a - b)
+    const nextMonthDayNumbers = dayNumbers
+      .filter(dayNumber => Math.abs(dayNumber - minDayNumber) <= 6)
+      .sort((a, b) => a - b)
+    previousMonthDayNumbers.forEach(dayNumber =>
+      sortedDayNumbers.push(dayNumber)
+    )
+    nextMonthDayNumbers.forEach(dayNumber => sortedDayNumbers.push(dayNumber))
+    dayNumbers = sortedDayNumbers
+  } else {
+    dayNumbers.sort((a, b) => a - b)
   }
-}
 
+  dayNumbers.forEach(dayNumber => {
+    const targetDay = days.find(day => day!.dayNumber === dayNumber)
+    sortedDays.push(targetDay)
+  })
+
+  return sortedDays
+}
 const LinkContainer = styled.div`
   display: flex;
   align-items: center;
@@ -218,56 +170,6 @@ const LinkContainer = styled.div`
   width: 100%;
   height: 110px;
   margin-top: -110px;
-`
-
-const TableHeader = styled.div`
-  display: flex;
-  width: 100%;
-  height: 10%;
-`
-
-const TableBody = styled.div`
-  width: 100%;
-  height: 90%;
-  display: flex;
-  flex-direction: column;
-`
-
-const TableRow = styled.div`
-  display: flex;
-  width: 100%;
-  flex: 1 1 0;
-`
-
-const IndexBlock = styled.div`
-  width: 10%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid lightgray;
-`
-
-const TableHeaderCell = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 60px;
-  flex: 1 1 0;
-  height: 100%;
-  border: 1px solid lightgray;
-`
-
-const TableCell = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 60px;
-  flex: 1 1 0;
-  height: 100%;
-  border: 1px solid lightgray;
 `
 
 export default TimeTablePresenter
