@@ -29,3 +29,12 @@ export const GET_DAYS = gql`
     }
   }
 `
+
+export const CONFIRM_TIMETABLE = gql`
+  mutation ConfirmTimeTable($timetableId: Int!) {
+    ConfirmTimeTable(timetableId: $timetableId) {
+      ok
+      error
+    }
+  }
+`

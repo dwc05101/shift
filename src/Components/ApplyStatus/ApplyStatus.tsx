@@ -12,7 +12,10 @@ interface IProps {
   selectedSlots: Array<{}>
   updateSelectedSlots: (result: string[], dayIndex: number) => void
   clearSelectedSlots: (selectedSlots: Array<{}>, dayIndex: number) => void
-  handleTempSave: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void
+  handleTempSave: (
+    e: React.MouseEvent<HTMLElement, MouseEvent>,
+    dayIndex: number
+  ) => void
 }
 
 // <<<<<<< HEAD
@@ -148,11 +151,11 @@ class ApplyStatus extends React.Component<IProps, IState> {
         const userStartTimeNextDay: boolean = slot!.isStartTimeNextDay
         const userEndTimeNextDay: boolean = slot!.isEndTimeNextDay
         const userStartTime: number = userStartTimeNextDay
-          ? parseInt(slot!.startTime, 10) + 24
-          : parseInt(slot!.startTime, 10)
+          ? parseInt(slot!.startTime.slice(-4, -2), 10) + 24
+          : parseInt(slot!.startTime.slice(-4, -2), 10)
         const userEndTime: number = userEndTimeNextDay
-          ? parseInt(slot!.endTime, 10) + 24
-          : parseInt(slot!.endTime, 10)
+          ? parseInt(slot!.endTime.slice(-4, -2), 10) + 24
+          : parseInt(slot!.endTime.slice(-4, -2), 10)
         for (
           let i = userStartTime - startTime;
           i < userEndTime - startTime;
@@ -172,16 +175,12 @@ class ApplyStatus extends React.Component<IProps, IState> {
         } else {
           const userStartTimeNextDay: boolean = slot!.isStartTimeNextDay
           const userEndTimeNextDay: boolean = slot!.isEndTimeNextDay
-          const stringStartTime: string =
-            slot!.startTime.slice(-4, -2) + ":" + slot!.startTime.slice(-2)
-          const stringEndTime: string =
-            slot!.endTime.slice(-4, -2) + ":" + slot!.endTime.slice(-2)
           userStartTime = userStartTimeNextDay
-            ? parseInt(stringStartTime.split(":")[0], 10) + 24
-            : parseInt(stringStartTime.split(":")[0], 10)
+            ? parseInt(slot!.startTime.slice(-4, -2), 10) + 24
+            : parseInt(slot!.startTime.slice(-4, -2), 10)
           userEndTime = userEndTimeNextDay
-            ? parseInt(stringEndTime.split(":")[0], 10) + 24
-            : parseInt(stringEndTime.split(":")[0], 10)
+            ? parseInt(slot!.endTime.slice(-4, -2), 10) + 24
+            : parseInt(slot!.endTime.slice(-4, -2), 10)
           for (let time = userStartTime; time < userEndTime; time++) {
             times.push(time)
           }
@@ -198,6 +197,7 @@ class ApplyStatus extends React.Component<IProps, IState> {
       }
       return null
     })
+
     updateSelectedSlots(selectedResult[dayIndex], dayIndex)
     this.setState({ applyTime, selectedResult })
   }
@@ -254,7 +254,7 @@ class ApplyStatus extends React.Component<IProps, IState> {
                 초기화
               </Typography.Text>
             </Button>
-            <Button type="primary" onClick={handleTempSave}>
+            <Button type="primary" onClick={e => handleTempSave(e, dayIndex)}>
               <Typography.Text style={{ fontWeight: "bolder", color: "white" }}>
                 임시저장
               </Typography.Text>
@@ -284,7 +284,6 @@ class ApplyStatus extends React.Component<IProps, IState> {
                   if (!slot!.isSelected) {
                     if (checkDuplicate.indexOf(slot!.user.name) === -1) {
                       checkDuplicate.push(slot!.user.name)
-                      // console.log(applyTime)
                       return (
                         <Slot key={index}>
                           <Username>

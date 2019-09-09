@@ -4,7 +4,6 @@ import { Query } from "react-apollo"
 import { GET_TIMETABLE } from "../../Components/TimeTable/TimeTableQueries"
 import {
   GetCurrentTimeTable,
-  GetCurrentTimeTable_GetCurrentTimeTable_timetable_days,
   GetCurrentTimeTableVariables
 } from "../../types/api"
 import EditTimeTablePresenter from "./EditTimeTablePresenter"
@@ -33,13 +32,12 @@ class EditTimeTableContainer extends React.Component<IProps> {
   public state = {
     data: null,
     organizationId: -1,
-    slotId: [[], [], [], [], [], [], []] as number[][],
     timetableId: parseInt(this.props.match.params.timetableId, 10),
     yearMonthWeek: isoLastWeek
   }
 
   public render() {
-    const { timetableId, yearMonthWeek, slotId, organizationId } = this.state
+    const { timetableId, yearMonthWeek, organizationId } = this.state
     return (
       <GetTimetableQuery
         query={GET_TIMETABLE}
@@ -47,20 +45,8 @@ class EditTimeTableContainer extends React.Component<IProps> {
         onCompleted={async response => {
           const newOrganizationId: number = response!.GetCurrentTimeTable!
             .timetable!.organizationId!
-          const days: Array<GetCurrentTimeTable_GetCurrentTimeTable_timetable_days | null> = response!
-            .GetCurrentTimeTable!.timetable!.days!
-          days.map(day => {
-            const dayIndex: number = days.indexOf(day)
-            day!.slots!.map(slot => {
-              slotId[dayIndex].push(slot!.id)
-              return null
-            })
-            return null
-          })
-
           this.setState({
-            organizationId: newOrganizationId,
-            slotId
+            organizationId: newOrganizationId
           })
         }}
       >
@@ -71,7 +57,6 @@ class EditTimeTableContainer extends React.Component<IProps> {
               loading={loading}
               timetableId={timetableId}
               organizationId={organizationId}
-              slotId={slotId}
             />
           )
         }}

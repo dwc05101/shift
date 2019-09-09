@@ -2,7 +2,7 @@ import { message } from "antd"
 import React from "react"
 import { Mutation } from "react-apollo"
 import { GET_USERS } from "../../GlobalQuries"
-import { UpdateUser, UpdateUserVariables } from "../../types/api"
+import { UpdateUser, UpdateUserVariables, UserRank } from "../../types/api"
 import EditUserModalPresenter from "./EditUserModalPresenter"
 import { EDIT_USER } from "./EditUserModalQueries"
 
@@ -12,7 +12,7 @@ interface IProps {
   name: string
   personalCode: string
   phoneNumber: string
-  userRank: number
+  userRank: string
 }
 
 interface IState {
@@ -20,7 +20,7 @@ interface IState {
   name: string
   personalCode: string
   phoneNumber: string
-  userRank: number
+  userRank: UserRank
   visible: boolean
 }
 
@@ -34,7 +34,7 @@ class EditUserModalContainer extends React.Component<IProps, IState> {
     personalCode: this.props.personalCode,
     phoneNumber: this.props.phoneNumber,
     userId: this.props.userId,
-    userRank: this.props.userRank,
+    userRank: this.props.userRank as UserRank,
     visible: this.props.visible
   }
 
