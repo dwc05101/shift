@@ -1,4 +1,4 @@
-import { Button, Typography } from "antd"
+import { Button, message, Typography } from "antd"
 import React from "react"
 import styled from "styled-components"
 import { theme } from "../../theme"
@@ -247,14 +247,21 @@ class ApplyStatus extends React.Component<IProps, IState> {
                 selectedResult[dayIndex] = []
                 clearStatus[dayIndex] = true
                 this.setState({ clearStatus, selectedResult })
-                clearSelectedSlots(selectedSlots, dayIndex)
+                await clearSelectedSlots(selectedSlots, dayIndex)
+                message.success("초기화 완료!")
               }}
             >
               <Typography.Text style={{ fontWeight: "bolder", color: "white" }}>
                 초기화
               </Typography.Text>
             </Button>
-            <Button type="primary" onClick={e => handleTempSave(e, dayIndex)}>
+            <Button
+              type="primary"
+              onClick={async e => {
+                await handleTempSave(e, dayIndex)
+                message.success("임시 저장 완료!")
+              }}
+            >
               <Typography.Text style={{ fontWeight: "bolder", color: "white" }}>
                 임시저장
               </Typography.Text>

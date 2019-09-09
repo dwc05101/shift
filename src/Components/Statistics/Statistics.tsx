@@ -1,4 +1,4 @@
-import { Button, Typography } from "antd"
+import { Button, Popconfirm, Typography } from "antd"
 import React from "react"
 import styled from "styled-components"
 import { theme } from "../../theme"
@@ -177,27 +177,45 @@ const StatisticsPresenter: React.SFC<IDayProps> = ({
         </InfoRow>
         {renderRanking(sortedStatistic)}
       </Table>
-      <Button
-        size={"large"}
-        style={{
-          alignItems: "center",
-          alignSelf: "flex-end",
-          background: "#f4511f",
-          color: theme.colors.white,
-          display: "flex",
-          justifyContent: "center",
-          marginTop: "20px"
+      <Popconfirm
+        title={
+          data!.GetCurrentTimeTable.timetable!.isConfirmed
+            ? "확정 취소 하시겠습니까?"
+            : "확정 하시겠습니까?"
+        }
+        onConfirm={async e => {
+          await confirmTimeTable(data!, e!)
         }}
-        loading={loadingConfirm}
-        onClick={e => confirmTimeTable(data!, e)}
+        okText="예"
+        cancelText="아니오"
       >
-        <Typography.Title
-          level={4}
-          style={{ color: theme.colors.white, marginBottom: "0" }}
+        <Button
+          size={"large"}
+          style={{
+            alignItems: "center",
+            alignSelf: "flex-end",
+            background: `${
+              data!.GetCurrentTimeTable.timetable!.isConfirmed
+                ? theme.colors.blue
+                : theme.colors.red
+            }`,
+            color: theme.colors.white,
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "20px"
+          }}
+          loading={loadingConfirm}
         >
-          시간표 확정
-        </Typography.Title>
-      </Button>
+          <Typography.Title
+            level={4}
+            style={{ color: theme.colors.white, marginBottom: "0" }}
+          >
+            {data!.GetCurrentTimeTable.timetable!.isConfirmed
+              ? "확정 취소"
+              : "시간표 확정"}
+          </Typography.Title>
+        </Button>
+      </Popconfirm>
     </View>
   )
 }
