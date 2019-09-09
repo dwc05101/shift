@@ -222,7 +222,7 @@ class EditTimeTablePresenter extends React.Component<IProps, IState> {
         variables={{ slots, timetableId, organizationId }}
         onCompleted={response => {
           if (response.CreateSlot.ok) {
-            message.success("임시 저장 완료")
+            return
           } else if (response.CreateSlot.error) {
             message.error(response.CreateSlot.error)
           } else {
@@ -239,7 +239,7 @@ class EditTimeTablePresenter extends React.Component<IProps, IState> {
               variables={{ slotIds, timetableId }}
               onCompleted={response => {
                 if (response.RemoveSlot.ok) {
-                  message.success("초기화 완료")
+                  return
                 } else if (response.RemoveSlot.error) {
                   message.error(response.RemoveSlot.error)
                 } else {

@@ -1,6 +1,5 @@
-import { Table, Tag, Typography } from "antd"
+import { Button, Table, Tag, Typography } from "antd"
 import React from "react"
-import { Link } from "react-router-dom"
 import styled from "styled-components"
 import Loading from "../../Components/Loading"
 import { Container, Content, InnerShadowedBox } from "../../styledComponents"
@@ -61,7 +60,16 @@ const columns = [
   },
   {
     dataIndex: "more",
-    render: (id: number) => <Link to={`/timetable/${id}`}>더 보기</Link>,
+    render: (id: number) => (
+      <Button
+        type="link"
+        onClick={() => {
+          window.location.pathname = `/timetable/${id}`
+        }}
+      >
+        더 보기
+      </Button>
+    ),
     title: ""
   }
 ]
