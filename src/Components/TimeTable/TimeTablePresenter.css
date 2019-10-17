@@ -1,0 +1,20 @@
+.column-flex {
+  flex-direction: column;
+}
+
+.flex-header-row {
+  width: 100% !important;
+  height: 10% !important;
+  display: flex;
+}
+
+.flex-row {
+  width: 100% !important;
+  height: 30% !important;
+  display: flex;
+}
+
+.flex-col {
+  height: 100%;
+  flex: 1 1 0;
+}

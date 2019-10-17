@@ -2,6 +2,7 @@ import { Button, Form, Icon, Input, Typography } from "antd"
 import React from "react"
 import Helmet from "react-helmet"
 import styled from "styled-components"
+
 import logo from "../../images/logo_colored.png"
 import { CenterContainerWithBackground } from "../../styledComponents"
 import { theme } from "../../theme"
@@ -127,7 +128,7 @@ const Content = styled.div`
   height: 70%;
   width: 30%;
   min-height: 560px;
-  background-color: ${theme.colors.white};
+  background-color: white;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 `
 

@@ -64,7 +64,7 @@ const columns = [
       <Button
         type="link"
         onClick={() => {
-          window.location.pathname = `/timetable/${id}`
+          window.location.pathname = `/shift/timetable/${id}`
         }}
       >
         더 보기

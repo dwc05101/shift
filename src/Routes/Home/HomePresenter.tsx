@@ -1,6 +1,7 @@
-import { List, Typography } from "antd"
+import { Button, List, message, Typography } from "antd"
 import moment from "moment"
 import React from "react"
+import { CopyToClipboard } from "react-copy-to-clipboard"
 import styled from "styled-components"
 import Loading from "../../Components/Loading"
 import TimeTable from "../../Components/TimeTable"
@@ -16,20 +17,41 @@ import {
 interface IProps {
   data: GetUsers | undefined
   loading: boolean
-  lastWeekTable: GetCurrentTimeTable_GetCurrentTimeTable_timetable | null
+  yearMonthWeek: string
+  timetable: GetCurrentTimeTable_GetCurrentTimeTable_timetable | null
 }
 
-const HomePresenter: React.SFC<IProps> = ({ data, loading, lastWeekTable }) => (
+const HomePresenter: React.SFC<IProps> = ({
+  data,
+  loading,
+  timetable,
+  yearMonthWeek
+}) => (
   <Container>
     <Content>
       <InnerShadowedBox>
         <InfoContainer>
           <MomentContainer>
             <Typography.Title level={1}>{relativeWeekString}</Typography.Title>
-            <DarkGreyBold>{isoWeekString}</DarkGreyBold>
+            <SubTitleContainer>
+              <DarkGreyBold>{isoWeekString}</DarkGreyBold>
+              <LinkContainer>
+                <Typography.Text strong={true} style={{ marginRight: "10px" }}>
+                  링크를 복사해서 공지하세요
+                </Typography.Text>
+                <CopyToClipboard
+                  text={timetable ? timetable.links![0]!.url : ""}
+                  onCopy={() => {
+                    message.success("클립보드에 복사되었습니다!")
+                  }}
+                >
+                  <Button type="primary">링크 복사</Button>
+                </CopyToClipboard>
+              </LinkContainer>
+            </SubTitleContainer>
           </MomentContainer>
           <TableContainer>
-            <TimeTable yearMonthWeek={isoYearMonthWeek} organizationId={null} />
+            <TimeTable yearMonthWeek={yearMonthWeek} organizationId={null} />
           </TableContainer>
         </InfoContainer>
         <UserContainer>
@@ -63,7 +85,9 @@ const HomePresenter: React.SFC<IProps> = ({ data, loading, lastWeekTable }) => (
                 }
                 itemLayout="horizontal"
                 dataSource={data === undefined ? [] : data.GetUsers.users!}
-                renderItem={user => <List.Item>{User(user!)}</List.Item>}
+                renderItem={user => (
+                  <List.Item>{User(user!, yearMonthWeek)}</List.Item>
+                )}
               />
             </ListContainer>
           )}
@@ -92,14 +116,6 @@ const isoWeekString = `${moment()
   .toDate()
   .getFullYear()}년 ${moment().isoWeek() + 1}주차`
 
-const isoYearMonthWeek = `${moment()
-  .add(1, "weeks")
-  .startOf("isoWeek")
-  .year()}${moment()
-  .add(1, "weeks")
-  .startOf("isoWeek")
-  .week()}`
-
 const userStatus = (data: GetUsers | undefined): string => {
   if (data === undefined) {
     return ""
@@ -108,8 +124,8 @@ const userStatus = (data: GetUsers | undefined): string => {
   return `총 구성원: ${totalNumber}명`
 }
 
-const User = (user: GetUsers_GetUsers_users) => {
-  const count = getCount(user.slots)
+const User = (user: GetUsers_GetUsers_users, yearMonthWeek: string) => {
+  const count = getCount(user.slots, yearMonthWeek)
   const targetColor = count <= 1 ? "red" : "black"
   return (
     <UserBlock style={{ color: targetColor }}>
@@ -121,12 +137,16 @@ const User = (user: GetUsers_GetUsers_users) => {
 }
 
 const getCount = (
-  slots: Array<GetUsers_GetUsers_users_slots | null> | null
+  slots: Array<GetUsers_GetUsers_users_slots | null> | null,
+  yearMonthWeek: string
 ): number => {
   let count = 0
   if (slots) {
     slots.forEach(slot => {
-      if (slot!.day.timetable.yearMonthWeek === isoYearMonthWeek) {
+      if (
+        slot!.day.timetable.yearMonthWeek === yearMonthWeek &&
+        !slot!.isSelected
+      ) {
         count++
       }
     })
@@ -164,8 +184,27 @@ const InfoContainer = styled.div`
 
 const MomentContainer = styled.div`
   width: 100%;
-  height: 20%;
+  height: 15%;
   min-height: 120px;
+  display: flex;
+  flex-direction: column;
+`
+
+const SubTitleContainer = styled.div`
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  padding-right: 5%;
+`
+
+const LinkContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: fit-content;
+  height: fit-content;
+  margin-left: auto;
 `
 
 const DarkGreyBold = styled.b`
@@ -174,7 +213,7 @@ const DarkGreyBold = styled.b`
 
 const TableContainer = styled.div`
   width: 100%;
-  height: 80%;
+  height: 85%;
   padding-right: 5%;
 `
 
