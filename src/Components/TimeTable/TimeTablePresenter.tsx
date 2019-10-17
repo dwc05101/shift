@@ -1,14 +1,20 @@
-import { Button, message, Result, Typography } from "antd"
+import { Button, Card, Col, Result, Row } from "antd"
 import React from "react"
-import { CopyToClipboard } from "react-copy-to-clipboard"
-import Chart from "react-google-charts"
-import styled from "styled-components"
 import history from "../../history"
 import { FlexContainer } from "../../styledComponents"
 import { GetCurrentTimeTable } from "../../types/api"
-import KoreanDays from "../../utils/KoreanDays"
-// import KoreanDays from "../../utils/KoreanDays"
 import Loading from "../Loading"
+
+import "@fullcalendar/core/main.css"
+import "@fullcalendar/resource-timeline/main.css"
+import "@fullcalendar/timeline/main.css"
+
+import moment from "moment"
+import "./TimeTablePresenter.css"
+
+import styled from "styled-components"
+import { theme } from "../../theme"
+import colors from "../../utils/colors.json"
 
 interface IProps {
   data: GetCurrentTimeTable | undefined
@@ -34,99 +40,175 @@ const TimeTablePresenter: React.SFC<IProps> = ({ data, loading }) =>
       }
     />
   ) : (
-    <>
-      <LinkContainer>
-        <Typography.Text strong={true} style={{ marginRight: "10px" }}>
-          링크를 복사해서 공지하세요
-        </Typography.Text>
-        <CopyToClipboard
-          text={data!.GetCurrentTimeTable.timetable!.links![0]!.url}
-          onCopy={() => {
-            message.success("클립보드에 복사되었습니다!")
-          }}
-        >
-          <Button type="primary">링크 복사</Button>
-        </CopyToClipboard>
-      </LinkContainer>
-      <FlexContainer
-        style={{
-          border: "none",
-          flexDirection: "column",
-          minWidth: "880px"
-        }}
-      >
-        <Chart
-          width={"100%"}
-          height={"100%"}
-          chartType="Bar"
-          loader={<Loading />}
-          data={makeData(data!)}
-        />
-      </FlexContainer>
-    </>
+    <FlexContainer className="column-flex">
+      <Row className="flex-header-row">{makeTable(data!)}</Row>
+      <Row className="flex-row">{makeTable(data!)}</Row>
+      <Row className="flex-row">{makeTable(data!)}</Row>
+      <Row className="flex-row">{makeTable(data!)}</Row>
+    </FlexContainer>
   )
 
-const makeData = (data: GetCurrentTimeTable) => {
-  const baseData: any[][] = [
-    ["날짜", "점심 (10시 ~ 14시)", "저녁 (17시 ~ 21시)", "마감 (22시 ~)"]
-  ]
-  const sortedDay = sortDay(data)
-  sortedDay!.forEach((day, index) => {
-    const lunchSlots = day!.slots!.filter(slot => {
-      if (slot!.isSelected) {
-        return false
-      }
-      if (slot!.isFulltime) {
-        return true
-      }
+const makeTable = (data: GetCurrentTimeTable) => {
+  const days = sortDay(data)
 
-      let included = true
-      if (parseInt(slot!.startTime, 10) >= 1400) {
-        included = false
-      }
-      if (parseInt(slot!.endtime, 10) < 1000) {
-        included = false
-      }
-
-      return included
-    })
-    const dinnerSlots = day!.slots!.filter(slot => {
-      if (slot!.isSelected) {
-        return false
-      }
-      if (slot!.isFulltime) {
-        return true
-      }
-
-      let included = true
-      if (parseInt(slot!.startTime, 10) >= 2100) {
-        included = false
-      }
-      if (parseInt(slot!.endtime, 10) < 1700) {
-        included = false
-      }
-
-      return included
-    })
-    const mdSlots = day!.slots!.filter(slot => {
-      if (slot!.isSelected) {
-        return false
-      }
-      if (slot!.isFulltime) {
-        return true
-      }
-      return parseInt(slot!.endTime, 10) > 2200
-    })
-
-    baseData.push([
-      `${day!.dayNumber}일 (${KoreanDays[index]})`,
-      lunchSlots.length,
-      dinnerSlots.length,
-      mdSlots.length
-    ])
+  return days.map(day => {
+    const count = 0
+    return (
+      <Col className="flex-col" span={3} key={day!.id}>
+        <BlueCard>{count}</BlueCard>
+      </Col>
+    )
   })
+}
 
-  return baseData
+const getFirstDay = () => {
+  const nextWeekStart = moment()
+    .add(1, "week")
+    .startOf("isoWeek")
+
+  const defaultDate = makeDateString(
+    nextWeekStart.year(),
+    nextWeekStart.month() + 1,
+    nextWeekStart.date()
+  )
+
+  return defaultDate
+}
+
+const makeDateString = (year: number, month: number, day: number) => {
+  return `${year}-${month}-${day}`
+}
+
+const makeResources = (data: GetCurrentTimeTable) => {
+  const resource: any[] = []
+  const sortedDay = sortDay(data)
+  const yearMonthWeek = data.GetCurrentTimeTable.timetable!.yearMonthWeek
+  const year = yearMonthWeek.substring(0, 4)
+  const ISOWeek = yearMonthWeek.substring(4, yearMonthWeek.length)
+  const month =
+    moment()
+      .isoWeek(parseInt(ISOWeek, 10))
+      .month() + 1
+
+  console.log(sortedDay)
+
+  for (const day of sortedDay) {
+    for (const slot of day.slots) {
+      if (slot.isSelected) {
+        continue
+      }
+      const dateString = makeDateString(
+        parseInt(year, 10),
+        month,
+        day.dayNumber
+      )
+      resource.push({
+        date: dateString,
+        id: slot.id,
+        slot: `${slot.user.name}(${slot.user.personalCode})`
+      })
+    }
+  }
+
+  return resource
+}
+
+const makeData = (data: GetCurrentTimeTable) => {
+  const events: any[] = []
+  const assigned: any[] = []
+  const sortedDay = sortDay(data)
+  const yearMonthWeek = data.GetCurrentTimeTable.timetable!.yearMonthWeek
+
+  for (const day of sortedDay) {
+    for (const slot of day.slots) {
+      if (slot.isSelected) {
+        continue
+      }
+      const dateString = getFirstDay()
+      const startTime = slot.isFulltime ? day.startTime : slot.startTime
+      const formattedStartTime =
+        startTime.substring(0, 2) +
+        ":" +
+        startTime.substring(2, startTime.length)
+      const endTime = slot.isFulltime ? day.endTime : slot.endTime
+      const formattedEndTime =
+        endTime.substring(0, 2) + ":" + endTime.substring(2, endTime.length)
+
+      const ISOStartString = dateString + "T" + formattedStartTime + ":00"
+      const ISOEndString = dateString + "T" + formattedEndTime + ":00"
+
+      let color
+
+      const colorIndex = assigned.findIndex(
+        assign => assign.personalCode === slot.user.personalCode
+      )
+
+      if (colorIndex > -1) {
+        color = assigned[colorIndex].color
+      } else {
+        color = colors.values[Math.floor(Math.random() * colors.values.length)]
+        assigned.push({
+          color,
+          personalCode: slot.user.personalCode
+        })
+      }
+
+      events.push({
+        color,
+        end: ISOEndString,
+        resourceId: slot.id,
+        start: ISOStartString
+      })
+    }
+  }
+
+  console.log(events)
+
+  return events
+}
+
+const getMinTime = (data: GetCurrentTimeTable): string => {
+  const days = data.GetCurrentTimeTable.timetable!.days!
+
+  let minTime = days[0]!.startTime
+
+  for (const day of days) {
+    if (parseInt(day!.startTime, 10) < parseInt(minTime, 10)) {
+      minTime = day!.startTime
+    }
+  }
+
+  const formattedMinTime =
+    minTime.substring(0, 2) + ":" + minTime.substring(2, minTime.length) + ":00"
+
+  return formattedMinTime
+}
+
+const getMaxTime = (data: GetCurrentTimeTable): string => {
+  const days = data.GetCurrentTimeTable.timetable!.days!
+
+  let maxTime = days[0]!.isEndTimeNextDay
+    ? addOneDay(days[0]!.endTime)
+    : days[0]!.endTime
+
+  for (const day of days) {
+    const endTime = day!.isEndTimeNextDay
+      ? addOneDay(day!.endTime)
+      : day!.endTime
+    if (parseInt(endTime, 10) > parseInt(maxTime, 10)) {
+      maxTime = endTime
+    }
+  }
+
+  const formattedMaxTime =
+    maxTime.substring(0, 2) + ":" + maxTime.substring(2, maxTime.length) + ":00"
+
+  return formattedMaxTime
+}
+
+const addOneDay = (time: string): string => {
+  const addedTime = parseInt(time, 10) + 2400
+  return addedTime.toString()
 }
 
 const sortDay = (data: GetCurrentTimeTable) => {
@@ -163,13 +245,41 @@ const sortDay = (data: GetCurrentTimeTable) => {
 
   return sortedDays
 }
-const LinkContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+
+const BlueCard = styled.div`
   width: 100%;
-  height: 110px;
-  margin-top: -110px;
+  height: 100%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  background-color: ${theme.colors.blue};
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3em;
+`
+
+const YellowCard = styled.div`
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  background-color: ${theme.colors.yellow};
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3em;
+`
+
+const RedCard = styled.div`
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  background-color: ${theme.colors.red};
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3em;
 `
 
 export default TimeTablePresenter

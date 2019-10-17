@@ -12,31 +12,29 @@ import HomePresenter from "./HomePresenter"
 
 class GetUsersQuery extends Query<GetUsers> {}
 
-class GetLastWeekQuery extends Query<
+class GetCurrentTimeTableQuery extends Query<
   GetCurrentTimeTable,
   GetCurrentTimeTableVariables
 > {}
 
-const isoLastWeek = `${
-  moment().isoWeek() - 1 === 0
-    ? moment()
-        .toDate()
-        .getFullYear() - 1
-    : moment()
-        .toDate()
-        .getFullYear()
-}${moment().isoWeek() - 1 === 0 ? 52 : moment().isoWeek() - 1}`
+const isoYearMonthWeek = `${moment()
+  .add(1, "weeks")
+  .startOf("isoWeek")
+  .year()}${moment()
+  .add(1, "weeks")
+  .startOf("isoWeek")
+  .week()}`
 
 class HomeContainer extends React.Component {
-  public lastWeekTable
+  public timetable
 
   public render() {
     return (
-      <GetLastWeekQuery
+      <GetCurrentTimeTableQuery
         query={GET_TIMETABLE}
-        variables={{ yearMonthWeek: isoLastWeek }}
+        variables={{ yearMonthWeek: isoYearMonthWeek }}
         onCompleted={data => {
-          this.lastWeekTable = data.GetCurrentTimeTable.timetable
+          this.timetable = data.GetCurrentTimeTable.timetable
         }}
       >
         {() => (
@@ -46,13 +44,14 @@ class HomeContainer extends React.Component {
                 <HomePresenter
                   data={data}
                   loading={loading}
-                  lastWeekTable={this.lastWeekTable}
+                  yearMonthWeek={isoYearMonthWeek}
+                  timetable={this.timetable}
                 />
               )
             }}
           </GetUsersQuery>
         )}
-      </GetLastWeekQuery>
+      </GetCurrentTimeTableQuery>
     )
   }
 }

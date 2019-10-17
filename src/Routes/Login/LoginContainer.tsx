@@ -2,6 +2,7 @@ import { message } from "antd"
 import React from "react"
 import { Mutation } from "react-apollo"
 import { RouteComponentProps } from "react-router"
+
 import history from "../../history"
 import {
   OrganizationSignIn,
@@ -57,7 +58,6 @@ class LoginContainer extends React.Component<RouteComponentProps<any>, IState> {
               loading={loading}
               onInputChange={this.onInputChange}
               onSubmit={this.onSubmit}
-              onClickSignUp={this.onClickSignUp}
             />
           )
         }}
@@ -79,12 +79,6 @@ class LoginContainer extends React.Component<RouteComponentProps<any>, IState> {
   public onSubmit: React.FormEventHandler<HTMLFormElement> = event => {
     event.preventDefault()
     this.loginMutation()
-  }
-
-  public onClickSignUp: React.MouseEventHandler<HTMLElement> = (
-    event: React.MouseEvent<HTMLElement, MouseEvent>
-  ) => {
-    history.push("sign-up")
   }
 }
 

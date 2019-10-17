@@ -1,6 +1,6 @@
 import React from "react"
 import { Redirect, Route, Router, Switch } from "react-router-dom"
-
+import { AnimatedSwitch, spring } from "react-router-transition"
 import history from "../../history"
 import Application from "../../Routes/Application"
 import EditTimeTable from "../../Routes/EditTimeTable"
@@ -14,6 +14,8 @@ import UserTable from "../../Routes/UserTable"
 import ViewTimeTable from "../../Routes/ViewTimeTable"
 import Nav from "../Nav/NavContainer"
 
+import "./App.css"
+
 interface IProps {
   isLoggedIn: boolean
 }
@@ -24,18 +26,27 @@ const AppPresenter: React.SFC<IProps> = ({ isLoggedIn }) => (
   </Router>
 )
 
-const LoggedOutRoutes: React.SFC = () => (
-  <Switch>
-    <Route path={"/"} exact={true} component={Login} />
-    <Route path={"/sign-up"} component={SignUp} />
-    <Route path={"/forgot"} component={Forgot} />
-    <Route
-      path={"/application/:organizationId/:timetableId"}
-      component={Application}
-    />
-    <Redirect path={"*"} to={"/"} />
-  </Switch>
-)
+const LoggedOutRoutes: React.SFC = () => {
+  return (
+    <Switch>
+      <AnimatedSwitch
+        atEnter={{ opacity: 0 }}
+        atLeave={{ opacity: 0 }}
+        atActive={{ opacity: 1 }}
+        mapStyles={mapStyles}
+      >
+        <Route path={"/"} exact={true} component={Login} />
+        <Route path={"/sign-up"} component={SignUp} />
+        <Route path={"/forgot"} component={Forgot} />
+        <Route
+          path={"/application/:organizationId/:timetableId"}
+          component={Application}
+        />
+        <Redirect path={"*"} to={"/"} />
+      </AnimatedSwitch>
+    </Switch>
+  )
+}
 
 class LoggedInRoutes extends React.Component {
   public render() {
@@ -75,6 +86,12 @@ class LoggedInRoutes extends React.Component {
     this.setState({
       defaultKey: value
     })
+  }
+}
+
+function mapStyles(styles) {
+  return {
+    opacity: styles.opacity
   }
 }
 
