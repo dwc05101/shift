@@ -2,8 +2,6 @@ import { message } from "antd"
 import React from "react"
 import { Mutation } from "react-apollo"
 import { RouteComponentProps } from "react-router"
-
-import history from "../../history"
 import {
   OrganizationSignIn,
   OrganizationSignInVariables

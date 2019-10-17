@@ -1,6 +1,6 @@
 import React from "react"
 import { Redirect, Route, Router, Switch } from "react-router-dom"
-import { AnimatedSwitch, spring } from "react-router-transition"
+import { AnimatedSwitch } from "react-router-transition"
 import history from "../../history"
 import Application from "../../Routes/Application"
 import EditTimeTable from "../../Routes/EditTimeTable"

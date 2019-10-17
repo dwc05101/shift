@@ -41,23 +41,85 @@ const TimeTablePresenter: React.SFC<IProps> = ({ data, loading }) =>
     />
   ) : (
     <FlexContainer className="column-flex">
-      <Row className="flex-header-row">{makeTable(data!)}</Row>
-      <Row className="flex-row">{makeTable(data!)}</Row>
-      <Row className="flex-row">{makeTable(data!)}</Row>
-      <Row className="flex-row">{makeTable(data!)}</Row>
+      <Row className="flex-header-row">
+        <Col className="flex-col" span={3}>
+          <TableCell />
+        </Col>
+        {makeHeader(data!)}
+      </Row>
+      <Row className="flex-row">
+        <Col className="flex-col" span={3}>
+          <TableCell>오전</TableCell>
+        </Col>
+        {makeTable(data!)}
+      </Row>
+      <Row className="flex-row">
+        <Col className="flex-col" span={3}>
+          <TableCell>오후</TableCell>
+        </Col>
+        {makeTable(data!)}
+      </Row>
+      <Row className="flex-row">
+        <Col className="flex-col" span={3}>
+          <TableCell>마감</TableCell>
+        </Col>
+        {makeTable(data!)}
+      </Row>
     </FlexContainer>
   )
+
+const makeHeader = (data: GetCurrentTimeTable) => {
+  const days = sortDay(data)
+
+  return days.map(day => {
+    return (
+      <Col className="flex-col" span={3} key={day!.id}>
+        <TableCell>{`${day.dayNumber}일`}</TableCell>
+      </Col>
+    )
+  })
+}
 
 const makeTable = (data: GetCurrentTimeTable) => {
   const days = sortDay(data)
 
   return days.map(day => {
-    const count = 0
-    return (
-      <Col className="flex-col" span={3} key={day!.id}>
-        <BlueCard>{count}</BlueCard>
-      </Col>
-    )
+    const count = Math.floor(Math.random() * 5)
+
+    if (count <= 1) {
+      return (
+        <Col
+          className="flex-col"
+          span={3}
+          key={day!.id}
+          style={{ padding: "2px" }}
+        >
+          <RedCard>{count}</RedCard>
+        </Col>
+      )
+    } else if (count <= 3) {
+      return (
+        <Col
+          className="flex-col"
+          span={3}
+          key={day!.id}
+          style={{ padding: "2px" }}
+        >
+          <YellowCard>{count}</YellowCard>
+        </Col>
+      )
+    } else {
+      return (
+        <Col
+          className="flex-col"
+          span={3}
+          key={day!.id}
+          style={{ padding: "2px" }}
+        >
+          <BlueCard>{count}</BlueCard>
+        </Col>
+      )
+    }
   })
 }
 
@@ -246,6 +308,19 @@ const sortDay = (data: GetCurrentTimeTable) => {
   return sortedDays
 }
 
+const TableCell = styled.div`
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5em;
+  border: 2px solid ${theme.colors.grey};
+  border-collapse: collapse;
+`
+
 const BlueCard = styled.div`
   width: 100%;
   height: 100%;
@@ -256,18 +331,28 @@ const BlueCard = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 3em;
+  :hover {
+    background-color: white;
+    color: black;
+    transition: 0.2s ease-in;
+  }
 `
 
 const YellowCard = styled.div`
   width: 100%;
   height: 100%;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  background-color: ${theme.colors.yellow};
+  background-color: #ffb347;
   color: white;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 3em;
+  :hover {
+    background-color: white;
+    color: black;
+    transition: 0.2s ease-in;
+  }
 `
 
 const RedCard = styled.div`
@@ -280,6 +365,11 @@ const RedCard = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 3em;
+  :hover {
+    background-color: white;
+    color: black;
+    transition: 0.2s ease-in;
+  }
 `
 
 export default TimeTablePresenter
