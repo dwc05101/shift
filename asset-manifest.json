@@ -1,16 +1,21 @@
 {
   "files": {
-    "main.js": "/shift/static/js/main.a6830f33.chunk.js",
-    "main.js.map": "/shift/static/js/main.a6830f33.chunk.js.map",
+    "main.css": "/shift/static/css/main.4b167782.chunk.css",
+    "main.js": "/shift/static/js/main.636f297e.chunk.js",
+    "main.js.map": "/shift/static/js/main.636f297e.chunk.js.map",
     "runtime~main.js": "/shift/static/js/runtime~main.42dbfaa6.js",
     "runtime~main.js.map": "/shift/static/js/runtime~main.42dbfaa6.js.map",
-    "static/css/2.a317ec87.chunk.css": "/shift/static/css/2.a317ec87.chunk.css",
-    "static/js/2.c75a7519.chunk.js": "/shift/static/js/2.c75a7519.chunk.js",
-    "static/js/2.c75a7519.chunk.js.map": "/shift/static/js/2.c75a7519.chunk.js.map",
+    "static/css/2.0b726e0e.chunk.css": "/shift/static/css/2.0b726e0e.chunk.css",
+    "static/js/2.fa4dc863.chunk.js": "/shift/static/js/2.fa4dc863.chunk.js",
+    "static/js/2.fa4dc863.chunk.js.map": "/shift/static/js/2.fa4dc863.chunk.js.map",
     "index.html": "/shift/index.html",
-    "precache-manifest.158ac8d2814009d1a8a037fecf379406.js": "/shift/precache-manifest.158ac8d2814009d1a8a037fecf379406.js",
+    "precache-manifest.1b4f2d2c1f13158bd1fed82889997f0a.js": "/shift/precache-manifest.1b4f2d2c1f13158bd1fed82889997f0a.js",
     "service-worker.js": "/shift/service-worker.js",
-    "static/css/2.a317ec87.chunk.css.map": "/shift/static/css/2.a317ec87.chunk.css.map",
-    "static/media/background.png": "/shift/static/media/background.34b8d21f.png"
+    "static/css/2.0b726e0e.chunk.css.map": "/shift/static/css/2.0b726e0e.chunk.css.map",
+    "static/css/main.4b167782.chunk.css.map": "/shift/static/css/main.4b167782.chunk.css.map",
+    "static/media/background.png": "/shift/static/media/background.a935e39c.png",
+    "static/media/logo_horizontal_reversed.png": "/shift/static/media/logo_horizontal_reversed.410380f0.png",
+    "static/media/logo_white_300px.svg": "/shift/static/media/logo_white_300px.9dbe0224.svg",
+    "static/media/smartphone.png": "/shift/static/media/smartphone.bd3114c5.png"
   }
 }
