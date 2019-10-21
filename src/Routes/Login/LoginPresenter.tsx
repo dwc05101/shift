@@ -4,7 +4,7 @@ import Helmet from "react-helmet"
 import { Link } from "react-router-dom"
 import styled from "styled-components"
 import background from "../../images/background.png"
-import logo from "../../images/logo_horizontal_reversed.png"
+import logo from "../../images/logo.svg"
 import { CenterContainerWithBackground } from "../../styledComponents"
 import { theme } from "../../theme"
 
@@ -33,11 +33,18 @@ const LoginPresenter: React.SFC<IProps> = ({
       <LoginContainer>
         <Content>
           <Typography>
-            <b>빠르다.</b> 시간표 제작
-            <br />
-            <b>가볍다.</b> 모바일 지원
-            <br />
-            <b>바꾸다.</b> <HeaderImage src={logo} />
+            <OneLine>
+              <Bold>빠르다.</Bold>
+              &nbsp;시간표 제작
+            </OneLine>
+            <OneLine>
+              <Bold>가볍다.</Bold>
+              &nbsp;모바일 지원
+            </OneLine>
+            <OneLine>
+              <Bold>바꾸다.</Bold>&nbsp;<Bold>Shift</Bold>
+              <HeaderImage src={logo} />
+            </OneLine>
           </Typography>
         </Content>
         <Login>
@@ -79,7 +86,7 @@ const LoginPresenter: React.SFC<IProps> = ({
             </Button>
             <SignUp>
               처음 이용하시나요?
-              <Link to={"/sign-up"} style={{ marginLeft: "10px" }}>
+              <Link to={"/signUp"} style={{ marginLeft: "10px" }}>
                 회원가입
               </Link>
             </SignUp>
@@ -122,18 +129,37 @@ const Content = styled.div`
   width: 50%;
 `
 
-const HeaderImage = styled.img`
-  height: 60px;
-  margin-bottom: 10px;
-  margin-left: -10px;
-`
-
 const Typography = styled.div`
-  width: fit-content;
-  height: fit-content;
+  width: max-content;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   font-family: "Nanum Gothic", sans-serif;
   color: black;
-  font-size: 3em;
+  font-size: 48px;
+`
+
+const OneLine = styled.div`
+  width: 100%;
+  height: 72px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-family: "Nanum Gothic", sans-serif;
+  color: black;
+  font-size: 48px;
+`
+
+const Bold = styled.div`
+  font-weight: bold;
+  font-size: 48px;
+`
+
+const HeaderImage = styled.img`
+  height: 72px;
+  margin-left: 8px;
 `
 
 const Login = styled.div`
@@ -149,7 +175,7 @@ const Login = styled.div`
 const LoginHeader = styled.div`
   font-family: "Nanum Gothic", sans-serif;
   padding: 10px;
-  font-size: 1.5em;
+  font-size: 24px;
 `
 
 const SignUp = styled.div`

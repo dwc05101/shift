@@ -1,15 +1,10 @@
-import { Button, Card, Col, Result, Row } from "antd"
+import { Button, Col, Result, Row } from "antd"
+import moment from "moment"
 import React from "react"
 import history from "../../history"
 import { FlexContainer } from "../../styledComponents"
 import { GetCurrentTimeTable } from "../../types/api"
 import Loading from "../Loading"
-
-import "@fullcalendar/core/main.css"
-import "@fullcalendar/resource-timeline/main.css"
-import "@fullcalendar/timeline/main.css"
-
-import moment from "moment"
 import "./TimeTablePresenter.css"
 
 import styled from "styled-components"

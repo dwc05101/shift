@@ -5,6 +5,12 @@ import history from "../../history"
 import { GetOrganizationProfile } from "../../types/api"
 import NavPresenter from "./NavPresenter"
 
+interface IProps {
+  isMain: boolean
+  mainHandler: (event: any) => void
+  mainCurrent: string
+}
+
 interface IState {
   isProfile: boolean
   current: string
@@ -17,12 +23,9 @@ const parseLocation = (pathname: string) => {
 
 class GetProfileQuery extends Query<GetOrganizationProfile> {}
 
-class Nav extends React.Component<{}, IState> {
+class Nav extends React.Component<IProps, IState> {
   public state = {
-    current:
-      parseLocation(history.location.pathname) === ""
-        ? "dashboard"
-        : parseLocation(history.location.pathname),
+    current: parseLocation(history.location.pathname),
     isProfile: false
   }
 
@@ -32,12 +35,16 @@ class Nav extends React.Component<{}, IState> {
         {({ data, loading }) => {
           return (
             <NavPresenter
+              isMain={this.props.isMain}
+              mainHandler={this.props.mainHandler}
               isProfile={this.state.isProfile}
               loading={loading}
               profile={data}
               current={this.state.current}
+              mainCurrent={this.props.mainCurrent}
               handleClick={this.handleClick}
               goToProfile={this.goToProfile}
+              goToLogin={this.goToLogin}
               doLogout={this.doLogout}
               goToHome={this.goToHome}
             />
@@ -65,6 +72,10 @@ class Nav extends React.Component<{}, IState> {
   public doLogout = e => {
     localStorage.removeItem("jwt")
     window.location.reload()
+  }
+
+  public goToLogin = e => {
+    history.push("/login")
   }
 
   public goToHome = e => {

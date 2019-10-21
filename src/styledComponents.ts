@@ -8,7 +8,8 @@ export const CenterContainerWithBackground = styled.div`
 `
 
 export const Container = styled.div`
-  height: calc(100vh - 50px);
+  height: 100vh;
+  padding-top: 64px;
   width: 100vw;
   display: flex;
 `

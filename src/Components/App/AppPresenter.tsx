@@ -1,20 +1,18 @@
 import React from "react"
 import { Redirect, Route, Router, Switch } from "react-router-dom"
-import { AnimatedSwitch } from "react-router-transition"
 import history from "../../history"
 import Application from "../../Routes/Application"
 import EditTimeTable from "../../Routes/EditTimeTable"
 import Forgot from "../../Routes/Forgot"
 import Home from "../../Routes/Home"
 import Login from "../../Routes/Login"
+import Main from "../../Routes/Main"
 import MakeTimeTable from "../../Routes/MakeTimeTable"
 import Profile from "../../Routes/Profile"
 import SignUp from "../../Routes/SignUp"
 import UserTable from "../../Routes/UserTable"
 import ViewTimeTable from "../../Routes/ViewTimeTable"
 import Nav from "../Nav/NavContainer"
-
-import "./App.css"
 
 interface IProps {
   isLoggedIn: boolean
@@ -29,21 +27,15 @@ const AppPresenter: React.SFC<IProps> = ({ isLoggedIn }) => (
 const LoggedOutRoutes: React.SFC = () => {
   return (
     <Switch>
-      <AnimatedSwitch
-        atEnter={{ opacity: 0 }}
-        atLeave={{ opacity: 0 }}
-        atActive={{ opacity: 1 }}
-        mapStyles={mapStyles}
-      >
-        <Route path={"/"} exact={true} component={Login} />
-        <Route path={"/sign-up"} component={SignUp} />
-        <Route path={"/forgot"} component={Forgot} />
-        <Route
-          path={"/application/:organizationId/:timetableId"}
-          component={Application}
-        />
-        <Redirect path={"*"} to={"/"} />
-      </AnimatedSwitch>
+      <Route path={"/"} exact={true} component={Main} />
+      <Route path={"/login"} component={Login} />
+      <Route path={"/signUp"} component={SignUp} />
+      <Route path={"/forgot"} component={Forgot} />
+      <Route
+        path={"/application/:organizationId/:timetableId"}
+        component={Application}
+      />
+      <Redirect path={"*"} to={"/"} />
     </Switch>
   )
 }
@@ -52,7 +44,13 @@ class LoggedInRoutes extends React.Component {
   public render() {
     return (
       <>
-        <Nav />
+        <Nav
+          isMain={false}
+          mainHandler={() => {
+            return
+          }}
+          mainCurrent={""}
+        />
         <Switch>
           <Route path={"/dashboard"} component={Home} />
           <Route path={"/profile"} exact={true} component={Profile} />

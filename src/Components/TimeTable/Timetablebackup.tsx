@@ -1,228 +1,230 @@
-import FullCalendar from "@fullcalendar/react"
-import timeGridPlugin from "@fullcalendar/timegrid"
-import { Button, Result } from "antd"
-import React from "react"
-import history from "../../history"
-import { FlexContainer } from "../../styledComponents"
-import { GetCurrentTimeTable } from "../../types/api"
-import Loading from "../Loading"
+export default null
 
-import "@fullcalendar/core/main.css"
-import "@fullcalendar/daygrid/main.css"
-import "@fullcalendar/timegrid/main.css"
+// import FullCalendar from "@fullcalendar/react"
+// import timeGridPlugin from "@fullcalendar/timegrid"
+// import { Button, Result } from "antd"
+// import React from "react"
+// import history from "../../history"
+// import { FlexContainer } from "../../styledComponents"
+// import { GetCurrentTimeTable } from "../../types/api"
+// import Loading from "../Loading"
 
-import moment from "moment"
-import "./TimeTablePresenter.css"
+// import "@fullcalendar/core/main.css"
+// import "@fullcalendar/daygrid/main.css"
+// import "@fullcalendar/timegrid/main.css"
 
-import colors from "../../utils/colors.json"
+// import moment from "moment"
+// import "./TimeTablePresenter.css"
 
-interface IProps {
-  data: GetCurrentTimeTable | undefined
-  loading: boolean
-}
+// import colors from "../../utils/colors.json"
 
-const TimeTablePresenter: React.SFC<IProps> = ({ data, loading }) =>
-  loading ? (
-    <Loading />
-  ) : !data!.GetCurrentTimeTable.ok ? (
-    <Result
-      status="404"
-      title="금주 시간표가 없습니다."
-      extra={
-        <Button
-          type="primary"
-          onClick={() => {
-            history.push("/timetable/make")
-          }}
-        >
-          시간표 만들기
-        </Button>
-      }
-    />
-  ) : (
-    <FlexContainer>
-      <FullCalendar
-        defaultView="timeGridWeek"
-        plugins={[timeGridPlugin]}
-        height="parent"
-        locale="ko"
-        slotEventOverlap={false}
-        allDayText="풀타임"
-        firstDay={1}
-        defaultDate={getFirstDay(data!)}
-        events={makeData(data!)}
-        minTime={getMinTime(data!)}
-        maxTime={getMaxTime(data!)}
-      />
-    </FlexContainer>
-  )
+// interface IProps {
+//   data: GetCurrentTimeTable | undefined
+//   loading: boolean
+// }
 
-const getFirstDay = (data: GetCurrentTimeTable) => {
-  const nextWeekStart = moment()
-    .add(1, "week")
-    .startOf("isoWeek")
+// const TimeTablePresenter: React.SFC<IProps> = ({ data, loading }) =>
+//   loading ? (
+//     <Loading />
+//   ) : !data!.GetCurrentTimeTable.ok ? (
+//     <Result
+//       status="404"
+//       title="금주 시간표가 없습니다."
+//       extra={
+//         <Button
+//           type="primary"
+//           onClick={() => {
+//             history.push("/timetable/make")
+//           }}
+//         >
+//           시간표 만들기
+//         </Button>
+//       }
+//     />
+//   ) : (
+//     <FlexContainer>
+//       <FullCalendar
+//         defaultView="timeGridWeek"
+//         plugins={[timeGridPlugin]}
+//         height="parent"
+//         locale="ko"
+//         slotEventOverlap={false}
+//         allDayText="풀타임"
+//         firstDay={1}
+//         defaultDate={getFirstDay(data!)}
+//         events={makeData(data!)}
+//         minTime={getMinTime(data!)}
+//         maxTime={getMaxTime(data!)}
+//       />
+//     </FlexContainer>
+//   )
 
-  const defaultDate = makeDateString(
-    nextWeekStart.year(),
-    nextWeekStart.month() + 1,
-    nextWeekStart.date()
-  )
+// const getFirstDay = (data: GetCurrentTimeTable) => {
+//   const nextWeekStart = moment()
+//     .add(1, "week")
+//     .startOf("isoWeek")
 
-  return defaultDate
-}
+//   const defaultDate = makeDateString(
+//     nextWeekStart.year(),
+//     nextWeekStart.month() + 1,
+//     nextWeekStart.date()
+//   )
 
-const makeDateString = (year: number, month: number, day: number) => {
-  return `${year}-${month}-${day}`
-}
+//   return defaultDate
+// }
 
-const makeData = (data: GetCurrentTimeTable) => {
-  const events: any[] = []
-  const assigned: any[] = []
-  const sortedDay = sortDay(data)
-  const yearMonthWeek = data.GetCurrentTimeTable.timetable!.yearMonthWeek
-  const year = yearMonthWeek.substring(0, 4)
-  const ISOWeek = yearMonthWeek.substring(4, yearMonthWeek.length)
-  const month =
-    moment()
-      .isoWeek(parseInt(ISOWeek, 10))
-      .month() + 1
+// const makeDateString = (year: number, month: number, day: number) => {
+//   return `${year}-${month}-${day}`
+// }
 
-  for (const day of sortedDay) {
-    for (const slot of day.slots) {
-      if (slot.isSelected) {
-        continue
-      }
-      const dateString = makeDateString(
-        parseInt(year, 10),
-        month,
-        day.dayNumber
-      )
-      const startTime = slot.isFulltime ? day.startTime : slot.startTime
-      const formattedStartTime =
-        startTime.substring(0, 2) +
-        ":" +
-        startTime.substring(2, startTime.length)
-      const endTime = slot.isFulltime ? day.endTime : slot.endTime
-      const formattedEndTime =
-        endTime.substring(0, 2) + ":" + endTime.substring(2, endTime.length)
+// const makeData = (data: GetCurrentTimeTable) => {
+//   const events: any[] = []
+//   const assigned: any[] = []
+//   const sortedDay = sortDay(data)
+//   const yearMonthWeek = data.GetCurrentTimeTable.timetable!.yearMonthWeek
+//   const year = yearMonthWeek.substring(0, 4)
+//   const ISOWeek = yearMonthWeek.substring(4, yearMonthWeek.length)
+//   const month =
+//     moment()
+//       .isoWeek(parseInt(ISOWeek, 10))
+//       .month() + 1
 
-      const ISOStartString = dateString + "T" + formattedStartTime + ":00"
-      const ISOEndString = dateString + "T" + formattedEndTime + ":00"
+//   for (const day of sortedDay) {
+//     for (const slot of day.slots) {
+//       if (slot.isSelected) {
+//         continue
+//       }
+//       const dateString = makeDateString(
+//         parseInt(year, 10),
+//         month,
+//         day.dayNumber
+//       )
+//       const startTime = slot.isFulltime ? day.startTime : slot.startTime
+//       const formattedStartTime =
+//         startTime.substring(0, 2) +
+//         ":" +
+//         startTime.substring(2, startTime.length)
+//       const endTime = slot.isFulltime ? day.endTime : slot.endTime
+//       const formattedEndTime =
+//         endTime.substring(0, 2) + ":" + endTime.substring(2, endTime.length)
 
-      let color
+//       const ISOStartString = dateString + "T" + formattedStartTime + ":00"
+//       const ISOEndString = dateString + "T" + formattedEndTime + ":00"
 
-      const colorIndex = assigned.findIndex(
-        assign => assign.personalCode === slot.user.personalCode
-      )
+//       let color
 
-      if (colorIndex > -1) {
-        color = assigned[colorIndex].color
-      } else {
-        color = colors.values[Math.floor(Math.random() * colors.values.length)]
-        assigned.push({
-          color,
-          personalCode: slot.user.personalCode
-        })
-      }
+//       const colorIndex = assigned.findIndex(
+//         assign => assign.personalCode === slot.user.personalCode
+//       )
 
-      if (startTime === day.startTime && endTime === day.endTime) {
-        events.push({
-          allDay: true,
-          color,
-          start: ISOStartString,
-          title: `${slot.user.name}`
-        })
-      } else {
-        events.push({
-          color,
-          end: ISOEndString,
-          start: ISOStartString,
-          title: `${slot.user.name}`
-        })
-      }
-    }
-  }
+//       if (colorIndex > -1) {
+//         color = assigned[colorIndex].color
+//       } else {
+//         color = colors.values[Math.floor(Math.random() * colors.values.length)]
+//         assigned.push({
+//           color,
+//           personalCode: slot.user.personalCode
+//         })
+//       }
 
-  return events
-}
+//       if (startTime === day.startTime && endTime === day.endTime) {
+//         events.push({
+//           allDay: true,
+//           color,
+//           start: ISOStartString,
+//           title: `${slot.user.name}`
+//         })
+//       } else {
+//         events.push({
+//           color,
+//           end: ISOEndString,
+//           start: ISOStartString,
+//           title: `${slot.user.name}`
+//         })
+//       }
+//     }
+//   }
 
-const getMinTime = (data: GetCurrentTimeTable): string => {
-  const days = data.GetCurrentTimeTable.timetable!.days!
+//   return events
+// }
 
-  let minTime = days[0]!.startTime
+// const getMinTime = (data: GetCurrentTimeTable): string => {
+//   const days = data.GetCurrentTimeTable.timetable!.days!
 
-  for (const day of days) {
-    if (parseInt(day!.startTime, 10) < parseInt(minTime, 10)) {
-      minTime = day!.startTime
-    }
-  }
+//   let minTime = days[0]!.startTime
 
-  const formattedMinTime =
-    minTime.substring(0, 2) + ":" + minTime.substring(2, minTime.length) + ":00"
+//   for (const day of days) {
+//     if (parseInt(day!.startTime, 10) < parseInt(minTime, 10)) {
+//       minTime = day!.startTime
+//     }
+//   }
 
-  return formattedMinTime
-}
+//   const formattedMinTime =
+//     minTime.substring(0, 2) + ":" + minTime.substring(2, minTime.length) + ":00"
 
-const getMaxTime = (data: GetCurrentTimeTable): string => {
-  const days = data.GetCurrentTimeTable.timetable!.days!
+//   return formattedMinTime
+// }
 
-  let maxTime = days[0]!.isEndTimeNextDay
-    ? addOneDay(days[0]!.endTime)
-    : days[0]!.endTime
+// const getMaxTime = (data: GetCurrentTimeTable): string => {
+//   const days = data.GetCurrentTimeTable.timetable!.days!
 
-  for (const day of days) {
-    const endTime = day!.isEndTimeNextDay
-      ? addOneDay(day!.endTime)
-      : day!.endTime
-    if (parseInt(endTime, 10) > parseInt(maxTime, 10)) {
-      maxTime = endTime
-    }
-  }
+//   let maxTime = days[0]!.isEndTimeNextDay
+//     ? addOneDay(days[0]!.endTime)
+//     : days[0]!.endTime
 
-  const formattedMaxTime =
-    maxTime.substring(0, 2) + ":" + maxTime.substring(2, maxTime.length) + ":00"
+//   for (const day of days) {
+//     const endTime = day!.isEndTimeNextDay
+//       ? addOneDay(day!.endTime)
+//       : day!.endTime
+//     if (parseInt(endTime, 10) > parseInt(maxTime, 10)) {
+//       maxTime = endTime
+//     }
+//   }
 
-  return formattedMaxTime
-}
+//   const formattedMaxTime =
+//     maxTime.substring(0, 2) + ":" + maxTime.substring(2, maxTime.length) + ":00"
 
-const addOneDay = (time: string): string => {
-  const addedTime = parseInt(time, 10) + 2400
-  return addedTime.toString()
-}
+//   return formattedMaxTime
+// }
 
-const sortDay = (data: GetCurrentTimeTable) => {
-  const days = data.GetCurrentTimeTable.timetable!.days!
-  const sortedDays: any[] = []
-  let dayNumbers: number[] = []
+// const addOneDay = (time: string): string => {
+//   const addedTime = parseInt(time, 10) + 2400
+//   return addedTime.toString()
+// }
 
-  days.forEach(day => dayNumbers.push(day!.dayNumber))
+// const sortDay = (data: GetCurrentTimeTable) => {
+//   const days = data.GetCurrentTimeTable.timetable!.days!
+//   const sortedDays: any[] = []
+//   let dayNumbers: number[] = []
 
-  const maxDayNumber = Math.max.apply(null, dayNumbers)
-  const minDayNumber = Math.min.apply(null, dayNumbers)
-  const isContainNextMonth: boolean = maxDayNumber - minDayNumber >= 7
-  if (isContainNextMonth) {
-    const sortedDayNumbers: number[] = []
-    const previousMonthDayNumbers = dayNumbers
-      .filter(dayNumber => Math.abs(maxDayNumber - dayNumber) <= 6)
-      .sort((a, b) => a - b)
-    const nextMonthDayNumbers = dayNumbers
-      .filter(dayNumber => Math.abs(dayNumber - minDayNumber) <= 6)
-      .sort((a, b) => a - b)
-    previousMonthDayNumbers.forEach(dayNumber =>
-      sortedDayNumbers.push(dayNumber)
-    )
-    nextMonthDayNumbers.forEach(dayNumber => sortedDayNumbers.push(dayNumber))
-    dayNumbers = sortedDayNumbers
-  } else {
-    dayNumbers.sort((a, b) => a - b)
-  }
+//   days.forEach(day => dayNumbers.push(day!.dayNumber))
 
-  dayNumbers.forEach(dayNumber => {
-    const targetDay = days.find(day => day!.dayNumber === dayNumber)
-    sortedDays.push(targetDay)
-  })
+//   const maxDayNumber = Math.max.apply(null, dayNumbers)
+//   const minDayNumber = Math.min.apply(null, dayNumbers)
+//   const isContainNextMonth: boolean = maxDayNumber - minDayNumber >= 7
+//   if (isContainNextMonth) {
+//     const sortedDayNumbers: number[] = []
+//     const previousMonthDayNumbers = dayNumbers
+//       .filter(dayNumber => Math.abs(maxDayNumber - dayNumber) <= 6)
+//       .sort((a, b) => a - b)
+//     const nextMonthDayNumbers = dayNumbers
+//       .filter(dayNumber => Math.abs(dayNumber - minDayNumber) <= 6)
+//       .sort((a, b) => a - b)
+//     previousMonthDayNumbers.forEach(dayNumber =>
+//       sortedDayNumbers.push(dayNumber)
+//     )
+//     nextMonthDayNumbers.forEach(dayNumber => sortedDayNumbers.push(dayNumber))
+//     dayNumbers = sortedDayNumbers
+//   } else {
+//     dayNumbers.sort((a, b) => a - b)
+//   }
 
-  return sortedDays
-}
+//   dayNumbers.forEach(dayNumber => {
+//     const targetDay = days.find(day => day!.dayNumber === dayNumber)
+//     sortedDays.push(targetDay)
+//   })
 
-export default TimeTablePresenter
+//   return sortedDays
+// }
+
+// export default TimeTablePresenter
